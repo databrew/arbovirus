@@ -12,4 +12,3 @@ if( file.exists("data/data.RData" )){
 
 # check data against specifications in data dictionary:
 
-
