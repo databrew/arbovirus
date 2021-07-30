@@ -2,5 +2,5 @@
 /data/*.R
 /data/*.xlsx
 /data/*.RData
-/data/archive
+/data/archive/*
 
