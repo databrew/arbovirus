@@ -11,6 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This is a repository for the WHO Geneva collaboration with Databrew on the Global Arbovirus Survey. More details to come soon.
 
+## Developer instructions
+
+- Clone this repository  
+- Populate the `data` folder with files sent from the office
+
 ## Data fields
 
 ```{r, echo = FALSE, results = 'asis'}
@@ -18,9 +23,3 @@ library(readxl)
 df <- read_excel('data/Dummy data subset_375147_16 June.xlsx')
 cat(paste0(paste0('- ', names(df)), collapse = '\n'))
 ```
-
-## Developer instructions
-
-- Clone this repository  
-- Populate the `data` folder with files sent from the office
-

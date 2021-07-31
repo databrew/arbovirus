@@ -1,0 +1,53 @@
+---
+title: "WHOA! (WHO Arbovirus)"
+author: "Databrew LLC"
+date: "7/30/2021"
+output: html_document
+---
+
+## Read and validate data
+
+```{r echo=FALSE}
+# get the survey results, as processed by WHO script:
+
+if( file.exists("data/data.RData" )){
+  load("data/data.RData")
+} else{
+  setwd("data/")
+  source("survey_375147_R_syntax_file.R")
+  save(data, file="data.RData")
+  setwd("../")
+}
+
+# whoa this prints a lot of stuff...
+# summary(data)
+
+```
+
+Check data against specifications in data dictionary? 
+Or is provided script sufficient? INVESTIGATE!
+
+## Surveillance capacity indicators
+  
+- Reportable arboviral diseases (q11, q11b)
+- History of any arbovirus circulation since 2000 (q5)
+- Conducting surveillance on humans (q12),  vectors (q28) animals (q41)
+- Training of surveillance personnel and clinicians? (q10) (q24)
+
+## Laboratory diagnostic capacity indicators
+
+- Testing in outbreak vs non-outbreak settings (q15)
+- Laboratory tests available (q17)
+
+## Response capacity indicators
+
+- Surveillance and control plans available (q 6)
+- Vector control method employed (q35)
+-  Surveillance and response committee exists (q47)
+-  Contingency plan exists (q48)
+
+## Epidemiologic risk data
+
+- Vectors present and level of risk (q34, q34b, q34c)
+- All arboviruses 2015-2020 (cases and deaths) (q55, b, c)
+- Most recent year data (q56)
