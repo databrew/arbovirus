@@ -14,7 +14,8 @@ This is a repository for the WHO Geneva collaboration with Databrew on the Globa
 ## Developer instructions
 
 - Clone this repository  
-- Populate the `data` folder with data and scripts from the WHO
+- Populate the `data` folder with data from the WHO
+- Knit `analyze.Rmd`
 
 ## Data fields
 

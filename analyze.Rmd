@@ -5,7 +5,7 @@ date: "7/30/2021"
 output: html_document
 ---
 
-## Read and validate data
+# Read and validate data
 
 ```{r echo=FALSE, message=FALSE}
 
@@ -13,13 +13,14 @@ library(tidyverse)
 library(stringr)
 library(pander)
 
-# get the survey results, as processed by WHO script:
+# get the survey results, as processed by WHO script (lightly edited) :
 
 if( file.exists("data/data.RData" )){
   load("data/data.RData")
 } else{
-  setwd("data/")
+  setwd("misc/")
   source("survey_375147_R_syntax_file.R")
+  setwd("../data")
   save(data, file="data.RData")
   setwd("../")
 }
@@ -28,62 +29,92 @@ if( file.exists("data/data.RData" )){
 # summary(data)
 
 # load data dictionary to facilitate processing survey results:
-dict <- read_csv("misc/Data dictionary_Survey375147.csv")
+dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
 
 ```
 
 Check data against specifications in data dictionary? 
 Or is provided script sufficient? Investigate!
 
-## Surveillance capacity indicators
+# Surveillance capacity indicators
 
-- Reportable arboviral diseases (q11, q11b)
+### Reportable arboviral diseases
 
 ```{r echo=FALSE, message=FALSE}
+
+# relevant questions: q11, q11b
 
 idx <- which(dict$`Question number`=="11")
 question <- dict$Description[idx]
 cat( question )
-var_name <- dict$`Variable name`[idx] 
-# <WTF>
-# group_by not cooperating with var_name in quotes, select thinks its external, AND
-# this particular kludge with as.name assumes a single name. 
-# </WTF>
-pander( data %>% select(!!as.name(var_name)) %>% group_by(!!as.name(var_name)) %>% tally )
+var_name <-  dict$`Variable name`[idx]  
+# ?! WTF ?!
+pander( data %>% select(!!as.name(var_name)) %>% group_by(Response = !!as.name(var_name)) %>% tally )
 
 idx <- which(dict$`Question number`=="11b")
+question <- dict$Description[idx[1]]
+cat(question)
 var_name <- dict$`Variable name`[idx]
-# and yet select seems to work just fine here! weird.
-tallies <- data %>% select( var_name ) %>% gather() %>% group_by(key, value) %>% tally
-ggplot(tallies, aes(x=value, y=n)) + geom_col() + facet_wrap(~key)
+responses <- data %>% select( var_name )
+# remove square brackets from virus info. in dictionary, then rename responses:
+names( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
+summary( responses )
+tallies <- responses %>% 
+  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response") %>% 
+  group_by(Arbovirus, Response) %>% 
+  tally
+ggplot(tallies, aes(x=Response, y=n, fill=Response)) + 
+  geom_col() + 
+  facet_wrap(~Arbovirus) +
+  theme(legend.position = "bottom",
+        legend.direction="vertical",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 
 ```
 
-To do next for this chunk:
 
-- replace inscrutable var_names with actual viruses in question, i.e., use text from subquestions in dictionary via something like `stringr::string_extract` with pattern `(?<=\[)[^{}]+(?=\])`
-- create legible labels for barplot
+###  History of any arbovirus circulation since 2000 (q5)
 
-Should be able to handle remaining questions similarly...
+```{r echo=FALSE, message=FALSE}
 
-- History of any arbovirus circulation since 2000 (q5)
-- Conducting surveillance on humans (q12),  vectors (q28) animals (q41)
-- Training of surveillance personnel and clinicians? (q10) (q24)
+# relevant questions: q11, q11b
 
-## Laboratory diagnostic capacity indicators
+idx <- which(dict$`Question number`=="5")
+question <- dict$Description[idx[1]]
+cat( question )
+var_name <-  dict$`Variable name`[idx]  
+responses <- data %>% select( var_name )
+names( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
+summary(responses)
 
-- Testing in outbreak vs non-outbreak settings (q15)
-- Laboratory tests available (q17)
+```
 
-## Response capacity indicators
+###  Conducting surveillance on humans (q12),  vectors (q28) animals (q41)
 
-- Surveillance and control plans available (q 6)
-- Vector control method employed (q35)
--  Surveillance and response committee exists (q47)
--  Contingency plan exists (q48)
+### Training of surveillance personnel and clinicians? (q10) (q24)
 
-## Epidemiologic risk data
+# Laboratory diagnostic capacity indicators
 
-- Vectors present and level of risk (q34, q34b, q34c)
-- All arboviruses 2015-2020 (cases and deaths) (q55, b, c)
-- Most recent year data (q56)
+### Testing in outbreak vs non-outbreak settings (q15)
+
+### Laboratory tests available (q17)
+
+# Response capacity indicators
+
+### Surveillance and control plans available (q 6)
+
+### Vector control method employed (q35)
+
+###   Surveillance and response committee exists (q47)
+
+###  Contingency plan exists (q48)
+
+# Epidemiologic risk data
+
+### Vectors present and level of risk (q34, q34b, q34c)
+
+### All arboviruses 2015-2020 (cases and deaths) (q55, b, c)
+
+### Most recent year data (q56)

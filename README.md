@@ -9,7 +9,8 @@ the Global Arbovirus Survey. More details to come soon.
 ## Developer instructions
 
 -   Clone this repository  
--   Populate the `data` folder with data and scripts from the WHO
+-   Populate the `data` folder with data from the WHO
+-   Knit `analyze.Rmd`
 
 ## Data fields
 
