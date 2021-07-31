@@ -75,11 +75,11 @@ ggplot(tallies, aes(x=Response, y=n, fill=Response)) +
 ```
 
 
-###  History of any arbovirus circulation since 2000 (q5)
+###  History of any arbovirus circulation since 2000 
 
 ```{r echo=FALSE, message=FALSE}
 
-# relevant questions: q11, q11b
+# relevant question: q5
 
 idx <- which(dict$`Question number`=="5")
 question <- dict$Description[idx[1]]
