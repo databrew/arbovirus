@@ -32,19 +32,29 @@ if( file.exists("data/data.RData" )){
 dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
 
 # utility function 
-get_responses <- function( question ){
-  idx <- which( dict$`Question number` == question )
+get_responses <- function( question_number ){
+  idx <- which( dict$`Question number` == question_number )
   question <- dict$Description[ idx[1] ]
-  cat(question)
+  cat( paste("Question", question_number, ":", question, "\n") )
   var_names <- dict$`Variable name`[idx]
   responses <- data %>% select( all_of(var_names) )
+  if( !is.na(dict$Subquestion[ idx[1] ]) ){
+    # remove square brackets, then rename:
+    colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
+  }
   return( responses )
 }
 
+# Check data against specifications in data dictionary? 
+# Or is provided script sufficient? Investigate!
+
 ```
 
-Check data against specifications in data dictionary? 
-Or is provided script sufficient? Investigate!
+There are `r nrow(data)` rows ; there are `r length(unique(data$SI01))` unique countries. Repeated countries:
+```{r echo=FALSE, message=FALSE}
+idx <- which( duplicated( data$SI01 ) )
+pander( as.vector(unique( data$SI01[idx] ) ) )
+```
 
 # Surveillance capacity indicators
 
@@ -57,13 +67,7 @@ Or is provided script sufficient? Investigate!
 responses <- get_responses("11")
 pander( table( responses, useNA="ifany" ))
 
-idx <- which(dict$`Question number`=="11b")
-question <- dict$Description[idx[1]]
-cat(question)
-var_name <- dict$`Variable name`[idx]
-responses <- data %>% select( all_of(var_name) )
-# remove square brackets from virus info. in dictionary, then rename responses:
-names( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
+responses <- get_responses("11b")
 # summary( responses )
 tallies <- responses %>% 
   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
@@ -89,17 +93,12 @@ ggplot(tallies, aes(x=Response, y=n, fill=Response)) +
 
 # relevant question: q5
 
-idx <- which(dict$`Question number`=="5")
-question <- dict$Description[idx[1]]
-cat( question )
-var_name <-  dict$`Variable name`[idx]  
-responses <- data %>% select( all_of(var_name) )
-names( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
+responses <- get_responses("5")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
 tallies <- responses %>% 
   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
+pander( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
 
 # knitr::kable( table(other))
 
@@ -131,21 +130,61 @@ pander( table(responses, useNA="ifany"))
 
 ```
 
-### Training of surveillance personnel and clinicians? (q24)
+### Training of surveillance personnel and clinicians?
 
 ```{r echo=FALSE, message=FALSE}
 
-# relevant question: q10 (surveillance on humans)
+# relevant question: q10 
 
 responses <- get_responses("10")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+tallies <- responses %>% 
+  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
+knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
+
+# relevant question: q24
+
+responses <- get_responses("24")
 
 ```
 
+To do:
+
+- Clean up free text responses to this question!
+
 # Laboratory diagnostic capacity indicators
 
-### Testing in outbreak vs non-outbreak settings (q15)
+### Testing in outbreak vs non-outbreak settings
 
-### Laboratory tests available (q17)
+```{r echo=FALSE, message=FALSE}
+
+# relevant question: q15
+
+responses <- get_responses("15")
+tallies <- responses %>%
+  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
+knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
+
+```
+
+### Laboratory tests available
+
+```{r echo=FALSE, message=FALSE}
+
+# relevant question: q17
+
+responses <- get_responses("17")
+# tallies <- responses %>%
+#   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
+# knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
+
+```
+
+To do:
+
+- Clean up presentation of these responses
+- Fix regex pattern to handle multiple pairs of square brackets
 
 # Response capacity indicators
 
