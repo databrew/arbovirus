@@ -1,17 +1,33 @@
 ---
 title: "WHO Global Arbovirus Survey"
-author: "Databrew LLC"
-date: "7/30/2021"
+author: "Data integrity report"
+date: "`r format(Sys.time(), '%Y %B %d')`"
 output: html_document
 ---
 
-# Read and validate data
+
+```{r setup, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+```
+
+# Data structure and quantity
 
 ```{r echo=FALSE, message=FALSE}
 
 library(tidyverse)
 library(stringr)
 library(pander)
+ggplot2::theme_set(theme_bw())
 
 # get the survey results, as processed by WHO script (lightly edited) :
 
@@ -47,8 +63,9 @@ get_responses <- function( question_number ){
 
 # Check data against specifications in data dictionary? 
 # Or is provided script sufficient? Investigate!
-
 ```
+
+## Number of submissions
 
 There are `r nrow(data)` rows ; there are `r length(unique(data$SI01))` unique countries. Repeated countries:
 ```{r echo=FALSE, message=FALSE}
@@ -56,7 +73,35 @@ idx <- which( duplicated( data$SI01 ) )
 pander( as.vector(unique( data$SI01[idx] ) ) )
 ```
 
-# Surveillance capacity indicators
+```{r}
+pd <- data %>%
+  group_by(Country = SI01) %>%
+  tally %>%
+  arrange(desc(n)) %>%
+  filter(n >= 2) %>%
+  bind_rows(
+    tibble(Country = 'Others',
+           n = 1)
+  )
+pd$Country <- factor(pd$Country,
+                     levels = pd$Country)
+
+ggplot(data = pd,
+       aes(x = Country,
+           y = n)) +
+  geom_bar(stat = 'identity') +
+  geom_text(aes(label = n),
+            nudge_y = -0.2,
+            color = 'white',
+            size = 7) +
+  labs(y = 'Entries',
+       title = 'Survey entries per country')
+```
+
+
+# Data content
+
+## Surveillance capacity indicators
 
 ### Reportable arboviral diseases
 
