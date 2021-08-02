@@ -5,7 +5,6 @@ date: "`r format(Sys.time(), '%Y %B %d')`"
 output: html_document
 ---
 
-
 ```{r setup, include=FALSE, echo = FALSE}
 # Basic knitr options
 library(knitr)
@@ -55,7 +54,7 @@ get_responses <- function( question_number ){
   var_names <- dict$`Variable name`[idx]
   responses <- data %>% select( all_of(var_names) )
   if( !is.na(dict$Subquestion[ idx[1] ]) ){
-    # remove square brackets, then rename:
+    # remove square brackets at beginning and end, then rename:
     colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
     # replace square brackets with spaces, then trim whitespace:
     # colnames( responses ) <- trimws( gsub("\\[|\\]", " ",dict$Subquestion[idx]), which="both")
@@ -113,13 +112,13 @@ pander( table( responses, useNA="ifany" ))
 
 responses <- get_responses("11b")
 # summary( responses )
-tallies <- responses %>% 
+df <- responses %>% 
   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
-tallies <- tallies %>% 
+knitr::kable( table( df$Arbovirus, df$Response, useNA="ifany") )
+df <- df %>% 
   group_by(Arbovirus, Response) %>% 
   tally
-ggplot(tallies, aes(x=Response, y=n, fill=Response)) + 
+ggplot(df, aes(x=Response, y=n, fill=Response)) + 
   geom_col() + 
   facet_wrap(~Arbovirus) +
   theme(legend.position = "bottom",
@@ -140,9 +139,9 @@ ggplot(tallies, aes(x=Response, y=n, fill=Response)) +
 responses <- get_responses("5")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
-tallies <- responses %>% 
+df <- responses %>% 
   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-pander( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
+pander( table( df$Arbovirus, df$Response, useNA="ifany") )
 
 # knitr::kable( table(other))
 
@@ -183,9 +182,9 @@ pander( table(responses, useNA="ifany"))
 responses <- get_responses("10")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
-tallies <- responses %>% 
+df <- responses %>% 
   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
+knitr::kable( table( df$Arbovirus, df$Response, useNA="ifany") )
 
 # relevant question: q24
 
@@ -206,9 +205,9 @@ To do:
 # relevant question: q15
 
 responses <- get_responses("15")
-tallies <- responses %>%
+df <- responses %>%
   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
+knitr::kable( table( df$Arbovirus, df$Response, useNA="ifany") )
 
 ```
 
@@ -219,40 +218,148 @@ knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
 # relevant question: q17
 
 responses <- get_responses("17")
-tallies <- responses %>%
+df <- responses %>%
   pivot_longer(cols=colnames(responses), names_to="Testing", values_to="Response")
-new_cols <- matrix( unlist( strsplit(tallies$Testing, "\\]\\[") ), ncol=2, byrow=T)
-tallies <- tallies %>% 
+new_cols <- matrix( unlist( strsplit(df$Testing, "\\]\\[") ), ncol=2, byrow=T)
+df <- df %>% 
   mutate(Arbovirus = new_cols[,1], Testing = new_cols[,2])
-tallies$Response <- as.numeric( tallies$Response)
-tallies <- tallies %>% 
+df$Response <- as.numeric( df$Response)
+df <- df %>% 
   group_by(Arbovirus, Testing) %>% 
   summarize(Total = sum(Response, na.rm=T))
-tallies$Arbovirus <- factor( tallies$Arbovirus )
-tallies$Testing <- factor( tallies$Testing )
-mat <- matrix( data=tallies$Total, ncol=length(levels(tallies$Arbovirus)), byrow=F)
-colnames( mat ) <- levels( tallies$Arbovirus )
-rownames( mat ) <- levels( tallies$Testing )
+df$Arbovirus <- factor( df$Arbovirus )
+df$Testing <- factor( df$Testing )
+mat <- matrix( data=df$Total, ncol=length(levels(df$Arbovirus)), byrow=F)
+colnames( mat ) <- levels( df$Arbovirus )
+rownames( mat ) <- levels( df$Testing )
 knitr::kable( mat )
-# knitr::kable( table( tallies$Arbovirus, tallies$Testing, useNA="ifany") )
+
+ggplot(df, aes(x=Testing, y=Total, fill=Testing)) + 
+  geom_col() + 
+  facet_wrap(~Arbovirus) + 
+  theme(legend.position = "bottom",
+        legend.direction="vertical",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 
 ```
 
-
 # Response capacity indicators
 
-### Surveillance and control plans available (q 6)
+### Surveillance and control plans available
 
-### Vector control method employed (q35)
+```{r}
 
-###   Surveillance and response committee exists (q47)
+# relevant question: q6
 
-###  Contingency plan exists (q48)
+responses <- get_responses("6")
+knitr::kable( table(responses, useNA="ifany"))
+
+```
+
+### Vector control method employed
+
+```{r}
+
+# relevant question: q35
+
+responses <- get_responses("35")
+# knitr::kable( table(responses, useNA="ifany"))
+
+```
+
+###   Surveillance and response committee exists
+
+```{r}
+
+# relevant question: q47
+
+responses <- get_responses("47")
+pander( table(responses, useNA="ifany"))
+
+```
+
+###  Contingency plan exists
+
+```{r}
+
+# relevant question: q48
+
+responses <- get_responses("48")
+pander( table(responses, useNA="ifany"))
+
+```
 
 # Epidemiologic risk data
 
 ### Vectors present and level of risk (q34, q34b, q34c)
 
+```{r}
+
+# relevant question: q34
+
+responses <- get_responses("34")
+knitr::kable( table(responses, useNA="ifany"))
+
+# relevant question: q34b
+
+responses <- get_responses("34b")
+colnames(responses) <- c("Selection", "Other")
+knitr::kable( table(responses$Selection, useNA="ifany"))
+knitr::kable( table(responses$Other, useNA="ifany"))
+
+# relevant question: q34c
+
+responses <- get_responses("34c")
+colnames(responses) <- c("Selection", "Other")
+knitr::kable( table(responses$Selection, useNA="ifany"))
+knitr::kable( table(responses$Other, useNA="ifany"))
+
+```
+
+To do:
+
+- Clean up!
+
 ### All arboviruses 2015-2020 (cases and deaths) (q55, b, c)
 
-### Most recent year data (q56)
+```{r}
+
+# relevant question: q55
+
+responses <- get_responses("55")
+# knitr::kable( table(responses, useNA="ifany"))
+
+# relevant question: q55b
+
+responses <- get_responses("55b")
+pander( table(responses, useNA="ifany"))
+
+# relevant question: q55c
+
+responses <- get_responses("55c")
+df <- responses %>%
+  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
+knitr::kable( table( df$Arbovirus, df$Response, useNA="ifany") )
+
+```
+
+To do :
+
+- Clean up question 55, as in question 17
+- Clean up presentation of question 56c
+
+### Most recent year data 
+
+```{r}
+
+# relevant question: q56
+
+responses <- get_responses("56")
+
+```
+
+To do :
+
+- Clean up, as in question 17
