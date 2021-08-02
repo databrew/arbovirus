@@ -22,7 +22,7 @@ opts_chunk$set(comment = NA,
 
 # Data structure and quantity
 
-```{r echo=FALSE, message=FALSE}
+```{r}
 
 library(tidyverse)
 library(stringr)
@@ -51,18 +51,18 @@ dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
 get_responses <- function( question_number ){
   idx <- which( dict$`Question number` == question_number )
   question <- dict$Description[ idx[1] ]
-  cat( paste("Question", question_number, ":", question, "\n") )
+  cat( paste("Question", question_number, ":", question) )
   var_names <- dict$`Variable name`[idx]
   responses <- data %>% select( all_of(var_names) )
   if( !is.na(dict$Subquestion[ idx[1] ]) ){
     # remove square brackets, then rename:
     colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
+    # replace square brackets with spaces, then trim whitespace:
+    # colnames( responses ) <- trimws( gsub("\\[|\\]", " ",dict$Subquestion[idx]), which="both")
   }
   return( responses )
 }
 
-# Check data against specifications in data dictionary? 
-# Or is provided script sufficient? Investigate!
 ```
 
 ## Number of submissions
@@ -98,14 +98,13 @@ ggplot(data = pd,
        title = 'Survey entries per country')
 ```
 
-
 # Data content
 
 ## Surveillance capacity indicators
 
 ### Reportable arboviral diseases
 
-```{r echo=FALSE, message=FALSE}
+```{r}
 
 # relevant questions: q11, q11b
 
@@ -134,7 +133,7 @@ ggplot(tallies, aes(x=Response, y=n, fill=Response)) +
 
 ###  History of any arbovirus circulation since 2000 
 
-```{r echo=FALSE, message=FALSE}
+```{r}
 
 # relevant question: q5
 
@@ -156,7 +155,7 @@ To do:
 
 ###  Conducting surveillance on humans,  vectors, and animals
 
-```{r echo=FALSE, message=FALSE}
+```{r}
 
 # relevant question: q12 (surveillance on humans)
 
@@ -177,7 +176,7 @@ pander( table(responses, useNA="ifany"))
 
 ### Training of surveillance personnel and clinicians?
 
-```{r echo=FALSE, message=FALSE}
+```{r}
 
 # relevant question: q10 
 
@@ -202,7 +201,7 @@ To do:
 
 ### Testing in outbreak vs non-outbreak settings
 
-```{r echo=FALSE, message=FALSE}
+```{r}
 
 # relevant question: q15
 
@@ -215,21 +214,30 @@ knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
 
 ### Laboratory tests available
 
-```{r echo=FALSE, message=FALSE}
+```{r}
 
 # relevant question: q17
 
 responses <- get_responses("17")
-# tallies <- responses %>%
-#   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-# knitr::kable( table( tallies$Arbovirus, tallies$Response, useNA="ifany") )
+tallies <- responses %>%
+  pivot_longer(cols=colnames(responses), names_to="Testing", values_to="Response")
+new_cols <- matrix( unlist( strsplit(tallies$Testing, "\\]\\[") ), ncol=2, byrow=T)
+tallies <- tallies %>% 
+  mutate(Arbovirus = new_cols[,1], Testing = new_cols[,2])
+tallies$Response <- as.numeric( tallies$Response)
+tallies <- tallies %>% 
+  group_by(Arbovirus, Testing) %>% 
+  summarize(Total = sum(Response, na.rm=T))
+tallies$Arbovirus <- factor( tallies$Arbovirus )
+tallies$Testing <- factor( tallies$Testing )
+mat <- matrix( data=tallies$Total, ncol=length(levels(tallies$Arbovirus)), byrow=F)
+colnames( mat ) <- levels( tallies$Arbovirus )
+rownames( mat ) <- levels( tallies$Testing )
+knitr::kable( mat )
+# knitr::kable( table( tallies$Arbovirus, tallies$Testing, useNA="ifany") )
 
 ```
 
-To do:
-
-- Clean up presentation of these responses
-- Fix regex pattern to handle multiple pairs of square brackets
 
 # Response capacity indicators
 
