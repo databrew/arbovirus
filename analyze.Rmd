@@ -17,6 +17,7 @@ opts_chunk$set(comment = NA,
                fig.width = 9.64,
                fig.height = 5.9,
                fig.path = 'figures/')
+options(scipen = '999')
 ```
 
 # Data structure and quantity
@@ -26,6 +27,14 @@ opts_chunk$set(comment = NA,
 library(tidyverse)
 library(stringr)
 library(pander)
+library(RColorBrewer)
+make_colors <- function(n, seed = 123){
+  pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
+  set.seed(seed)
+  pal <- sample(pal, length(pal))
+  out <- colorRampPalette(pal)(n)
+  return(out)
+}
 ggplot2::theme_set(theme_bw())
 
 # get the survey results, as processed by WHO script (lightly edited) :
@@ -122,10 +131,14 @@ ggplot(df, aes(x=Response, y=n, fill=Response)) +
   geom_col() + 
   facet_wrap(~Arbovirus) +
   theme(legend.position = "bottom",
-        legend.direction="vertical",
+        legend.direction="horizontal",
         axis.title.x=element_blank(),
         axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+        axis.ticks.x=element_blank()) +
+  guides(fill=guide_legend(ncol=2)) +
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(df$Response)))) +
+  labs(y = 'Responses')
 
 ```
 
@@ -145,12 +158,13 @@ pander( table( df$Arbovirus, df$Response, useNA="ifany") )
 
 # knitr::kable( table(other))
 
+ggplot(data = df %>% filter(Response == 'Yes'),
+       aes(x = Arbovirus)) +
+  geom_bar() +
+  labs(y = 'Entries')
+
 ```
 
-To do:
-
-- The free text responses to `Other` need to be cleaned!!
-- Barplot instead of / in addition to tabular summary?
 
 ###  Conducting surveillance on humans,  vectors, and animals
 
@@ -192,9 +206,6 @@ responses <- get_responses("24")
 
 ```
 
-To do:
-
-- Clean up free text responses to this question!
 
 # Laboratory diagnostic capacity indicators
 
@@ -238,10 +249,12 @@ ggplot(df, aes(x=Testing, y=Total, fill=Testing)) +
   geom_col() + 
   facet_wrap(~Arbovirus) + 
   theme(legend.position = "bottom",
-        legend.direction="vertical",
+        legend.direction="horizontal",
         axis.title.x=element_blank(),
         axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+        axis.ticks.x=element_blank()) +
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(df$Testing))))
 
 ```
 
@@ -318,13 +331,10 @@ knitr::kable( table(responses$Other, useNA="ifany"))
 
 ```
 
-To do:
-
-- Clean up!
 
 ### All arboviruses 2015-2020 (cases and deaths) 
 
-```{r}
+```{r, fig.height = 12}
 
 # relevant question: q55
 
@@ -347,30 +357,60 @@ for( i in 1:ncountries ){
 
 df <- df %>% drop_na(Number)
 
-ggplot( df %>% filter(Country!="India") %>% filter(Type=="Cases"),
-        aes( x=reorder(Country, desc(Country)), y=Number, fill=Year)) +
-  geom_col( position="dodge" ) + 
-  coord_flip() + 
-  labs( x="Country",
-        title = "Cases by Year") + 
-  facet_wrap(~Virus)
 
-ggplot( df %>% filter(Country!="India") %>% filter(Type=="Deaths"),
-        aes( x=reorder(Country, desc(Country)), y=Number, fill=Year)) +
-  geom_col( position="dodge" ) + 
-  coord_flip() + 
-  labs( x="Country",
-        title = "Deaths by Year") +  
-  facet_wrap(~Virus)
 
-# knitr::kable( table(responses, useNA="ifany"))
-
+ggplot( df %>% 
+          filter(Country!="India") %>% 
+          filter(Type=="Cases") %>%
+          mutate(Country = gsub(" People's Democratic Republic", 's', Country)) %>%
+          mutate(Country = gsub('Herzegovina', 'Herz.', Country)) %>%
+          mutate(grp = paste0(Country, Virus)),
+        aes(x = Year,
+            y = Number,
+            color = Virus,
+            group = grp)) +
+          geom_line() +
+  geom_point() +
+  facet_wrap(~Country,
+             scales = 'free') +
+  theme(legend.position = 'bottom',
+        strip.background = element_blank()) +
+  scale_color_manual(name = '',
+                     values = make_colors(length(unique(df$Virus)))) +
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 0,
+                                   vjust = 0.5)) +
+  labs(title = 'Cases by year',
+       y = 'Cases')
 ```
 
-Comments: 
+```{r, fig.height = 12}
+ggplot( df %>% 
+          filter(Country!="India") %>% 
+          filter(Type=="Deaths") %>%
+          mutate(Country = gsub(" People's Democratic Republic", 's', Country)) %>%
+          mutate(Country = gsub('Herzegovina', 'Herz.', Country)) %>%
+          mutate(grp = paste0(Country, Virus)),
+        aes(x = Year,
+            y = Number,
+            color = Virus,
+            group = grp)) +
+          geom_line() +
+  geom_point() +
+  facet_wrap(~Country,
+             scales = 'free') +
+  theme(legend.position = 'bottom',
+        strip.background = element_blank()) +
+  scale_color_manual(name = '',
+                     values = make_colors(length(unique(df$Virus)))) +
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 0,
+                                   vjust = 0.5)) +
+  labs(title = 'Deaths by year',
+       y = 'Deaths')
+```
 
-- India is not shown, as India's case/death counts are an order of magnitude larger than other countries'.
-- There's clearly no need to present all of this. How best to summarize/present? 
+
 
 ```{r}
 
@@ -396,7 +436,7 @@ pander( table( df$Arbovirus, df$Response, useNA="ifany") )
 
 ### Most recent year data 
 
-```{r}
+```{r, fig.height = 12}
 
 # relevant question: q56
 
@@ -422,13 +462,19 @@ ggplot( df,
   geom_col( position="dodge" ) + 
   coord_flip() + 
   labs( title = "Cases by Virus") + 
-  facet_wrap(~Virus)
-
-ggplot( df %>% filter(Virus=="Chikungunya"),
-        aes( x=reorder(Country, desc(Country)), y=Number, fill=Type)) +
-  geom_col( position="dodge" ) + 
-  coord_flip() + 
-  labs( x = "Country",
-        title = "Chikungunya cases") 
-
+  facet_wrap(~Virus) +
+  labs(x = 'Country') +
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(df$Type))))
 ```
+
+
+
+Comments: 
+
+- India is not shown, as India's case/death counts are an order of magnitude larger than other countries'.
+
+
+To do:
+
+- Clean up free text responses to questions 5 and 10
