@@ -28,8 +28,9 @@ library(tidyverse)
 library(stringr)
 library(pander)
 library(RColorBrewer)
-make_colors <- function(n){
+make_colors <- function(n, seed = 123){
   pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
+  set.seed(seed)
   pal <- sample(pal, length(pal))
   out <- colorRampPalette(pal)(n)
   return(out)
@@ -463,19 +464,8 @@ ggplot( df,
   labs( title = "Cases by Virus") + 
   facet_wrap(~Virus) +
   labs(x = 'Country') +
-  make_colors(length(unique(df$Type)))
-```
-
-```{r, fig.height = 12}
-ggplot( df %>% filter(Virus=="Chikungunya"),
-        aes( x=reorder(Country, desc(Country)), y=Number, fill=Type)) +
-  geom_col( position="dodge" ) + 
-  coord_flip() + 
-  labs( x = "Country",
-        title = "Chikungunya cases") +
-    make_colors(length(unique(df$Type)))
-
-
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(df$Type))))
 ```
 
 
