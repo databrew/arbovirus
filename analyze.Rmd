@@ -322,33 +322,77 @@ To do:
 
 - Clean up!
 
-### All arboviruses 2015-2020 (cases and deaths) (q55, b, c)
+### All arboviruses 2015-2020 (cases and deaths) 
 
 ```{r}
 
 # relevant question: q55
 
 responses <- get_responses("55")
+col_names <- colnames(responses)
+col_names <- matrix( unlist( strsplit(col_names, "\\]\\[") ), ncol=2, byrow=T)
+col_names <- cbind( col_names[,1], matrix( unlist( strsplit(col_names[,2], " ") ), ncol=2, byrow=T))
+ncountries <- length(data$SI01)
+ncr <- ncol(responses)
+df <- data.frame( Country=character(), Virus=character(), Year=character(), Type=character(), Number=numeric() )
+for( i in 1:ncountries ){
+  country <- rep( data$SI01[i], ncr)
+  df <- rbind( df, 
+               data.frame(Country=country, 
+                          Virus=col_names[,1], 
+                          Year=col_names[,2],
+                          Type=col_names[,3],
+                          Number=as.numeric( t( responses[i,] ))))
+}
+
+df <- df %>% drop_na(Number)
+
+ggplot( df %>% filter(Country!="India") %>% filter(Type=="Cases"),
+        aes( x=reorder(Country, desc(Country)), y=Number, fill=Year)) +
+  geom_col( position="dodge" ) + 
+  coord_flip() + 
+  labs( x="Country",
+        title = "Cases by Year") + 
+  facet_wrap(~Virus)
+
+ggplot( df %>% filter(Country!="India") %>% filter(Type=="Deaths"),
+        aes( x=reorder(Country, desc(Country)), y=Number, fill=Year)) +
+  geom_col( position="dodge" ) + 
+  coord_flip() + 
+  labs( x="Country",
+        title = "Deaths by Year") +  
+  facet_wrap(~Virus)
+
 # knitr::kable( table(responses, useNA="ifany"))
+
+```
+
+Comments: 
+
+- India is not shown, as India's case/death counts are an order of magnitude larger than other countries'.
+- There's clearly no need to present all of this. How best to summarize/present? 
+
+```{r}
 
 # relevant question: q55b
 
 responses <- get_responses("55b")
 pander( table(responses, useNA="ifany"))
 
+```
+
+```{r}
+
 # relevant question: q55c
 
 responses <- get_responses("55c")
 df <- responses %>%
-  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-knitr::kable( table( df$Arbovirus, df$Response, useNA="ifany") )
+  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response") %>%
+  filter(Response=="Yes") %>%
+  droplevels()
+pander( table( df$Arbovirus, df$Response, useNA="ifany") )
 
 ```
-
-To do :
-
-- Clean up question 55, as in question 17
-- Clean up presentation of question 56c
 
 ### Most recent year data 
 
@@ -357,9 +401,34 @@ To do :
 # relevant question: q56
 
 responses <- get_responses("56")
+col_names <- colnames(responses)
+col_names <- matrix( unlist( strsplit(col_names, "\\]\\[") ), ncol=2, byrow=T)
+ncountries <- length(data$SI01)
+ncr <- ncol(responses)
+df <- data.frame( Country=character(), Virus=character(), Type=character(), Number=numeric() )
+for( i in 1:ncountries ){
+  country <- rep( data$SI01[i], ncr)
+  df <- rbind( df, 
+               data.frame(Country=country, 
+                          Virus=col_names[,1], 
+                          Type=col_names[,2],
+                          Number=as.numeric( t( responses[i,] ))))
+}
+
+df <- df %>% drop_na(Number)
+
+ggplot( df,
+        aes( x=reorder(Country, desc(Country)), y=Number, fill=Type)) +
+  geom_col( position="dodge" ) + 
+  coord_flip() + 
+  labs( title = "Cases by Virus") + 
+  facet_wrap(~Virus)
+
+ggplot( df %>% filter(Virus=="Chikungunya"),
+        aes( x=reorder(Country, desc(Country)), y=Number, fill=Type)) +
+  geom_col( position="dodge" ) + 
+  coord_flip() + 
+  labs( x = "Country",
+        title = "Chikungunya cases") 
 
 ```
-
-To do :
-
-- Clean up, as in question 17
