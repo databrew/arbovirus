@@ -4,6 +4,7 @@ author: "Data integrity report"
 date: "`r format(Sys.time(), '%Y %B %d')`"
 output:
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -26,6 +27,8 @@ options(scipen = '999')
 ```{r}
 
 library(tidyverse)
+library(readxl)
+library(flextable)
 library(stringr)
 library(pander)
 library(RColorBrewer)
@@ -38,20 +41,27 @@ make_colors <- function(n, seed = 123){
 }
 ggplot2::theme_set(theme_bw())
 
-# get the survey results, as processed by WHO script (lightly edited) :
+# get the survey results, as processed by WHO script (lightly edited) 
+# and then modified by adding WHO region info :
 
 if( file.exists("data/data.RData" )){
   load("data/data.RData")
 } else{
-  setwd("misc/")
-  source("survey_375147_R_syntax_file.R")
-  setwd("../data")
-  save(data, file="data.RData")
-  setwd("../")
+  source("misc/survey_375147_R_syntax_file.R")
+  n_countries <- length( data$SI01 )
+  who_regions <- read_excel("data/Regions_Countries.xlsx")
+  region <- character(length=n_countries)
+  for(i in 1:n_countries){
+    idx <- which( who_regions$Country == data$SI01[i] )
+    if( length(idx) > 0 ){
+      region[i] <- who_regions$Region[idx]
+    } else{
+      region[i] <- NA
+    }
+  }
+  data <- data %>% mutate( Region = factor(region), .after=SI01 )
+  save(data, file="data/data.RData")
 }
-
-# whoa this prints a lot of stuff...
-# summary(data)
 
 # load data dictionary to facilitate processing survey results:
 dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
@@ -120,7 +130,8 @@ ggplot(data = pd,
 # relevant questions: q11, q11b
 
 responses <- get_responses("11")
-pander( table( responses, useNA="ifany" ))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+pander( table( df %>% group_by(Region), useNA="ifany" ) )
 
 ```
 
@@ -129,10 +140,27 @@ pander( table( responses, useNA="ifany" ))
 ```{r}
 
 responses <- get_responses("11b")
+responses <- cbind( Region = data$Region, responses)
 # summary( responses )
 df <- responses %>% 
-  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-knitr::kable( table( df$Arbovirus, df$Response, useNA="ifany") )
+  pivot_longer(!Region, names_to="Arbovirus", values_to="Response")
+tab <- df %>% 
+  group_by(Region, Arbovirus, Response) %>% 
+  tally %>% 
+  pivot_wider( names_from=Response, values_from=n) %>% 
+  drop_na(Region)
+colnames(tab) <- str_to_sentence( gsub("Mandatory reporting of ","",colnames(tab)) )
+tab <- tab %>% 
+  relocate("Confirmed cases only", .after="All suspect cases") %>%
+  rename("No answer"=Na)
+tab %>% 
+  regulartable %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  hline(i=6*(1:4)) %>% 
+  colformat_num( na_str = "-" ) %>%
+  autofit()
+
 df <- df %>% 
   group_by(Arbovirus, Response) %>% 
   tally
@@ -186,7 +214,9 @@ ggplot(data = df %>% filter(Response == 'Yes'),
 # relevant question: q12 (surveillance on humans)
 
 responses <- get_responses("12")
-pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+pander( table( df %>% group_by(Region), useNA="ifany" ) )
+# pander( table(responses, useNA="ifany"))
 
 ```
 
@@ -196,7 +226,9 @@ pander( table(responses, useNA="ifany"))
 # relevant question: q28 (surveillance on vectors)
 
 responses <- get_responses("28")
-pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+pander( table( df %>% group_by(Region), useNA="ifany" ) )
+# pander( table(responses, useNA="ifany"))
 
 ```
 
@@ -207,7 +239,9 @@ pander( table(responses, useNA="ifany"))
 # relevant question: q41 (surveillance on animals)
 
 responses <- get_responses("41")
-pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+pander( table( df %>% group_by(Region), useNA="ifany" ) )
+# pander( table(responses, useNA="ifany"))
 
 ```
 
@@ -308,7 +342,9 @@ ggplot(df, aes(x=Testing, y=Total, fill=Testing)) +
 # relevant question: q6
 
 responses <- get_responses("6")
-knitr::kable( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+knitr::kable( table( df %>% group_by(Region), useNA="ifany" ) )
+# knitr::kable( table(responses, useNA="ifany"))
 
 ```
 
@@ -339,7 +375,9 @@ knitr::kable( table(df$Method, df$Response, useNA="ifany"))
 # relevant question: q47
 
 responses <- get_responses("47")
-pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+pander( table( df %>% group_by(Region), useNA="ifany" ) )
+# pander( table(responses, useNA="ifany"))
 
 ```
 
@@ -352,7 +390,9 @@ pander( table(responses, useNA="ifany"))
 # relevant question: q48
 
 responses <- get_responses("48")
-pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+pander( table( df %>% group_by(Region), useNA="ifany" ) )
+# pander( table(responses, useNA="ifany"))
 
 ```
 
@@ -367,7 +407,9 @@ pander( table(responses, useNA="ifany"))
 # relevant question: q34
 
 responses <- get_responses("34")
-knitr::kable( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+knitr::kable( table( df %>% group_by(Region), useNA="ifany" ) )
+# knitr::kable( table(responses, useNA="ifany"))
 
 ```
 
@@ -379,6 +421,7 @@ knitr::kable( table(responses, useNA="ifany"))
 
 responses <- get_responses("34b")
 colnames(responses) <- c("Selection", "Other")
+
 knitr::kable( table(responses$Selection, useNA="ifany"))
 knitr::kable( table(responses$Other, useNA="ifany"))
 
@@ -486,7 +529,9 @@ ggplot( df %>%
 # relevant question: q55b
 
 responses <- get_responses("55b")
-pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+pander( table( df %>% group_by(Region), useNA="ifany" ) )
+# pander( table(responses, useNA="ifany"))
 
 ```
 

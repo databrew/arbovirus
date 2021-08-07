@@ -2,7 +2,7 @@
 # commented out all attributes(data)$variable.labels settings to simplify things
 # if there's a good reason to use these labels, speak up!
 
-data <- read.csv("../data/survey_375147_R_data_file.csv", quote = "'\"", na.strings=c("", "\"\""), stringsAsFactors=FALSE, fileEncoding="UTF-8-BOM")
+data <- read.csv("data/survey_375147_R_data_file.csv", quote = "'\"", na.strings=c("", "\"\""), stringsAsFactors=FALSE, fileEncoding="UTF-8-BOM")
 
 # LimeSurvey Field type: F
 data[, 1] <- as.numeric(data[, 1])
