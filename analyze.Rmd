@@ -41,8 +41,8 @@ make_colors <- function(n, seed = 123){
 }
 ggplot2::theme_set(theme_bw())
 
-# get the survey results, as processed by WHO script (lightly edited) 
-# and then modified by adding WHO region info :
+# get the survey results: processed by WHO script (lightly edited),
+# then WHO regions added
 
 if( file.exists("data/data.RData" )){
   load("data/data.RData")
@@ -50,7 +50,7 @@ if( file.exists("data/data.RData" )){
   source("misc/survey_375147_R_syntax_file.R")
   n_countries <- length( data$SI01 )
   who_regions <- read_excel("data/Regions_Countries.xlsx")
-  region <- character(length=n_countries)
+  region <- character( length=n_countries )
   for(i in 1:n_countries){
     idx <- which( who_regions$Country == data$SI01[i] )
     if( length(idx) > 0 ){
@@ -78,6 +78,8 @@ get_responses <- function( question_number ){
     colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
     # replace square brackets with spaces, then trim whitespace:
     # colnames( responses ) <- trimws( gsub("\\[|\\]", " ",dict$Subquestion[idx]), which="both")
+  } else{
+    colnames( responses ) <- "Response"
   }
   return( responses )
 }
@@ -127,11 +129,17 @@ ggplot(data = pd,
 
 ```{r}
 
-# relevant questions: q11, q11b
+# relevant question: q11
 
 responses <- get_responses("11")
-df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-pander( table( df %>% group_by(Region), useNA="ifany" ) )
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n)
+regulartable( df ) %>%
+  colformat_num( na_str="-" )
+# pander( table( df %>% group_by(Region), useNA="ifany" ) )
 
 ```
 
@@ -139,17 +147,17 @@ pander( table( df %>% group_by(Region), useNA="ifany" ) )
 
 ```{r}
 
+# relevant question: q11b
+
 responses <- get_responses("11b")
-responses <- cbind( Region = data$Region, responses)
-# summary( responses )
-df <- responses %>% 
-  pivot_longer(!Region, names_to="Arbovirus", values_to="Response")
-tab <- df %>% 
+df <- cbind( Region = data$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
   group_by(Region, Arbovirus, Response) %>% 
-  tally %>% 
+  tally
+tab <- df %>% 
   pivot_wider( names_from=Response, values_from=n) %>% 
   drop_na(Region)
-colnames(tab) <- str_to_sentence( gsub("Mandatory reporting of ","",colnames(tab)) )
+colnames(tab) <- str_to_sentence( gsub( "Mandatory reporting of ", "", colnames(tab) ) )
 tab <- tab %>% 
   relocate("Confirmed cases only", .after="All suspect cases") %>%
   rename("No answer"=Na)
@@ -159,11 +167,8 @@ tab %>%
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=6*(1:4)) %>% 
   colformat_num( na_str = "-" ) %>%
-  autofit()
+  fix_border_issues() 
 
-df <- df %>% 
-  group_by(Arbovirus, Response) %>% 
-  tally
 ggplot(df, aes(x=Response, y=n, fill=Response)) + 
   geom_col() + 
   facet_wrap(~Arbovirus) +
@@ -191,9 +196,19 @@ ggplot(df, aes(x=Response, y=n, fill=Response)) +
 responses <- get_responses("5")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
-df <- responses %>% 
-  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-pander( table( df$Arbovirus, df$Response, useNA="ifany") )
+df <- cbind( Region = data$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+  group_by(Region, Arbovirus, Response) %>% 
+  tally
+df %>% 
+  pivot_wider( names_from=Response, values_from=n) %>% 
+  drop_na(Region) %>% 
+  regulartable %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  hline(i=4*(1:4)) %>% 
+  colformat_num( na_str = "-" ) %>%
+  fix_border_issues() 
 
 # knitr::kable( table(other))
 
@@ -214,9 +229,13 @@ ggplot(data = df %>% filter(Response == 'Yes'),
 # relevant question: q12 (surveillance on humans)
 
 responses <- get_responses("12")
-df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-pander( table( df %>% group_by(Region), useNA="ifany" ) )
-# pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) 
+regulartable( df ) %>%
+  colformat_num( na_str="-" )
 
 ```
 
@@ -226,9 +245,13 @@ pander( table( df %>% group_by(Region), useNA="ifany" ) )
 # relevant question: q28 (surveillance on vectors)
 
 responses <- get_responses("28")
-df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-pander( table( df %>% group_by(Region), useNA="ifany" ) )
-# pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) 
+regulartable( df ) %>%
+  colformat_num( na_str="-" )
 
 ```
 
@@ -239,15 +262,21 @@ pander( table( df %>% group_by(Region), useNA="ifany" ) )
 # relevant question: q41 (surveillance on animals)
 
 responses <- get_responses("41")
-df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-pander( table( df %>% group_by(Region), useNA="ifany" ) )
-# pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) 
+regulartable( df ) %>%
+  colformat_num( na_str="-" )
 
 ```
 
 ### Training of surveillance personnel and clinicians?
 
 **Question 10** : Which training has been provided to the staff working on arboviral disease surveillance data
+
+**N.B. This table needs to be wider, with a header row giving region names; some of the other 3-way tables will probably look better that way. This is next on the to-do list!**
 
 ```{r}
 
@@ -256,22 +285,41 @@ pander( table( df %>% group_by(Region), useNA="ifany" ) )
 responses <- get_responses("10")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
-df <- responses %>% 
-  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response")
-knitr::kable( table( df$Arbovirus, df$Response, useNA="ifany") )
+df <- cbind( Region = data$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Training", values_to="Response") %>% 
+  group_by(Region, Training, Response) %>% 
+  tally
+df %>% 
+  pivot_wider( names_from=Response, values_from=n) %>% 
+  drop_na(Region) %>% 
+  regulartable %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  hline(i=5*(1:4)) %>% 
+  colformat_num( na_str = "-" ) %>%
+  fix_border_issues()
 
 ```
 
 
 **Question 24** : Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases?
 
+**The comments from those who responded "Yes" need to be added!**
+
 ```{r}
 # relevant question: q24
 
 responses <- get_responses("24")
-colnames(responses) <- c("Selection", "Comments")
-knitr::kable( table(responses$Selection, useNA="ifany"))
-# knitr::kable( table(responses$Comments, useNA="ifany"))
+colnames(responses) <- c("Response", "Comments")
+comments <- responses %>% select(Comments)
+responses <- responses %>% select(Response)
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n)
+regulartable( df ) %>%
+  colformat_num( na_str="-" )
 
 ```
 
