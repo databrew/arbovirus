@@ -486,9 +486,17 @@ df %>%
 # relevant question: q47
 
 responses <- get_responses("47")
-df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-pander( table( df %>% group_by(Region), useNA="ifany" ) )
-# pander( table(responses, useNA="ifany"))
+
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  adorn_totals()
+regulartable( df ) %>%
+  colformat_num( na_str="-" ) %>%
+  hline(i=4) %>% 
+  autofit()
 
 ```
 
@@ -501,9 +509,16 @@ pander( table( df %>% group_by(Region), useNA="ifany" ) )
 # relevant question: q48
 
 responses <- get_responses("48")
-df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-pander( table( df %>% group_by(Region), useNA="ifany" ) )
-# pander( table(responses, useNA="ifany"))
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  adorn_totals()
+regulartable( df ) %>%
+  colformat_num( na_str="-" ) %>%
+  hline(i=4) %>% 
+  autofit()
 
 ```
 
@@ -518,9 +533,17 @@ pander( table( df %>% group_by(Region), useNA="ifany" ) )
 # relevant question: q34
 
 responses <- get_responses("34")
-df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-knitr::kable( table( df %>% group_by(Region), useNA="ifany" ) )
-# knitr::kable( table(responses, useNA="ifany"))
+
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  adorn_totals()
+regulartable( df ) %>%
+  colformat_num( na_str="-" ) %>%
+  hline(i=4) %>% 
+  autofit()
 
 ```
 
@@ -533,8 +556,21 @@ knitr::kable( table( df %>% group_by(Region), useNA="ifany" ) )
 responses <- get_responses("34b")
 colnames(responses) <- c("Selection", "Other")
 
-knitr::kable( table(responses$Selection, useNA="ifany"))
-knitr::kable( table(responses$Other, useNA="ifany"))
+responses %>% 
+  select(Selection) %>%
+  drop_na() %>%
+  group_by(Selection) %>%
+  tally %>%
+  regulartable %>%
+  autofit
+
+responses %>% 
+  select(Other) %>%
+  drop_na() %>%
+  group_by(Other) %>%
+  tally %>%
+  regulartable %>%
+  autofit
 
 ```
 
@@ -640,9 +676,20 @@ ggplot( df %>%
 # relevant question: q55b
 
 responses <- get_responses("55b")
-df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-pander( table( df %>% group_by(Region), useNA="ifany" ) )
+# df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
+# pander( table( df %>% group_by(Region), useNA="ifany" ) )
 # pander( table(responses, useNA="ifany"))
+
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  adorn_totals()
+regulartable( df ) %>%
+  colformat_num( na_str="-" ) %>%
+  hline(i=4) %>% 
+  autofit()
 
 ```
 
@@ -656,8 +703,11 @@ responses <- get_responses("55c")
 df <- responses %>%
   pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response") %>%
   filter(Response=="Yes") %>%
-  droplevels()
-pander( table( df$Arbovirus, df$Response, useNA="ifany") )
+  droplevels() %>% 
+  group_by( Arbovirus ) %>% 
+  tally
+regulartable( df ) %>% 
+  autofit()
 
 ```
 
