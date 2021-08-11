@@ -374,28 +374,40 @@ df %>%
 
 ### Laboratory tests available
 
-**Question 17** :  Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes`summarise()` has grouped output by 'Arbovirus'. You can override using the `.groups` argument.
+**Question 17** :  Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes
 
 ```{r}
 
 # relevant question: q17
 
 responses <- get_responses("17")
-df <- responses %>%
-  pivot_longer(cols=colnames(responses), names_to="Testing", values_to="Response")
+df <- cbind( Region = data$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Testing", values_to="Response")
 new_cols <- matrix( unlist( strsplit(df$Testing, "\\]\\[") ), ncol=2, byrow=T)
 df <- df %>% 
   mutate(Arbovirus = new_cols[,1], Testing = new_cols[,2])
 df$Response <- as.numeric( df$Response)
 df <- df %>% 
-  group_by(Arbovirus, Testing) %>% 
+  group_by(Region, Arbovirus, Testing) %>% 
   summarize(Total = sum(Response, na.rm=T))
 df$Arbovirus <- factor( df$Arbovirus )
 df$Testing <- factor( df$Testing )
-mat <- matrix( data=df$Total, ncol=length(levels(df$Arbovirus)), byrow=F)
-colnames( mat ) <- levels( df$Arbovirus )
-rownames( mat ) <- levels( df$Testing )
-knitr::kable( mat )
+
+df %>% 
+  pivot_wider(names_from=Testing, values_from=Total) %>% 
+  drop_na(Region) %>% 
+  regulartable %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  #hline(i=8) %>% 
+  colformat_num( na_str = "-" ) %>%
+  fix_border_issues() %>%
+  autofit()
+
+# mat <- matrix( data=df$Total, ncol=length(levels(df$Arbovirus)), byrow=F)
+# colnames( mat ) <- levels( df$Arbovirus )
+# rownames( mat ) <- levels( df$Testing )
+# knitr::kable( mat )
 
 ggplot(df, aes(x=Testing, y=Total, fill=Testing)) + 
   geom_col() + 
