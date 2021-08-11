@@ -433,9 +433,6 @@ ggplot(df, aes(x=Testing, y=Total, fill=Testing)) +
 # relevant question: q6
 
 responses <- get_responses("6")
-# df <- data.frame(Region = data$Region, Response = responses) %>% drop_na(Region)
-# knitr::kable( table( df %>% group_by(Region), useNA="ifany" ) )
-# knitr::kable( table(responses, useNA="ifany"))
 
 df <- data.frame(Region = data$Region, Response = responses) %>% 
   drop_na(Region) %>% 
@@ -460,11 +457,23 @@ regulartable( df ) %>%
 
 responses <- get_responses("35")
 other <- responses %>% select(Other)
-df <- responses %>% 
-  select(-Other) %>%
-  pivot_longer(cols=colnames(responses)[1:5], names_to="Method", values_to="Response")
+responses <- responses %>% select(-Other) 
 
-knitr::kable( table(df$Method, df$Response, useNA="ifany"))
+df <- cbind( Region = data$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Method", values_to="Response") %>% 
+  group_by(Region, Method, Response) %>% 
+  tally 
+
+df %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  drop_na(Region) %>% 
+  regulartable %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  hline(i=6*(1:4)) %>% 
+  colformat_num( na_str = "-" ) %>%
+  fix_border_issues() %>%
+  autofit()
 
 ```
 
