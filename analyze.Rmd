@@ -120,7 +120,44 @@ ggplot(data = pd,
        title = 'Survey entries per country')
 ```
 
-\newpage
+## Missing questions 
+
+TO DO:
+
+- Only count subquestions as missing if they should have been answered!!
+- Improve the presentation!
+
+
+```{r}
+
+idx <- c( which( is.na( dict$`Question number` )),
+          which ( grepl('filecount', dict$`Question number`) ))
+questions <- dict$`Question number`[-idx]
+idx <- which( questions == "1" )
+questions <- unique( questions[ idx:length(questions)] )
+countries <- as.character( data$SI01 )
+
+for(i in 1:nrow(data)){
+  
+  missing <- character()
+  country <- countries[i]
+  
+  if( !is.na(country) & country != "Iceland"){
+  for(j in 1:length(questions)){
+    question <- questions[j]
+    idx <- which( dict$`Question number` == question )
+    if( all( is.na( data[i, idx] ) ) ){
+      missing <- c( missing, question )
+    }
+  }
+
+  if( length( missing ) > 0 ){
+    cat( paste( country, ":", paste(missing, collapse=", "), "\n") )
+  }
+  }
+}
+
+```
 
 # Data content
 
@@ -169,7 +206,7 @@ ggplot( df,
 
 ```
 
-\newpage
+ 
 
 #### Question 11b 
 
@@ -229,7 +266,7 @@ ggplot(df, aes(x=Response, y=n, fill=Response)) +
 
 ```
 
-\newpage 
+  
 
 ###  History of any arbovirus circulation since 2000 
 
@@ -272,7 +309,7 @@ ggplot(data = df %>% filter(Response == 'Yes'),
 
 ```
 
-\newpage
+ 
 
 ###  Conducting surveillance on humans,  vectors, and animals
 
@@ -341,7 +378,7 @@ regulartable( df ) %>%
 
 ```
 
-\newpage 
+  
 
 ### Training of surveillance personnel and clinicians
 
@@ -399,7 +436,7 @@ regulartable( df ) %>%
 
 ```
 
-\newpage 
+  
 
 ## Laboratory diagnostic capacity indicators
 
@@ -432,7 +469,7 @@ df %>%
 
 ```
 
-\newpage
+ 
 
 ### Laboratory tests available
 
@@ -481,7 +518,7 @@ ggplot(df, aes(x=Testing, y=Total, fill=Testing)) +
 
 ```
 
-\newpage 
+  
 
 ## Response capacity indicators
 
@@ -510,7 +547,7 @@ regulartable( df ) %>%
 
 ```
 
-\newpage 
+  
 
 ### Vector control method employed
 
@@ -544,7 +581,7 @@ df %>%
 
 ```
 
-\newpage 
+  
 
 ### Surveillance and response committee exists
 
@@ -595,7 +632,7 @@ regulartable( df ) %>%
 
 ```
 
-\newpage 
+  
 
 ## Epidemiologic risk data
 
