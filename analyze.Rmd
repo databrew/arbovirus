@@ -3,8 +3,9 @@ title: "WHO Global Arbovirus Survey"
 author: "Data integrity report"
 date: "`r format(Sys.time(), '%Y %B %d')`"
 output:
-  html_document: default
-  pdf_document: default
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -60,7 +61,8 @@ if( file.exists("data/data.RData" )){
       region[i] <- NA
     }
   }
-  data <- data %>% mutate( Region = factor(region), .after=SI01 )
+  # Region needs to be the last column to maintain consistency between data and dictionary!
+  data <- data %>% mutate( Region = factor(region) )
   save(data, file="data/data.RData")
 }
 
@@ -75,10 +77,8 @@ get_responses <- function( question_number ){
   var_names <- dict$`Variable name`[idx]
   responses <- data %>% select( all_of(var_names) )
   if( !is.na(dict$Subquestion[ idx[1] ]) ){
-    # remove square brackets at beginning and end, then rename:
+    # remove square brackets at beginning and end, then rename columns:
     colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
-    # replace square brackets with spaces, then trim whitespace:
-    # colnames( responses ) <- trimws( gsub("\\[|\\]", " ",dict$Subquestion[idx]), which="both")
   } else{
     colnames( responses ) <- "Response"
   }
@@ -118,45 +118,6 @@ ggplot(data = pd,
             size = 7) +
   labs(y = 'Entries',
        title = 'Survey entries per country')
-```
-
-## Missing questions 
-
-TO DO:
-
-- Only count subquestions as missing if they should have been answered!!
-- Improve the presentation!
-
-
-```{r}
-
-idx <- c( which( is.na( dict$`Question number` )),
-          which ( grepl('filecount', dict$`Question number`) ))
-questions <- dict$`Question number`[-idx]
-idx <- which( questions == "1" )
-questions <- unique( questions[ idx:length(questions)] )
-countries <- as.character( data$SI01 )
-
-for(i in 1:nrow(data)){
-  
-  missing <- character()
-  country <- countries[i]
-  
-  if( !is.na(country) & country != "Iceland"){
-  for(j in 1:length(questions)){
-    question <- questions[j]
-    idx <- which( dict$`Question number` == question )
-    if( all( is.na( data[i, idx] ) ) ){
-      missing <- c( missing, question )
-    }
-  }
-
-  if( length( missing ) > 0 ){
-    cat( paste( country, ":", paste(missing, collapse=", "), "\n") )
-  }
-  }
-}
-
 ```
 
 # Data content
@@ -895,13 +856,224 @@ ggplot( df,
                     values = make_colors(length(unique(df$Type))))
 ```
 
-
 Comments: 
 
 - India is not shown, as India's case/death counts are an order of magnitude larger than other countries'.
-
 
 To do:
 
 - Clean up free text responses to questions 5 and 10
 - The comments from those who responded "Yes" to question 24 need to be added
+
+# Missingness analysis 
+
+## Missing questions 
+
+```{r}
+
+# Handling special questions tediously seems unavoidable, hence some of the ghastly code below! 
+
+idx <- c( which( is.na( dict$`Question number` )),
+          which( grepl('upload', dict$`Type of variable`)),
+          which ( grepl('filecount', dict$`Question number`) ))
+all_questions <- dict$`Question number`[-idx]
+idx <- which( all_questions == "1" )
+all_questions <- unique( all_questions[ idx:length( all_questions )] )
+n_questions <- length( all_questions )
+
+# questions that only appear when triggered:
+special_questions <- c("6b","7b","11b","11c","12b","12c","28c","28d","28e","34b","34c","35b","37b","41b","41c","42b","43b","43c","43d","43e","55c","55d")
+idx <- which( all_questions %in% special_questions )
+standard_questions <- all_questions[-idx]
+
+type <- rep("standard", n_questions )
+type[ which( all_questions %in% special_questions ) ] <- "special"
+status <- ifelse( type == "standard", "answered", "not shown")
+
+n_countries <- length( data$SI01 )
+summary <- data.frame( Country = rep( data$SI01, rep(n_questions, n_countries )), # country name
+                      Question = rep( all_questions, n_countries ), # question name
+                      Type = rep( type, n_countries ), # standard or special
+                      Status = rep( status, n_countries) # answered, skipped, or not shown
+                      ) 
+
+update_special <- function( country_idx, question ){
+  idx <- which( dict$`Question number` == question )
+  summary_idx <-  offset + which( all_questions == question )
+  if( all( is.na( data[country_idx, idx] ))){
+    summary$Status[ summary_idx ] <- "skipped"
+  } else{
+    summary$Status[ summary_idx ] <- "answered"
+  }
+}
+
+for(i in 1:nrow(data)){
+
+  country <- data$SI01[i]
+  offset <- n_questions*(i-1)
+  missing <- character()
+
+  if( !is.na(country) & country != "Iceland"){
+    
+    for(j in 1:length(standard_questions)){
+      question <- standard_questions[j] 
+      idx <- which( dict$`Question number` == question )
+      if( all( is.na( data[i, idx] ) ) ){
+        summary_idx <-  offset + which( all_questions == question )
+        summary$Status[ summary_idx ] <- "skipped"
+        missing <- c( missing, question )
+      } else { 
+        
+        if( question == 6 ){
+          # either Yes option triggers 6b
+          if( data[i,idx] %in% levels( data[,idx] )[1:2] ){
+            update_special(i, "6b")
+          }
+        }
+        
+        if( question == 7 ){
+          # choosing "Integrated in another programme" triggers 7b, other choices do not
+          if( data[i,idx] == levels( data[,idx] )[2] ){
+            update_special(i, "7b")
+          }
+        }
+        
+        if( question == 11 ){
+          # answering Yes triggers 11b, No does not
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            subidx <- which( dict$`Question number` == "11b" )
+            summary_idx <-  offset + which( all_questions == "11b" )
+            if( all( is.na( data[i, subidx] ))){
+              summary$Status[ summary_idx ] <- "skipped"
+              missing <- c( missing, "11b" )
+            } else{
+              summary$Status[ summary_idx ] <- "answered"
+              if( !is.na( data[i, subidx[ length(subidx)]] ) ){
+                summary_idx <-  offset + which( all_questions == "11c" )
+                subidx <- which( dict$`Question number` == "11c" )
+                if( all( is.na( data[i, subidx] ))){
+                  summary$Status[ summary_idx ] <- "skipped"
+                  missing <- c( missing, "11c" )
+                } else{
+                  summary$Status[ summary_idx ] <- "answered"
+                }
+              }
+            }
+          }
+        } 
+        
+        if( question == 12 ){
+          # Yes triggers 12b, 12c, and 12d (file upload)
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            update_special(i, "12b")
+            update_special(i, "12c")
+          }
+        } 
+        
+        if( question == 28 ){
+          # choosing Yes triggers 28b (file upload), 28c, 28d, 28e
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            update_special(i, "28c")
+            update_special(i, "28d")
+            update_special(i, "28e")
+          }
+        } 
+        
+        if( question == 34 ){
+          # Yes, only Aedes aegypti triggers 34b
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            update_special(i, "34b")
+          } 
+          # Yes, only Aedes albopictus triggers 34c
+          if( data[i,idx] == levels( data[,idx] )[2] ){
+            update_special(i, "34c")
+          }
+          # Yes, both triggers both 34b and 34c
+          if( data[i,idx] == levels( data[,idx] )[3] ){
+            update_special(i, "34b")
+            update_special(i, "34c")
+          }
+        } 
+        
+        if( question == 35 ){
+          # choosing None triggers 35b
+          if( !is.na(data[i, idx[6]]) & data[i, idx[6]] == "Yes"){
+            update_special(i, "35b")
+          }
+        } 
+        
+        if( question == 37 ){
+          # choosing "Yes, have a threshold that does not require concurrent human cases"
+          # triggers 37b ; no other choice does
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            update_special(i, "37b")
+          }
+        } 
+        
+        if( question == 41 ){
+          # choosing "Yes" triggers 41b, 41c, 41d (file upload)
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            update_special(i, "41b")
+            update_special(i, "41c")
+          }
+        } 
+        
+        if( question == 42 ){
+          # choosing "Yes" triggers 42b, 42c (file upload)
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            update_special(i, "42b")
+          }
+        } 
+        
+        if( question == 43 ){
+          # choosing "Yes" triggers 43b, 43c, 43d, 43e
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            update_special(i, "43b")
+            update_special(i, "43c")
+            update_special(i, "43d")
+            update_special(i, "43e")
+          }
+        } 
+        
+        if( question == "55b" ){
+          # answering "Yes" to 55b triggers 55c and 55d
+          if( data[i,idx] == levels( data[,idx] )[1] ){
+            update_special(i, "55c")
+            update_special(i, "55d")
+          }
+        }
+      }
+    }
+  }
+}
+
+count_by_country <- summary %>% 
+  group_by(Country,Status) %>% 
+  tally( name="Number skipped") %>% 
+  filter(Status=="skipped") %>% 
+  select(-Status)
+
+list_by_country <- summary %>% 
+  group_by(Country,Question) %>% 
+  filter(Status=="skipped") %>%
+  select(Country,Question) %>% 
+  pivot_wider(names_from=Country, 
+              values_from=Question, 
+              values_fn=list) 
+
+countries <- names( list_by_country)
+skipped <- character( length = length(countries))
+
+for(i in 1:length(countries)){
+  country <- countries[i]
+  skipped[i] <- paste( list_by_country[[country]][[1]], collapse = ", ")
+}
+
+df <- data.frame( Country = countries, Skipped = skipped ) %>% 
+  arrange( Country ) %>%
+  rename("Skipped question(s)" = Skipped)
+df <- inner_join( count_by_country, df, by="Country")
+regulartable( df ) %>%
+  autofit
+
+```
