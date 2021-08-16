@@ -4,8 +4,10 @@ author: "Data integrity report"
 date: "`r format(Sys.time(), '%Y %B %d')`"
 output:
   html_document:
-    toc: true
-    toc_float: true
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -22,6 +24,8 @@ opts_chunk$set(comment = NA,
                fig.path = 'figures/')
 options(scipen = '999')
 ```
+
+\newpage
 
 # Data structure and quantity
 
@@ -120,6 +124,8 @@ ggplot(data = pd,
        title = 'Survey entries per country')
 ```
 
+\newpage 
+
 # Data content
 
 ## Surveillance capacity indicators
@@ -167,7 +173,7 @@ ggplot( df,
 
 ```
 
- 
+\newpage
 
 #### Question 11b 
 
@@ -195,6 +201,7 @@ tab %>%
   hline(i=6*(1:4)) %>% 
   colformat_num(na_str = "-") %>%
   fix_border_issues() %>%
+  # width( j=2, width=2 )
   autofit() 
 
 ggplot(df, aes(x=Response, y=n, fill=Response)) + 
@@ -227,7 +234,7 @@ ggplot(df, aes(x=Response, y=n, fill=Response)) +
 
 ```
 
-  
+\newpage  
 
 ###  History of any arbovirus circulation since 2000 
 
@@ -236,6 +243,7 @@ ggplot(df, aes(x=Response, y=n, fill=Response)) +
 Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission
 
 ```{r}
+# fig.height=3.5}
 
 # relevant question: q5
 
@@ -270,7 +278,7 @@ ggplot(data = df %>% filter(Response == 'Yes'),
 
 ```
 
- 
+\newpage
 
 ###  Conducting surveillance on humans,  vectors, and animals
 
@@ -339,7 +347,7 @@ regulartable( df ) %>%
 
 ```
 
-  
+\newpage
 
 ### Training of surveillance personnel and clinicians
 
@@ -367,10 +375,12 @@ df %>%
   hline(i=5*(1:4)) %>% 
   colformat_num( na_str = "-" ) %>%
   fix_border_issues %>%
+  # width( j=2, width=3 )
   autofit 
 
 ```
 
+\newpage 
 
 #### Question 24 
 
@@ -426,11 +436,12 @@ df %>%
   hline(i=8) %>% 
   colformat_num( na_str = "-" ) %>%
   fix_border_issues %>%
+  # width( j=2, width=1)
   autofit 
 
 ```
 
- 
+\newpage
 
 ### Laboratory tests available
 
@@ -438,7 +449,8 @@ df %>%
 
 Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes
 
-```{r}
+```{r} 
+# fig.height=8}
 
 # relevant question: q17
 
@@ -474,12 +486,13 @@ ggplot(df, aes(x=Testing, y=Total, fill=Testing)) +
         axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()) +
+  guides(fill = guide_legend(ncol = 2)) + 
   scale_fill_manual(name = '',
                     values = make_colors(length(unique(df$Testing))))
 
 ```
 
-  
+\newpage
 
 ## Response capacity indicators
 
@@ -504,11 +517,12 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
 regulartable( df ) %>%
   colformat_num( na_str="-" ) %>%
   hline(i=4) %>% 
+  # width( j=2:3, width=1.5 )
   autofit 
 
 ```
 
-  
+\newpage  
 
 ### Vector control method employed
 
@@ -538,11 +552,12 @@ df %>%
   hline(i=6*(1:4)) %>% 
   colformat_num( na_str = "-" ) %>%
   fix_border_issues %>%
+  # width( j=2, width=3 )
   autofit 
 
 ```
 
-  
+\newpage
 
 ### Surveillance and response committee exists
 
@@ -622,6 +637,8 @@ regulartable( df ) %>%
 
 ```
 
+\newpage 
+
 #### Question 34b 
 
 Please describe the potential public health threat from Aedes aegypti in your country
@@ -648,6 +665,7 @@ other <- responses %>%
   rename("Response" = "Other")
 
 regulartable( rbind(selection,other) ) %>%
+  # width( j=1, width=5 )
   autofit 
 
 ```
@@ -678,6 +696,7 @@ other <- responses %>%
   rename("Response" = "Other")
 
 regulartable( rbind(selection,other) ) %>%
+  # width( j=1, width=5 )
   autofit 
 
 ```
@@ -689,7 +708,8 @@ regulartable( rbind(selection,other) ) %>%
 
 Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available)
 
-```{r, fig.height = 12}
+```{r, fig.height = 12} 
+# fig.width = 9.5}
 
 # relevant question: q55
 
@@ -740,6 +760,8 @@ ggplot( df %>%
 ```
 
 ```{r, fig.height = 12}
+#fig.width = 9.5}
+
 ggplot( df %>% 
           filter(Country!="India") %>% 
           filter(Type=="Deaths") %>%
@@ -765,6 +787,7 @@ ggplot( df %>%
        y = 'Deaths')
 ```
 
+\newpage 
 
 #### Question 55b 
 
@@ -818,7 +841,8 @@ regulartable( df ) %>%
 
 Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019
 
-```{r, fig.height = 12}
+```{r, fig.height = 12} 
+# fig.width = 9.5}
 
 # relevant question: q56
 
@@ -854,16 +878,16 @@ ggplot( df,
   labs(x = 'Country') +
   scale_fill_manual(name = '',
                     values = make_colors(length(unique(df$Type))))
+
+# To do:
+# - Clean up free text responses to questions 5 and 10
+# - The comments from those who responded "Yes" to question 24 need to be added
+
 ```
 
 Comments: 
 
 - India is not shown, as India's case/death counts are an order of magnitude larger than other countries'.
-
-To do:
-
-- Clean up free text responses to questions 5 and 10
-- The comments from those who responded "Yes" to question 24 need to be added
 
 # Missingness analysis 
 
@@ -1074,6 +1098,7 @@ df <- data.frame( Country = countries, Skipped = skipped ) %>%
   rename("Skipped question(s)" = Skipped)
 df <- inner_join( count_by_country, df, by="Country")
 regulartable( df ) %>%
+  # width( j=3, width=3 )
   autofit
 
 ```
