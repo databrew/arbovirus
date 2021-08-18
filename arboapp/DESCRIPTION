@@ -1,0 +1,39 @@
+Package: arboapp
+Title: WHO Arbovirus surveillance app
+Version: 0.0.0.9000
+Authors@R: person('Joe', 'Brew', email = 'joe@databrew.cc', role = c('cre', 'aut'))
+Description: A web application of the World Health Organization, built in cooperation with Databrew LLC
+License: MIT + file LICENSE
+Imports: 
+    attempt,
+    config (>= 0.3.1),
+    dplyr,
+    DT,
+    ggplot2,
+    glue,
+    golem (>= 0.3.1),
+    htmltools,
+    leaflet,
+    processx,
+    raster,
+    RColorBrewer,
+    readr,
+    rgeos,
+    shiny (>= 1.6.0),
+    sp,
+    thinkr,
+    tidyr
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+URL: https::/github.com/databrew/arbovirus
+BugReports: https::/github.com/databrew/arbovirus/issues
+Suggests: 
+    rmarkdown,
+    knitr,
+    spelling,
+    testthat (>= 3.0.0),
+    covr
+Config/testthat/edition: 3
+Language: en-US
+VignetteBuilder: knitr
