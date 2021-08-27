@@ -3,11 +3,11 @@ title: "WHO Global Arbovirus Survey"
 author: "Data integrity report"
 date: "`r format(Sys.time(), '%Y %B %d')`"
 output:
+  pdf_document:
+    toc: yes
   html_document:
     toc: yes
     toc_float: yes
-  pdf_document:
-    toc: yes
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -70,6 +70,10 @@ if( file.exists("data/data.RData" )){
   save(data, file="data/data.RData")
 }
 
+# Iceland is for testing purposes only; remove for analysis:
+data <- data %>%
+  filter( SI01 != "Iceland")
+
 # load data dictionary to facilitate processing survey results:
 dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
 
@@ -93,7 +97,9 @@ get_responses <- function( question_number ){
 
 ## Number of submissions
 
-There are `r nrow(data)` rows ; there are `r length(unique(data$SI01))` unique countries. Repeated countries:
+After excluding the entry for Iceland, there are `r nrow(data)` rows and 
+`r length(unique(na.omit(data$SI01)))` unique countries in the dataset.
+Repeated countries:
 ```{r echo=FALSE, message=FALSE}
 idx <- which( duplicated( data$SI01 ) )
 pander( as.vector(unique( data$SI01[idx] ) ) )
@@ -201,8 +207,8 @@ tab %>%
   hline(i=6*(1:4)) %>% 
   colformat_num(na_str = "-") %>%
   fix_border_issues() %>%
-  # width( j=2, width=2 )
-  autofit() 
+  width( j=2, width=2 )
+  # autofit() 
 
 ggplot(df, aes(x=Response, y=n, fill=Response)) + 
   geom_col() + 
@@ -375,8 +381,8 @@ df %>%
   hline(i=5*(1:4)) %>% 
   colformat_num( na_str = "-" ) %>%
   fix_border_issues %>%
-  # width( j=2, width=3 )
-  autofit 
+  width( j=2, width=3 )
+  # autofit 
 
 ```
 
@@ -407,8 +413,6 @@ regulartable( df ) %>%
 
 ```
 
-  
-
 ## Laboratory diagnostic capacity indicators
 
 ### Testing in outbreak vs non-outbreak settings
@@ -436,8 +440,8 @@ df %>%
   hline(i=8) %>% 
   colformat_num( na_str = "-" ) %>%
   fix_border_issues %>%
-  # width( j=2, width=1)
-  autofit 
+  width( j=2, width=1)
+  # autofit 
 
 ```
 
@@ -475,8 +479,8 @@ df %>%
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=5*(1:4)) %>% 
   colformat_num( na_str = "-" ) %>%
-  fix_border_issues %>%
-  autofit 
+  fix_border_issues # %>%
+  # autofit 
 
 ggplot(df, aes(x=Testing, y=Total, fill=Testing)) + 
   geom_col() + 
@@ -517,8 +521,8 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
 regulartable( df ) %>%
   colformat_num( na_str="-" ) %>%
   hline(i=4) %>% 
-  # width( j=2:3, width=1.5 )
-  autofit 
+  width( j=2:3, width=1.5 )
+  # autofit 
 
 ```
 
@@ -552,8 +556,8 @@ df %>%
   hline(i=6*(1:4)) %>% 
   colformat_num( na_str = "-" ) %>%
   fix_border_issues %>%
-  # width( j=2, width=3 )
-  autofit 
+  width( j=2, width=3 )
+  # autofit 
 
 ```
 
@@ -632,8 +636,8 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   adorn_totals()
 regulartable( df ) %>%
   colformat_num( na_str="-" ) %>%
-  hline(i=4) %>% 
-  autofit 
+  hline(i=4) # %>% 
+  # autofit 
 
 ```
 
@@ -665,8 +669,8 @@ other <- responses %>%
   rename("Response" = "Other")
 
 regulartable( rbind(selection,other) ) %>%
-  # width( j=1, width=5 )
-  autofit 
+  width( j=1, width=5 )
+  # autofit 
 
 ```
 
@@ -696,8 +700,8 @@ other <- responses %>%
   rename("Response" = "Other")
 
 regulartable( rbind(selection,other) ) %>%
-  # width( j=1, width=5 )
-  autofit 
+  width( j=1, width=5 )
+  # autofit 
 
 ```
 
@@ -937,7 +941,7 @@ for(i in 1:nrow(data)){
   offset <- n_questions*(i-1)
   missing <- character()
 
-  if( !is.na(country) & country != "Iceland"){
+  if( !is.na(country) ){
     
     for(j in 1:length(standard_questions)){
       question <- standard_questions[j] 
@@ -1098,7 +1102,7 @@ df <- data.frame( Country = countries, Skipped = skipped ) %>%
   rename("Skipped question(s)" = Skipped)
 df <- inner_join( count_by_country, df, by="Country")
 regulartable( df ) %>%
-  # width( j=3, width=3 )
-  autofit
+  width( j=3, width=3 )
+  # autofit
 
 ```
