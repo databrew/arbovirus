@@ -157,6 +157,7 @@ router <- make_router(
 #' @import golem
 #' @import leaflet
 #' @import ggplot2
+#' @import shiny.router
 #' @import dplyr
 #' @noRd
 
@@ -186,9 +187,9 @@ app_ui <- function(request) {
       ),
       
       # Footer
-      tags$div(class = 'footer',
-               p('Footer')
-      ),
+      # tags$div(class = 'footer',
+      #          p('Footer')
+      # ),
       
       # Important
       router$ui
@@ -234,6 +235,7 @@ golem_add_external_resources <- function(){
 #' @import dplyr
 #' @import leaflet
 #' @import ggplot2
+#' @import shiny.router
 #' @import readxl
 #' @import flextable
 #' @import stringr
