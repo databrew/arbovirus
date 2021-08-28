@@ -15,16 +15,6 @@ coverage](https://codecov.io/gh/databrew/arbovirus/branch/main/graph/badge.svg)]
 Organization, built in collaboration with [Databrew
 LLC](https://databrew.cc).
 
-## Installation
-
-You can install the development version from
-[GitHub](https://github.com/)
-with:
-
-``` r
-sudo su - -c "R -e \"devtools::install_github('databrew/arbovirus', subdir = 'arboapp')\"";
-```
-
 ## Developer instructions
 
 ### Setting up data
@@ -63,3 +53,25 @@ sudo su - -c "R -e \"devtools::install_github('databrew/arbovirus', subdir = 'ar
 
   - `cd` into `dev`  
   - Run `Rscript run_dev.R`
+
+## Installation
+
+You can install the development version from
+[GitHub](https://github.com/)
+with:
+
+``` r
+sudo su - -c "R -e \"devtools::install_github('databrew/arbovirus', subdir = 'arboapp')\"";
+```
+
+To deploy the latest version to a shiny server:
+
+  - Create an `arbo` directory in `/srv/shiny-server`
+  - `scp` the `data` and `misc` folders into that directory
+  - Grant writing permissions: `sudo chmod -R 777 arbo`
+  - Run the
+    below:
+
+<!-- end list -->
+
+    sudo systemctl stop shiny-server; sudo su - -c "R -e \"remove.packages('arboapp')\""; sudo su - -c "R -e \"devtools::install_github('databrew/arbovirus', subdir = 'arboapp')\""; sudo chmod -R 777 /usr/local/lib/R/site-library; sudo chmod -R 777 /usr/lib/R/site-library/; sudo chmod -R 777 /usr/lib/R/library; sudo systemctl restart shiny-server;
