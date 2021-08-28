@@ -12,17 +12,18 @@ suppressPackageStartupMessages({
   library(janitor)
   library(readr)
   library(shiny.router)
+  library(tidyverse)
 })
 
 message('Working directory is: ', getwd())
 
 
 ### !!! Adjust the path according to your locale machine
-source('R/pages/global_data.R')
-source('R/pages/regional_data.R')
-source('R/pages/country_level_data.R')
-source('R/pages/indicators.R')
-source('R/pages/about.R')
+# source('R/pages/global_data.R')
+# source('R/pages/regional_data.R')
+# source('R/pages/country_level_data.R')
+# source('R/pages/indicators.R')
+# source('R/pages/about.R')
 
 
 #' The application User-Interface
@@ -30,6 +31,120 @@ source('R/pages/about.R')
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
+
+######################## Global ###########################
+############## UI Global ######################
+global_page_ui <- tagList(
+  div(class = 'custom-container',
+      h1("Global Page"),
+      p("This is a Global page"),
+      textOutput('ServerTestGlobal')
+  )
+)
+
+
+
+############## SERVER Global ######################
+global_page_server <- function(input, output, session) {
+  output$ServerTestGlobal <- renderText({
+    '`Global` Server connected to the main'
+  })
+}
+
+
+######################## Regional ###########################
+############## UI Regional ######################
+regional_page_ui <- tagList(
+  div(class = 'custom-container',
+      h1("Regional Page"),
+      p("This is a regional page"),
+      textOutput('ServerTestRegional'),
+      fluidRow(
+        column(4,
+               selectInput(inputId = 'test',
+                           label = 'Test',
+                           choices = c('one', 'two', 'three', 'etc.'),
+                           width = '100%'
+               )
+        ),
+        column(8,
+               plotOutput('testPlot')
+        )
+      )
+  )
+)
+
+############## SERVER Regional ######################
+regional_page_server <- function(input, output, session) {
+  output$ServerTestRegional <- renderText({
+    '`regional` Server connected to the main'
+  })
+  
+  output$testPlot <- renderPlot({
+    iris %>%
+      ggplot(aes(x = Species, y = Sepal.Length)) +
+      geom_boxplot()
+  })
+}
+
+
+######################## Country ###########################
+############## UI Country ######################
+country_page_ui <- tagList(
+  div(class = 'custom-container',
+      h1("Country Page"),
+      p("This is a country page"),
+      textOutput('ServerTestCountry')
+  )
+)
+
+
+############## SERVER Country ######################
+country_page_server <- function(input, output, session) {
+  output$ServerTestCountry <- renderText({
+    '`Country` Server connected to the main'
+  })
+}
+
+
+######################## Indicators ###########################
+############## UI indicators ######################
+indicators_page_ui <- tagList(
+  div(class = 'custom-container',
+      h1("Indicators Page"),
+      p("This is a indicators page"),
+      textOutput('ServerTestIndicators')
+  )
+)
+
+
+############## SERVER indicators ######################
+indicators_page_server <- function(input, output, session) {
+  output$ServerTestIndicators <- renderText({
+    '`Indicators` Server connected to the main'
+  })
+}
+
+
+######################## About ###########################
+############## UI About ######################
+about_page_ui <- tagList(
+  div(class = 'custom-container',
+      h1("About Page"),
+      p("This is a about page"),
+      textOutput('ServerTestAbout')
+  )
+)
+
+
+
+############## SERVER About ######################
+about_page_server <- function(input, output, session) {
+  output$ServerTestAbout <- renderText({
+    '`About` Server connected to the main'
+  })
+}
+
 
 router <- make_router(
   route("/", global_page_ui, global_page_server),
@@ -65,9 +180,9 @@ app_ui <- function(request) {
       ),
       
       # Footer
-      # tags$div(class = 'footer',
-      #          p('Footer')
-      # ),
+      tags$div(class = 'footer',
+               p('Footer')
+      ),
       
       # Important
       router$ui
