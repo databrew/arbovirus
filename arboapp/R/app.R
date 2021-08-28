@@ -55,13 +55,18 @@ app_ui <- function(request) {
                 tags$li(a(href = '#', "Logout"))
         )
       ),
-      #Blue navbar
+      # Blue navbar
       tags$ul(class = 'blue-sub-nav',
         tags$li(a(href = route_link("/"), "Global Data")),
         tags$li(a(href = route_link("regional"), "Regional Data")),
         tags$li(a(href = route_link("country"), "Country Level Data")),
         tags$li(a(href = route_link("indicators"), "Indicators")),
         tags$li(a(href = route_link("about"), "About"))
+      ),
+      
+      # Footer
+      tags$div(class = 'footer',
+               p('Footer')
       ),
       
       # Important
