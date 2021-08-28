@@ -25,11 +25,6 @@ source('R/pages/indicators.R')
 source('R/pages/about.R')
 
 
-#' The application User-Interface
-#' @param request Internal parameter for `{shiny}`. 
-#'     DO NOT REMOVE.
-#' @import shiny
-#' @noRd
 
 router <- make_router(
   route("/", global_page_ui, global_page_server),
@@ -38,6 +33,17 @@ router <- make_router(
   route("indicators", indicators_page_ui, indicators_page_server),
   route("about", about_page_ui, about_page_server)
 )
+
+#' The application User-Interface
+#' @param request Internal parameter for `{shiny}`. 
+#'     DO NOT REMOVE.
+#' @import shiny
+#' @import shiny.router
+#' @import golem
+#' @import leaflet
+#' @import ggplot2
+#' @import dplyr
+#' @noRd
 
 app_ui <- function(request) {
   tagList(
