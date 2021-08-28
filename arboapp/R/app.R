@@ -1,3 +1,21 @@
+# Libraries
+suppressPackageStartupMessages({
+  library(shinyjs)
+  library(dplyr)
+  library(leaflet)
+  library(ggplot2)
+  library(readxl)
+  library(flextable)
+  library(stringr)
+  library(pander)
+  library(RColorBrewer)
+  library(janitor)
+  library(readr)
+})
+
+message('Working directory is: ', getwd())
+
+
 #' The application User-Interface
 #' @param request Internal parameter for `{shiny}`. 
 #'     DO NOT REMOVE.
@@ -46,8 +64,12 @@ golem_add_external_resources <- function(){
 #' @import shiny
 #' @noRd
 app_server <- function( input, output, session ) {
-  # Your application server logic 
+
+  # Load data
+  data <- load_data()
   
+  # load data dictionary to facilitate processing survey results:
+  dict <- load_dict()
 }
 
 # Function for actually running app
