@@ -69,3 +69,16 @@ get_responses <- function( question_number ){
   return( responses )
 }
 
+#' Make random colors palette
+#' @description Function for making colors
+#' @return A vector
+#' @noRd
+#' @import RColorBrewer
+make_colors <- function(n, seed = 123){
+  pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
+  set.seed(seed)
+  pal <- sample(pal, length(pal))
+  out <- colorRampPalette(pal)(n)
+  return(out)
+}
+

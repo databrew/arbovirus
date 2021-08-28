@@ -7,21 +7,32 @@
 #' @import sp
 make_map <- function(df,
                      pal = 'YlGnBu',
+                     qualitative = FALSE,
                      opacity = 0.8){
- load('../data/world_shp.rda')
- df <- tibble(country = c('France', 'Germany', 'Spain'),
-              value = c(1,2,3))
+  
+ # load('../data/world_shp.rda')
+ # df <- tibble(country = c('France', 'Germany', 'Spain'),
+ #              value = c(1,2,3))
+ # df$value <- c('A', 'b', 'CCC')
  
  # Join shapefile and map data
  shp <- world_shp
  shp@data <- left_join(shp@data, df)
  
- pal_fun <- colorNumeric(palette=pal, domain=shp@data$value, na.color="transparent")
+ # Define color palette and values to show in tooltip
+ if(qualitative){
+   pal <- 'Set1'
+   pal_fun <- colorFactor(palette = pal, domain=shp@data$value, na.color="transparent")
+   vals <- shp@data$value
+ } else {
+   pal_fun <- colorNumeric(palette=pal, domain=shp@data$value, na.color="transparent")
+   vals <- round(shp@data$value, 2)
+ }
  
  # Prepare the text for tooltips:
- mytext <- paste(
+ tool_tip <- paste(
    "Country: ", shp@data$country,"<br/>", 
-   "Value: ", round(shp@data$value, 2), 
+   "Value: ", vals, 
    sep="") %>%
    lapply(htmltools::HTML)
  
@@ -33,17 +44,14 @@ make_map <- function(df,
      fillOpacity = opacity, 
      color="white", 
      weight=0.3,
-     label = mytext,
+     label = tool_tip,
      labelOptions = labelOptions( 
        style = list("font-weight" = "normal", padding = "3px 8px"), 
        textsize = "13px", 
        direction = "auto"
      )
    ) %>%
-   addLegend( pal=mypalette, values=~value, opacity=0.9, title = " ", position = "bottomleft" ) %>%
+   addLegend( pal=pal_fun, values=~value, opacity=0.9, title = " ", position = "bottomleft" ) %>%
    setView( lat=10, lng=0 , zoom=2) 
- 
- 
  m
-
 }
