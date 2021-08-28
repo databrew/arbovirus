@@ -1,5 +1,4 @@
 #' The application User-Interface
-#' 
 #' @param request Internal parameter for `{shiny}`. 
 #'     DO NOT REMOVE.
 #' @import shiny
@@ -28,7 +27,7 @@ golem_add_external_resources <- function(){
   add_resource_path(
     'www', app_sys('app/www')
   )
- 
+  
   tags$head(
     favicon(),
     bundle_resources(
@@ -40,3 +39,22 @@ golem_add_external_resources <- function(){
   )
 }
 
+#' The application server-side
+#' 
+#' @param input,output,session Internal parameters for {shiny}. 
+#'     DO NOT REMOVE.
+#' @import shiny
+#' @noRd
+app_server <- function( input, output, session ) {
+  # Your application server logic 
+  
+}
+
+# Function for actually running app
+app <- function(){
+  # Detect the system. If on AWS, don't launch browswer
+  is_aws <- grepl('aws', tolower(Sys.info()['release']))
+  shinyApp(ui = app_ui,
+           server = app_server,
+           options = list('launch.browswer' = !is_aws))
+}
