@@ -69,6 +69,22 @@ get_responses <- function( question_number ){
   return( responses )
 }
 
+#' Questions standardizer
+#' @description Function for retrieving questions
+#' @return A character vector
+#' @noRd
+get_questions <- function( ){
+  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+  idx <- c( which( is.na( dict$`Question number` )),
+            which( grepl('upload', dict$`Type of variable`)),
+            which ( grepl('filecount', dict$`Question number`) ))
+  questions <- dict$`Question number`[-idx]
+  idx <- which( questions == "5" )
+  questions <- unique( questions[ idx:length( questions )] )
+  return( questions )
+}
+
+
 #' Make random colors palette
 #' @description Function for making colors
 #' @return A vector

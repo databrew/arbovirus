@@ -55,15 +55,18 @@ regional_page_ui <- tagList(
       p("This is a regional page"),
       textOutput('ServerTestRegional'),
       fluidRow(
+        # column(4,
+        #        selectInput(inputId = 'test',
+        #                    label = 'Select a region',
+        #                    choices = c('one', 'two', 'three', 'four'),
+        #                    width = '100%'
+        #        )
+        # ),
+        # column(8,
+        #        plotOutput('testPlot')
+        # ),
         column(4,
-               selectInput(inputId = 'test',
-                           label = 'Test',
-                           choices = c('one', 'two', 'three', 'etc.'),
-                           width = '100%'
-               )
-        ),
-        column(8,
-               plotOutput('testPlot')
+              uiOutput("select_question")
         )
       )
   )
@@ -71,15 +74,22 @@ regional_page_ui <- tagList(
 
 ############## SERVER Regional ######################
 regional_page_server <- function(input, output, session) {
+  
+  questions <- get_questions( )
+  
+  output$select_question <- renderUI({
+    selectInput("select", label = h3("Select a question"), choices = questions )
+  })
+  
   output$ServerTestRegional <- renderText({
     '`regional` Server connected to the main'
   })
   
-  output$testPlot <- renderPlot({
-    iris %>%
-      ggplot(aes(x = Species, y = Sepal.Length)) +
-      geom_boxplot()
-  })
+  # output$testPlot <- renderPlot({
+  #     # ggplot(aes(x = Species, y = Sepal.Length)) +
+  #     ggplot() +
+  #     labs( title = input$test ) 
+  # })
 }
 
 
@@ -252,6 +262,7 @@ app_server <- function( input, output, session ) {
   
   # load data dictionary to facilitate processing survey results:
   dict <- load_dict()
+
 }
 
 # Function for actually running app
