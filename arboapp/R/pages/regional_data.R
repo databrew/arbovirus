@@ -1,5 +1,5 @@
 library(shiny)
-library(tidyverse)
+library(dplyr)
 library(ggplot2)
 
 ############## UI ######################
@@ -25,13 +25,16 @@ regional_page_ui <- tagList(
 
 ############## SERVER ######################
 regional_page_server <- function(input, output, session) {
+  
+  require(shiny)
+  require(dplyr)
+  require(ggplot2)
+  
   output$ServerTestRegional <- renderText({
     '`regional` Server connected to the main'
   })
   
   output$testPlot <- renderPlot({
-    iris %>%
-      ggplot(aes(x = Species, y = Sepal.Length)) +
-        geom_boxplot()
+    barplot(1:10)
   })
 }
