@@ -219,7 +219,9 @@ golem_add_external_resources <- function(){
     bundle_resources(
       path = app_sys('app/www'),
       app_title = 'arboapp'
-    )
+    ),
+    tags$script(src = 'www/shiny.router.js'),
+    tags$style(src = 'www/shiny.router.css')
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert() 
   )

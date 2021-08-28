@@ -26,6 +26,7 @@ usethis::use_package( "shiny.router" )
 usethis::use_package( "rgeos" )
 usethis::use_package( "raster" )
 usethis::use_package( "leaflet" )
+usethis::use_package( "tidyverse" )
 
 
 ## Add modules ----
