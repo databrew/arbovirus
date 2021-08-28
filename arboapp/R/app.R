@@ -11,9 +11,18 @@ suppressPackageStartupMessages({
   library(RColorBrewer)
   library(janitor)
   library(readr)
+  library(shiny.router)
 })
 
 message('Working directory is: ', getwd())
+
+
+### !!! Adjust the path according to your locale machine
+source('R/pages/global_data.R')
+source('R/pages/regional_data.R')
+source('R/pages/country_level_data.R')
+source('R/pages/indicators.R')
+source('R/pages/about.R')
 
 
 #' The application User-Interface
@@ -21,14 +30,51 @@ message('Working directory is: ', getwd())
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
+
+router <- make_router(
+  route("/", global_page_ui, global_page_server),
+  route("regional", regional_page_ui, regional_page_server),
+  route("country", country_page_ui, country_page_server),
+  route("indicators", indicators_page_ui, indicators_page_server),
+  route("about", about_page_ui, about_page_server)
+)
+
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
+    
     # Your application UI logic 
     fluidPage(
-      h1("arboapp")
+      # theme = 'www/custom.css',
+      # Main white navbar
+      tags$div(class = 'flex-container',
+        tags$h1(class = 'logo', tags$img(id = 'WHO_logo', src = 'www/WHO_Logo.png')),
+        # tags$h1class = 'logo', tags$a(href = '#', 'Brand')),
+        tags$ul(class = 'navigation',
+                tags$li(a(href = '#', "Logout"))
+        )
+      ),
+      # Blue navbar
+      tags$ul(class = 'blue-sub-nav',
+        tags$li(a(href = route_link("/"), "Global Data")),
+        tags$li(a(href = route_link("regional"), "Regional Data")),
+        tags$li(a(href = route_link("country"), "Country Level Data")),
+        tags$li(a(href = route_link("indicators"), "Indicators")),
+        tags$li(a(href = route_link("about"), "About"))
+      ),
+      
+      # Footer
+      # tags$div(class = 'footer',
+      #          p('Footer')
+      # ),
+      
+      # Important
+      router$ui
+      
     )
+    
+    
   )
 }
 
@@ -76,6 +122,9 @@ golem_add_external_resources <- function(){
 #' @import readr
 #' @noRd
 app_server <- function( input, output, session ) {
+  
+  # Important
+  router$server(input, output, session)
 
   # Load data
   data <- load_data()
