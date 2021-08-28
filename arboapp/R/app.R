@@ -62,6 +62,18 @@ golem_add_external_resources <- function(){
 #' @param input,output,session Internal parameters for {shiny}. 
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import shinyjs
+#' @import shinydashboard
+#' @import dplyr
+#' @import leaflet
+#' @import ggplot2
+#' @import readxl
+#' @import flextable
+#' @import stringr
+#' @import pander
+#' @import RColorBrewer
+#' @import janitor
+#' @import readr
 #' @noRd
 app_server <- function( input, output, session ) {
 
