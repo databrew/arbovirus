@@ -1,7 +1,7 @@
 # library(shiny)
 # library(tidyverse)
 # library(ggplot2)
-
+# 
 # ############## UI ######################
 # regional_page_ui <- tagList(
 #   div(class = 'custom-container',
@@ -28,7 +28,7 @@
 #   output$ServerTestRegional <- renderText({
 #     '`regional` Server connected to the main'
 #   })
-#   
+# 
 #   output$testPlot <- renderPlot({
 #     iris %>%
 #       ggplot(aes(x = Species, y = Sepal.Length)) +

@@ -22,9 +22,12 @@ usethis::use_package( "readr" )
 usethis::use_package( "tidyr" )
 usethis::use_package( "RColorBrewer" )
 usethis::use_package( "sp" )
+usethis::use_package( "shiny.router" )
 usethis::use_package( "rgeos" )
 usethis::use_package( "raster" )
 usethis::use_package( "leaflet" )
+usethis::use_package( "tidyverse" )
+
 
 ## Add modules ----
 ## Create a module infrastructure in R/

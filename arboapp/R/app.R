@@ -157,6 +157,7 @@ router <- make_router(
 #' @import golem
 #' @import leaflet
 #' @import ggplot2
+#' @import shiny.router
 #' @import dplyr
 #' @noRd
 
@@ -186,9 +187,9 @@ app_ui <- function(request) {
       ),
       
       # Footer
-      tags$div(class = 'footer',
-               p('Footer')
-      ),
+      # tags$div(class = 'footer',
+      #          p('Footer')
+      # ),
       
       # Important
       router$ui
@@ -218,7 +219,9 @@ golem_add_external_resources <- function(){
     bundle_resources(
       path = app_sys('app/www'),
       app_title = 'arboapp'
-    )
+    ),
+    tags$script(src = 'www/shiny.router.js'),
+    tags$style(src = 'www/shiny.router.css')
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert() 
   )
@@ -234,6 +237,7 @@ golem_add_external_resources <- function(){
 #' @import dplyr
 #' @import leaflet
 #' @import ggplot2
+#' @import shiny.router
 #' @import readxl
 #' @import flextable
 #' @import stringr
