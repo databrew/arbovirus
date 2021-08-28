@@ -65,9 +65,9 @@ app_ui <- function(request) {
       ),
       
       # Footer
-      tags$div(class = 'footer',
-               p('Footer')
-      ),
+      # tags$div(class = 'footer',
+      #          p('Footer')
+      # ),
       
       # Important
       router$ui
