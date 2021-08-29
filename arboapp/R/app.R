@@ -49,37 +49,79 @@ global_page_server <- function(input, output, session) {
 
 ######################## Regional ###########################
 ############## UI Regional ######################
+
 regional_page_ui <- tagList(
   div(class = 'custom-container',
       h1("Regional Page"),
-      p("This is a regional page"),
-      textOutput('ServerTestRegional'),
+      p("Question:"),
+      textOutput('region_question_text'),
+      br(),
       fluidRow(
         column(4,
-               selectInput(inputId = 'test',
-                           label = 'Test',
-                           choices = c('one', 'two', 'three', 'etc.'),
-                           width = '100%'
+               uiOutput('select_region_question')
+               ),
+        column(4,
+               tableOutput('region_response_table')
+               ),
+        column(4,
+               plotOutput('region_response_plot')
                )
-        ),
-        column(8,
-               plotOutput('testPlot')
-        )
       )
   )
 )
 
 ############## SERVER Regional ######################
 regional_page_server <- function(input, output, session) {
-  output$ServerTestRegional <- renderText({
-    '`regional` Server connected to the main'
+  
+  questions <- get_questions( )
+
+  output$select_region_question <- renderUI({
+    selectInput("region_question", label = h3("Select a question"), choices = questions )
   })
   
-  output$testPlot <- renderPlot({
-    iris %>%
-      ggplot(aes(x = Species, y = Sepal.Length)) +
-      geom_boxplot()
+  output$region_response_table <- renderTable({
+    rt <- get_region_table( input$region_question )
+    if( !is.null(rt) ){
+      rt
+    } 
   })
+  
+  output$region_question_text <- renderText({
+    question <- get_question_text( input$region_question )
+    if( !is.null( question )){
+      question
+    }
+  })
+  
+  output$region_response_plot <- renderPlot({
+    df <- get_region_plot_df( input$region_question )
+    if("Arbovirus" %in% colnames(df)){
+      ggplot(df, 
+             aes(x=Response, 
+                 y=n, 
+                 fill=Response)) + 
+        geom_col() + 
+        facet_grid( Region ~ Arbovirus ) +
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+    } else{
+      ggplot( df, 
+              aes( x = Response,
+                   y = n,
+                   fill = Response)) +
+        geom_col() +
+        facet_wrap( ~Region ) +
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+    }
+  })
+  
 }
 
 
@@ -88,17 +130,74 @@ regional_page_server <- function(input, output, session) {
 country_page_ui <- tagList(
   div(class = 'custom-container',
       h1("Country Page"),
-      p("This is a country page"),
-      textOutput('ServerTestCountry')
+      p("Question:"),
+      textOutput('country_question_text'),
+      br(),
+      fluidRow(
+        column(4,
+               uiOutput('select_country_question')
+        ),
+        column(4,
+               tableOutput('country_response_table')
+        ),
+        column(4,
+               plotOutput('country_response_plot')
+        )
+      )
   )
 )
 
-
 ############## SERVER Country ######################
 country_page_server <- function(input, output, session) {
-  output$ServerTestCountry <- renderText({
-    '`Country` Server connected to the main'
+  
+  questions <- get_questions() 
+  
+  output$select_country_question <- renderUI({
+    selectInput("country_question", label = h3("Select a question"), choices = questions )
   })
+  
+  output$country_question_text <- renderText({
+    question <- get_question_text( input$country_question )
+    if( !is.null( question )){
+      question
+    }
+  })
+  
+  output$country_response_table <- renderTable({
+    ct <- get_country_table( input$country_question )
+    if( !is.null(ct) ){
+      ct
+    } 
+  })
+  
+  output$country_response_plot <- renderPlot({
+    df <- get_country_plot_df( input$country_question )
+    if("Arbovirus" %in% colnames(df)){
+      ggplot(df, 
+             aes(x=Response, 
+                 y=n, 
+                 fill=Response)) + 
+        geom_col() + 
+        facet_wrap( ~ Arbovirus ) +
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+    } else{
+      ggplot( df, 
+              aes( x = Response,
+                   y = n,
+                   fill = Response)) +
+        geom_col() +
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+    }
+  })
+  
 }
 
 
@@ -171,19 +270,19 @@ app_ui <- function(request) {
       # theme = 'www/custom.css',
       # Main white navbar
       tags$div(class = 'flex-container',
-        tags$h1(class = 'logo', tags$img(id = 'WHO_logo', src = 'www/WHO_Logo.png')),
-        # tags$h1class = 'logo', tags$a(href = '#', 'Brand')),
-        tags$ul(class = 'navigation',
-                tags$li(a(href = '#', "Logout"))
-        )
+               tags$h1(class = 'logo', tags$img(id = 'WHO_logo', src = 'www/WHO_Logo.png')),
+               # tags$h1class = 'logo', tags$a(href = '#', 'Brand')),
+               tags$ul(class = 'navigation',
+                       tags$li(a(href = '#', "Logout"))
+               )
       ),
       # Blue navbar
       tags$ul(class = 'blue-sub-nav',
-        tags$li(a(href = route_link("/"), "Global Data")),
-        tags$li(a(href = route_link("regional"), "Regional Data")),
-        tags$li(a(href = route_link("country"), "Country Level Data")),
-        tags$li(a(href = route_link("indicators"), "Indicators")),
-        tags$li(a(href = route_link("about"), "About"))
+              tags$li(a(href = route_link("/"), "Global Data")),
+              tags$li(a(href = route_link("regional"), "Regional Data")),
+              tags$li(a(href = route_link("country"), "Country Level Data")),
+              tags$li(a(href = route_link("indicators"), "Indicators")),
+              tags$li(a(href = route_link("about"), "About"))
       ),
       
       # Footer
@@ -250,12 +349,13 @@ app_server <- function( input, output, session ) {
   
   # Important
   router$server(input, output, session)
-
+  
   # Load data
   data <- load_data()
   
   # load data dictionary to facilitate processing survey results:
   dict <- load_dict()
+  
 }
 
 # Function for actually running app
