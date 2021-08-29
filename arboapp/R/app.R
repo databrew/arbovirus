@@ -53,8 +53,9 @@ global_page_server <- function(input, output, session) {
 regional_page_ui <- tagList(
   div(class = 'custom-container',
       h1("Regional Page"),
-      p("Question: "),
+      p("Question:"),
       textOutput('region_question_text'),
+      br(),
       fluidRow(
         column(4,
                uiOutput('select_region_question')
@@ -93,7 +94,7 @@ regional_page_server <- function(input, output, session) {
   })
   
   output$region_response_plot <- renderPlot({
-    df <- get_plot_df( input$region_question )
+    df <- get_region_plot_df( input$region_question )
     if("Arbovirus" %in% colnames(df)){
       ggplot(df, 
              aes(x=Response, 
@@ -129,14 +130,18 @@ regional_page_server <- function(input, output, session) {
 country_page_ui <- tagList(
   div(class = 'custom-container',
       h1("Country Page"),
-      p("This is a country page"),
+      p("Question:"),
       textOutput('country_question_text'),
+      br(),
       fluidRow(
         column(4,
                uiOutput('select_country_question')
         ),
         column(4,
                tableOutput('country_response_table')
+        ),
+        column(4,
+               plotOutput('country_response_plot')
         )
       )
   )
@@ -163,6 +168,34 @@ country_page_server <- function(input, output, session) {
     if( !is.null(ct) ){
       ct
     } 
+  })
+  
+  output$country_response_plot <- renderPlot({
+    df <- get_country_plot_df( input$country_question )
+    if("Arbovirus" %in% colnames(df)){
+      ggplot(df, 
+             aes(x=Response, 
+                 y=n, 
+                 fill=Response)) + 
+        geom_col() + 
+        facet_wrap( ~ Arbovirus ) +
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+    } else{
+      ggplot( df, 
+              aes( x = Response,
+                   y = n,
+                   fill = Response)) +
+        geom_col() +
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+    }
   })
   
 }
