@@ -78,78 +78,7 @@ regional_page_ui <- tagList(
 )
 
 ############## SERVER Regional ######################
-regional_page_server <- function(input, output, session) {
-  
-  questions <- get_questions()
-  regions <- c("All", get_regions())
-
-  output$select_region_question <- renderUI({
-    selectInput("region_question", label = h3("Select a question"), choices = questions )
-  })
-  
-  output$select_region <- renderUI({
-    selectInput("region", label = h3("Select a region"), choices = regions )
-  })
-  
-  output$region_response_table <- renderTable({
-    rt <- get_region_table( input$region_question )
-    if( !is.null(rt) ){
-      if( input$region != "All" ){
-        rt <- rt %>% filter(Region == input$region)
-      }
-      rt
-    }
-  })
-  
-  output$region_map <- renderLeaflet({
-    question_number <- input$region_question
-    # Load data
-    data <- load_data()
-    # load data dictionary to facilitate processing survey results:
-    dict <- load_dict()
-    # Subset to just those data needed for plotting
-    df <- data %>% dplyr::rename(country = SI01) %>%
-      mutate(region = as.character(Region))
-    idx <- which( dict$`Question number` == question_number )[1]
-    var_names <- dict$`Variable name`[idx]
-    df <- df[,c('country', var_names, 'region')]
-    names(df)[2] <- 'value'
-    make_map(df = df, qualitative = FALSE)
-  })
-  
-  
-  output$region_question_text <- renderText({
-    question <- get_question_text( input$region_question )
-    if( !is.null( question )){
-      question
-    }
-  })
-  
-  output$region_response_plot <- renderPlot({
-    df <- get_region_plot_df( input$region_question )
-    if(!is.null(input$region)){
-      if( input$region != "All" ){
-        df <- df %>% filter(Region == input$region)
-      }
-      g <- ggplot(df, aes(x=Response, 
-                          y=n, 
-                          fill=Response)) + 
-        geom_col() + 
-        theme(legend.position = "bottom",
-              legend.direction="horizontal",
-              axis.title.x=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank())
-      if("Arbovirus" %in% colnames(df)){
-        g + facet_grid( Region ~ Arbovirus )
-      } else{
-        g + facet_wrap( ~Region ) 
-      }
-    }
-
-  })
-  
-}
+# regional_page_server <- function(input, output, session) {}
 
 
 ######################## Country ###########################
@@ -179,67 +108,7 @@ country_page_ui <- tagList(
 )
 
 ############## SERVER Country ######################
-country_page_server <- function(input, output, session) {
-  
-  questions <- get_questions() 
-  
-  output$select_country_question <- renderUI({
-    selectInput("country_question", label = h3("Select a question"), choices = questions )
-  })
-  
-  output$country_question_text <- renderText({
-    question <- get_question_text( input$country_question )
-    if( !is.null( question )){
-      question
-    }
-  })
-  
-  output$country_response_table <- renderTable({
-    ct <- get_country_table( input$country_question )
-    if( !is.null(ct) ){
-      ct
-    } 
-  })
-  
-  output$country_map <- renderLeaflet({
-    question_number <- input$country_question
-    # Load data
-    data <- load_data()
-    # load data dictionary to facilitate processing survey results:
-    dict <- load_dict()
-    # Subset to just those data needed for plotting
-    df <- data %>% dplyr::rename(country = SI01)
-    idx <- which( dict$`Question number` == question_number )[1]
-    var_names <- dict$`Variable name`[idx]
-    df <- df[,c('country', var_names)]
-    names(df)[2] <- 'value'
-    make_map(df = df, qualitative = TRUE)
-  })
-  
-  output$country_response_plot <- renderPlot({
-    df <- get_country_plot_df( input$country_question )
-    if(!is.null(df)){
-      g <- ggplot(df, 
-                  aes(x=Response, 
-                      y=n, 
-                      fill=Response)) + 
-        geom_col() + 
-        theme(legend.position = "bottom",
-              legend.direction="horizontal",
-              axis.title.x=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank())
-      if("Arbovirus" %in% colnames(df)){
-        g + facet_wrap( ~ Arbovirus )
-      } else{
-        g
-      }
-    }
-
-    
-  })
-  
-}
+# country_page_server <- function(input, output, session) {}
 
 
 ######################## Indicators ###########################
@@ -283,8 +152,8 @@ about_page_server <- function(input, output, session) {
 
 router <- make_router(
   route("/", global_page_ui, global_page_server),
-  route("regional", regional_page_ui, regional_page_server),
-  route("country", country_page_ui, country_page_server),
+  route("regional", regional_page_ui),
+  route("country", country_page_ui),
   route("indicators", indicators_page_ui, indicators_page_server),
   route("about", about_page_ui, about_page_server)
 )
@@ -392,11 +261,153 @@ app_server <- function( input, output, session ) {
   # Important
   router$server(input, output, session)
   
+  #=============================================================#
+  #                         LOAD DATA                           #
+  #=============================================================#
+  
   # Load data
   data <- load_data()
-  
   # load data dictionary to facilitate processing survey results:
   dict <- load_dict()
+  # Get questions
+  questions <- get_questions()
+  
+  #=============================================================#
+  #                          Regional                           #
+  #=============================================================#
+  
+  regions <- c("All", get_regions())
+  
+  output$select_region_question <- renderUI({
+    selectInput("region_question", label = h3("Select a question"), choices = questions )
+  })
+  
+  output$select_region <- renderUI({
+    selectInput("region", label = h3("Select a region"), choices = regions )
+  })
+  
+  output$region_response_table <- renderTable({
+    rt <- get_region_table( input$region_question )
+    if( !is.null(rt) ){
+      if( input$region != "All" ){
+        rt <- rt %>% filter(Region == input$region)
+      }
+      rt
+    }
+  })
+  
+  output$region_map <- renderLeaflet({
+    req(data)
+    req(dict)
+    
+    question_number <- input$region_question
+  
+    # Subset to just those data needed for plotting
+    df <- data %>% dplyr::rename(country = SI01) %>%
+      mutate(region = as.character(Region))
+    idx <- which( dict$`Question number` == question_number )[1]
+    var_names <- dict$`Variable name`[idx]
+    df <- df[,c('country', var_names, 'region')]
+    names(df)[2] <- 'value'
+    make_map(df = df, qualitative = FALSE)
+  })
+  
+  
+  output$region_question_text <- renderText({
+    question <- get_question_text( input$region_question )
+    if( !is.null( question )){
+      question
+    }
+  })
+  
+  output$region_response_plot <- renderPlot({
+    df <- get_region_plot_df( input$region_question )
+    if(!is.null(input$region)){
+      if( input$region != "All" ){
+        df <- df %>% filter(Region == input$region)
+      }
+      g <- ggplot(df, aes(x=Response,
+                          y=n,
+                          fill=Response)) +
+        geom_col() +
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+      if("Arbovirus" %in% colnames(df)){
+        g + facet_grid( Region ~ Arbovirus )
+      } else{
+        g + facet_wrap( ~Region )
+      }
+    }
+    
+  })
+  
+  
+  
+  
+  #=============================================================#
+  #                           Country                           #
+  #=============================================================#
+  
+  output$select_country_question <- renderUI({
+    selectInput("country_question", label = h3("Select a question"), choices = questions )
+  })
+  
+  output$country_question_text <- renderText({
+    question <- get_question_text( input$country_question )
+    if( !is.null( question )){
+      question
+    }
+  })
+  
+  output$country_response_table <- renderTable({
+    ct <- get_country_table( input$country_question )
+    if( !is.null(ct) ){
+      ct
+    } 
+  })
+  
+  output$country_map <- renderLeaflet({
+    req(data)
+    req(dict)
+    
+    question_number <- input$country_question
+
+    # Subset to just those data needed for plotting
+    df <- data %>% dplyr::rename(country = SI01)
+    idx <- which( dict$`Question number` == question_number )[1]
+    var_names <- dict$`Variable name`[idx]
+    df <- df[,c('country', var_names)]
+    names(df)[2] <- 'value'
+    make_map(df = df, qualitative = TRUE)
+  })
+  
+  output$country_response_plot <- renderPlot({
+    df <- get_country_plot_df( input$country_question )
+    if(!is.null(df)){
+      g <- ggplot(df, 
+                  aes(x=Response, 
+                      y=n, 
+                      fill=Response)) + 
+        geom_col() + 
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+      if("Arbovirus" %in% colnames(df)){
+        g + facet_wrap( ~ Arbovirus )
+      } else{
+        g
+      }
+    }
+    
+    
+  })
+  
+  
   
 }
 
