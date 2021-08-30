@@ -142,6 +142,7 @@ get_regions <- function( ){
 #' @return A dataframe
 #' @noRd
 #' @import tidyverse
+#' @import tidyr
 get_region_table <- function( question_number ){
   if(!is.null(question_number)){
     message('function: get_region_table. question_number = ', question_number)
@@ -189,6 +190,7 @@ get_region_table <- function( question_number ){
 #' @return A dataframe
 #' @noRd
 #' @import tidyverse
+#' @import tidyr
 get_country_table <- function( question_number ){
   message('function: get_country_table. question_number: ', question_number)
   if(!is.null(question_number)){
@@ -279,6 +281,7 @@ get_region_plot_df <- function( question_number ){
 #' @return A dataframe
 #' @noRd
 #' @import tidyverse
+#' @import tidyr
 get_country_plot_df <- function( question_number ){
   message('function: get_country_plot_df. question_number: ', question_number)
   if(!is.null(question_number)){

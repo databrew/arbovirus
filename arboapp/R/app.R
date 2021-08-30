@@ -263,6 +263,7 @@ router <- make_router(
 #' @import ggplot2
 #' @import shiny.router
 #' @import dplyr
+#' @import tidyr
 #' @noRd
 
 app_ui <- function(request) {
