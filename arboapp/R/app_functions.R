@@ -2,6 +2,7 @@
 #' @description Function for reading in data
 #' @return A dataframe
 #' @noRd
+#' @import tidyverse
 load_data <- function(){
   message('function: load_data')
   ok <- FALSE
@@ -47,6 +48,7 @@ load_data <- function(){
 #' @description Function for loading dictionary
 #' @return A dataframe
 #' @noRd
+#' @import readr
 load_dict <- function(){
   message('function: load_dict')
   read_csv("misc/Data_dictionary_Survey375147.csv")
@@ -56,6 +58,7 @@ load_dict <- function(){
 #' @description Function for retrieving question numbers
 #' @return A character vector
 #' @noRd
+#' @import tidyverse
 get_questions <- function( ){
   message('function: get_questions')
   # NOTE: We should only have to read each CSV once!
@@ -73,6 +76,7 @@ get_questions <- function( ){
 #' @description Function for retrieving question text
 #' @return A character string
 #' @noRd
+#' @import tidyverse
 get_question_text <- function( question_number ){
   message('function: get_question_text')
   # NOTE: We should only have to read each CSV once!
@@ -96,6 +100,7 @@ get_question_text <- function( question_number ){
 #' @description Function for retrieving responses to a given question
 #' @return A dataframe
 #' @noRd
+#' @import tidyverse
 get_responses <- function( question_number ){
   message('function: get_responses')
   # NOTE: We should only have to read each CSV once!
@@ -123,6 +128,7 @@ get_responses <- function( question_number ){
 #' @description Function for retrieving WHO region names
 #' @return A character vector
 #' @noRd
+#' @import tidyverse
 get_regions <- function( ){
   message('function: get_regions')
   # NOTE: We should only have to load data once!
@@ -135,6 +141,7 @@ get_regions <- function( ){
 #' @description Function for tabulation of responses by region
 #' @return A dataframe
 #' @noRd
+#' @import tidyverse
 get_region_table <- function( question_number ){
   if(!is.null(question_number)){
     message('function: get_region_table. question_number = ', question_number)
@@ -181,6 +188,7 @@ get_region_table <- function( question_number ){
 #' @description Function for tabulation of responses by country
 #' @return A dataframe
 #' @noRd
+#' @import tidyverse
 get_country_table <- function( question_number ){
   message('function: get_country_table. question_number: ', question_number)
   if(!is.null(question_number)){
@@ -224,6 +232,7 @@ get_country_table <- function( question_number ){
 #' @description Function for preparing regional responses for geom_col
 #' @return A dataframe
 #' @noRd
+#' @import tidyverse
 get_region_plot_df <- function( question_number ){
   message('function: get_region_plot_df. question_number: ', question_number)
   if(!is.null(question_number)){
@@ -269,6 +278,7 @@ get_region_plot_df <- function( question_number ){
 #' @description Function for preparing country level responses for geom_col
 #' @return A dataframe
 #' @noRd
+#' @import tidyverse
 get_country_plot_df <- function( question_number ){
   message('function: get_country_plot_df. question_number: ', question_number)
   if(!is.null(question_number)){
