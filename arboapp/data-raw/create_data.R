@@ -55,4 +55,23 @@ for(i in 1:nrow(wrld_simpl@data)){
   wrld_simpl@data$country[i] <- new_name
 }
 world_shp <- wrld_simpl
+
+
+# Make region-level map
+regions_df <- readxl::read_excel('../../data/Regions_Countries_joe.xlsx')
+# get region into world map
+world_shp@data <- 
+  left_join(world_shp@data,
+            regions_df %>% dplyr::rename(country = Country)) %>%
+  dplyr::rename(region = Region)
+
+# Collapse for regions only
+helper <- world_shp[!is.na(world_shp@data$region),]
+region_shp <- rgeos::gUnaryUnion(spgeom = helper,
+                                 id = helper@data$region)
+IDs <- data.frame(ID=sapply(slot(region_shp, "polygons"), function(x) slot(x, "ID")))
+rownames(IDs)  <- IDs$ID
+region_shp <- SpatialPolygonsDataFrame(region_shp, IDs)
+
+usethis::use_data(region_shp, overwrite = TRUE)
 usethis::use_data(world_shp, overwrite = TRUE)
