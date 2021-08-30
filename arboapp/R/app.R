@@ -144,13 +144,15 @@ country_page_ui <- tagList(
       fluidRow(
         column(4,
                uiOutput('select_country_question')
-        )
+        ),
+        column(8,
+               leafletOutput('country_map'))
       ),
       fluidRow(
-        column(4,
+        column(6,
                tableOutput('country_response_table')
         ),
-        column(4,
+        column(6,
                plotOutput('country_response_plot')
         )
       )
@@ -178,6 +180,21 @@ country_page_server <- function(input, output, session) {
     if( !is.null(ct) ){
       ct
     } 
+  })
+  
+  output$country_map <- renderLeaflet({
+    question_number <- input$country_question
+    # Load data
+    data <- load_data()
+    # load data dictionary to facilitate processing survey results:
+    dict <- load_dict()
+    # Subset to just those data needed for plotting
+    df <- data %>% dplyr::rename(country = SI01)
+    idx <- which( dict$`Question number` == question_number )[1]
+    var_names <- dict$`Variable name`[idx]
+    df <- df[,c('country', var_names)]
+    names(df)[2] <- 'value'
+    make_map(df = df, qualitative = TRUE)
   })
   
   output$country_response_plot <- renderPlot({

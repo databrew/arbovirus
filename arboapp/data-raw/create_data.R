@@ -55,4 +55,4 @@ for(i in 1:nrow(wrld_simpl@data)){
   wrld_simpl@data$country[i] <- new_name
 }
 world_shp <- wrld_simpl
-usethis::use_data(world_shp)
+usethis::use_data(world_shp, overwrite = TRUE)
