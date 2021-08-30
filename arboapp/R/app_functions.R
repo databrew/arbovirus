@@ -3,6 +3,7 @@
 #' @return A dataframe
 #' @noRd
 load_data <- function(){
+  message('function: load_data')
   ok <- FALSE
   if(dir.exists('data')){
     if(dir.exists('misc')){
@@ -47,6 +48,7 @@ load_data <- function(){
 #' @return A dataframe
 #' @noRd
 load_dict <- function(){
+  message('function: load_dict')
   read_csv("misc/Data_dictionary_Survey375147.csv")
 }
 
@@ -55,13 +57,14 @@ load_dict <- function(){
 #' @return A character vector
 #' @noRd
 get_questions <- function( ){
+  message('function: get_questions')
   # NOTE: We should only have to read each CSV once!
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+  dict <- read_csv("misc/Data_dictionary_Survey375147.csv", show_col_types = FALSE)
   idx <- c( which( is.na( dict$`Question number` )),
             which( grepl('upload', dict$`Type of variable`)),
             which ( grepl('filecount', dict$`Question number`) ))
   questions <- dict$`Question number`[-idx]
-  idx <- which( questions == "5" )
+  idx <- which( questions == "5" )[1]
   questions <- unique( questions[ idx:length( questions )] )
   return( questions )
 }
@@ -71,11 +74,22 @@ get_questions <- function( ){
 #' @return A character string
 #' @noRd
 get_question_text <- function( question_number ){
+  message('function: get_question_text')
   # NOTE: We should only have to read each CSV once!
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
-  idx <- min( which( dict$`Question number` == question_number ) )
-  question_text <- dict$Description[ idx ]
-  return( question_text )
+  dict <- read_csv("misc/Data_dictionary_Survey375147.csv", show_col_types = FALSE)
+  vec <- which( dict$`Question number` == question_number )
+  ok <- FALSE
+  if(length(vec) > 0){
+    ok <- TRUE
+  }
+  if(ok){
+    idx <- min(vec)
+    question_text <- dict$Description[ idx ]
+    return( question_text )
+  } else {
+    return(' ')
+  }
+
 }
 
 #' Responses standardizer
@@ -83,17 +97,25 @@ get_question_text <- function( question_number ){
 #' @return A dataframe
 #' @noRd
 get_responses <- function( question_number ){
+  message('function: get_responses')
   # NOTE: We should only have to read each CSV once!
   dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
-  idx <- which( dict$`Question number` == question_number )
+  idx <- which( dict$`Question number` == question_number )[1]
   var_names <- dict$`Variable name`[idx]
   responses <- data[ var_names ] 
-  if( !is.na(dict$Subquestion[ idx[1] ]) ){
-    # remove square brackets at beginning and end, then rename columns:
-    colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
-  } else{
-    colnames( responses ) <- "Response"
+  if(ncol(responses) > 0){
+    if( !is.na(dict$Subquestion[ idx[1] ]) ){
+      # remove square brackets at beginning and end, then rename columns:
+      sub_question <- dict$Subquestion[idx]
+      if(is.na(sub_question) | nchar(sub_question) < 2){
+        sub_question <- dict$Description[idx]
+      }
+      colnames( responses ) <- str_extract( sub_question, '(?<=\\[)[^{}]+(?=\\])')
+    } else{
+      colnames( responses ) <- "Response"
+    }
   }
+  
   return( responses )
 }
 
@@ -102,6 +124,7 @@ get_responses <- function( question_number ){
 #' @return A character vector
 #' @noRd
 get_regions <- function( ){
+  message('function: get_regions')
   # NOTE: We should only have to load data once!
   load("data/data.RData")
   regions <- levels( data$Region )
@@ -113,35 +136,45 @@ get_regions <- function( ){
 #' @return A dataframe
 #' @noRd
 get_region_table <- function( question_number ){
-  # NOTE: Should only have to load data once!
-  load("data/data.RData")
-  # NOTE: We should only have to read each CSV once!
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
-  idx <- which( dict$`Question number` == question_number )
-  var_names <- dict$`Variable name`[idx]
-  responses <- data[ var_names ] 
-  if( !is.na(dict$Subquestion[ idx[1] ]) ){
-    # remove square brackets at beginning and end, then rename columns:
-    colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
-    if( "Other" %in% colnames( responses )){
-      responses <- responses %>% select(-Other)
-    }
-    df <- cbind( Region = data$Region, responses) %>% 
-      pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
-      drop_na(Region) %>% 
-      group_by(Region, Arbovirus, Response) %>% 
-      tally %>% 
-      pivot_wider( names_from=Response, values_from=n) 
-  } else{
-    colnames( responses ) <- "Response"
-    df <- data.frame(Region = data$Region, Response = responses) %>% 
-      drop_na(Region) %>% 
-      group_by(Region, Response) %>% 
-      tally %>% 
-      pivot_wider(names_from=Response, values_from=n) %>%
-      adorn_totals() 
+  if(!is.null(question_number)){
+    message('function: get_region_table. question_number = ', question_number)
+    # NOTE: Should only have to load data once!
+    load("data/data.RData")
+    # NOTE: We should only have to read each CSV once!
+    dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+    idx <- which( dict$`Question number` == question_number )[1]
+    var_names <- dict$`Variable name`[idx]
+    responses <- data[ var_names ] 
+    if(ncol(responses) > 0){
+      if( !is.na(dict$Subquestion[ idx[1] ]) ){
+        # remove square brackets at beginning and end, then rename columns:
+        sub_question <- dict$Subquestion[idx]
+        sub_question <- str_extract( sub_question, '(?<=\\[)[^{}]+(?=\\])')
+        if(is.na(sub_question) | nchar(sub_question) < 2){
+          sub_question <- dict$Description[idx]
+        }
+        colnames( responses ) <- sub_question
+        if( "Other" %in% colnames( responses )){
+          responses <- responses %>% select(-Other)
+        }
+        df <- cbind( Region = data$Region, responses) %>% 
+          pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+          drop_na(Region) %>% 
+          group_by(Region, Arbovirus, Response) %>% 
+          tally %>% 
+          pivot_wider( names_from=Response, values_from=n) 
+      } else{
+        colnames( responses ) <- "Response"
+        df <- data.frame(Region = data$Region, Response = responses) %>% 
+          drop_na(Region) %>% 
+          group_by(Region, Response) %>% 
+          tally %>% 
+          pivot_wider(names_from=Response, values_from=n) %>%
+          adorn_totals() 
+      }
+      return( df )
+    } 
   }
-  return( df )
 }
 
 #' Responses standardizer
@@ -149,32 +182,42 @@ get_region_table <- function( question_number ){
 #' @return A dataframe
 #' @noRd
 get_country_table <- function( question_number ){
-  # NOTE: Should only have to load data once!
-  load("data/data.RData")
-  # NOTE: We should only have to read each CSV once!
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
-  idx <- which( dict$`Question number` == question_number )
-  var_names <- dict$`Variable name`[idx]
-  responses <- data[ var_names ] 
-  if( !is.na(dict$Subquestion[ idx[1] ]) ){
-    # remove square brackets at beginning and end, then rename columns:
-    colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
-    if( "Other" %in% colnames( responses )){
-      responses <- responses %>% select(-Other)
-    }
-    df <- responses %>% 
-      pivot_longer(everything(), names_to="Arbovirus", values_to="Response") %>% 
-      group_by(Arbovirus, Response) %>% 
-      tally %>% 
-      pivot_wider( names_from=Response, values_from=n) 
-  } else{
-    colnames( responses ) <- "Response"
-    df <- responses %>% 
-      group_by(Response) %>% 
-      tally %>% 
-      pivot_wider(names_from=Response, values_from=n) 
+  message('function: get_country_table. question_number: ', question_number)
+  if(!is.null(question_number)){
+    # NOTE: Should only have to load data once!
+    load("data/data.RData")
+    # NOTE: We should only have to read each CSV once!
+    dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+    idx <- which( dict$`Question number` == question_number )[1]
+    var_names <- dict$`Variable name`[idx]
+    responses <- data[ var_names ] 
+    if(ncol(responses) > 0){
+      if( !is.na(dict$Subquestion[ idx[1] ]) ){
+        # remove square brackets at beginning and end, then rename columns:
+        sub_question <- dict$Subquestion[idx]
+        sub_question <- str_extract( sub_question, '(?<=\\[)[^{}]+(?=\\])')
+        if(is.na(sub_question) | nchar(sub_question) < 2){
+          sub_question <- dict$Description[idx]
+        }
+        colnames( responses ) <- sub_question
+        if( "Other" %in% colnames( responses )){
+          responses <- responses %>% select(-Other)
+        }
+        df <- responses %>% 
+          pivot_longer(everything(), names_to="Arbovirus", values_to="Response") %>% 
+          group_by(Arbovirus, Response) %>% 
+          tally %>% 
+          pivot_wider( names_from=Response, values_from=n) 
+      } else{
+        colnames( responses ) <- "Response"
+        df <- responses %>% 
+          group_by(Response) %>% 
+          tally %>% 
+          pivot_wider(names_from=Response, values_from=n) 
+      }
+      return( df )
+    }  
   }
-  return( df )
 }
 
 #' Responses standardizer
@@ -182,32 +225,44 @@ get_country_table <- function( question_number ){
 #' @return A dataframe
 #' @noRd
 get_region_plot_df <- function( question_number ){
-  # NOTE: Should only have to load data once!
-  load("data/data.RData")
-  # NOTE: We should only have to read each CSV once!
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
-  idx <- which( dict$`Question number` == question_number )
-  var_names <- dict$`Variable name`[idx]
-  responses <- data[ var_names ] 
-  if( !is.na(dict$Subquestion[ idx[1] ]) ){
-    # remove square brackets at beginning and end, then rename columns:
-    colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
-    if( "Other" %in% colnames( responses )){
-      responses <- responses %>% select(-Other)
+  message('function: get_region_plot_df. question_number: ', question_number)
+  if(!is.null(question_number)){
+    # NOTE: Should only have to load data once!
+    message('---loading data')
+    load("data/data.RData")
+    # NOTE: We should only have to read each CSV once!
+    dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+    idx <- which( dict$`Question number` == question_number )[1]
+    var_names <- dict$`Variable name`[idx]
+    responses <- data[ var_names ] 
+    if(ncol(responses) > 0){
+      if( !is.na(dict$Subquestion[ idx[1] ]) ){
+        # remove square brackets at beginning and end, then rename columns:
+        sub_question <- dict$Subquestion[idx]
+        sub_question <- str_extract( sub_question, '(?<=\\[)[^{}]+(?=\\])')
+        if(is.na(sub_question) | nchar(sub_question) < 2){
+          sub_question <- dict$Description[idx]
+        }
+        colnames( responses ) <- sub_question
+        if( "Other" %in% colnames( responses )){
+          responses <- responses %>% select(-Other)
+        }
+        df <- cbind( Region = data$Region, responses) %>% 
+          pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+          drop_na(Region) %>% 
+          group_by(Region, Arbovirus, Response) %>% 
+          tally 
+      } else{
+        colnames( responses ) <- "Response"
+        df <- data.frame(Region = data$Region, Response = responses) %>% 
+          drop_na(Region) %>% 
+          group_by(Region, Response) %>% 
+          tally 
+      }
+      return( df )
     }
-    df <- cbind( Region = data$Region, responses) %>% 
-      pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
-      drop_na(Region) %>% 
-      group_by(Region, Arbovirus, Response) %>% 
-      tally 
-  } else{
-    colnames( responses ) <- "Response"
-    df <- data.frame(Region = data$Region, Response = responses) %>% 
-      drop_na(Region) %>% 
-      group_by(Region, Response) %>% 
-      tally 
   }
-  return( df )
+  
 }
 
 #' Responses standardizer
@@ -215,30 +270,41 @@ get_region_plot_df <- function( question_number ){
 #' @return A dataframe
 #' @noRd
 get_country_plot_df <- function( question_number ){
-  # NOTE: Should only have to load data once!
-  load("data/data.RData")
-  # NOTE: We should only have to read each CSV once!
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
-  idx <- which( dict$`Question number` == question_number )
-  var_names <- dict$`Variable name`[idx]
-  responses <- data[ var_names ] 
-  if( !is.na(dict$Subquestion[ idx[1] ]) ){
-    # remove square brackets at beginning and end, then rename columns:
-    colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
-    if( "Other" %in% colnames( responses )){
-      responses <- responses %>% select(-Other)
+  message('function: get_country_plot_df. question_number: ', question_number)
+  if(!is.null(question_number)){
+    # NOTE: Should only have to load data once!
+    load("data/data.RData")
+    # NOTE: We should only have to read each CSV once!
+    dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+    idx <- which( dict$`Question number` == question_number )[1]
+    var_names <- dict$`Variable name`[idx]
+    responses <- data[ var_names ] 
+    if(ncol(responses) > 0){
+      if( !is.na(dict$Subquestion[ idx[1] ]) ){
+        # remove square brackets at beginning and end, then rename columns:
+        sub_question <- dict$Subquestion[idx]
+        sub_question <- str_extract( sub_question, '(?<=\\[)[^{}]+(?=\\])')
+        if(is.na(sub_question) | nchar(sub_question) < 2){
+          sub_question <- dict$Description[idx]
+        }
+        colnames( responses ) <- sub_question
+        if( "Other" %in% colnames( responses )){
+          responses <- responses %>% select(-Other)
+        }
+        df <- responses %>% 
+          pivot_longer(everything(), names_to="Arbovirus", values_to="Response") %>% 
+          group_by(Arbovirus, Response) %>% 
+          tally 
+      } else{
+        colnames( responses ) <- "Response"
+        df <- responses %>%  
+          group_by(Response) %>% 
+          tally 
+      }
+      return( df )
     }
-    df <- responses %>% 
-      pivot_longer(everything(), names_to="Arbovirus", values_to="Response") %>% 
-      group_by(Arbovirus, Response) %>% 
-      tally 
-  } else{
-    colnames( responses ) <- "Response"
-    df <- responses %>%  
-      group_by(Response) %>% 
-      tally 
   }
-  return( df )
+  
 }
 
 
@@ -248,6 +314,7 @@ get_country_plot_df <- function( question_number ){
 #' @noRd
 #' @import RColorBrewer
 make_colors <- function(n, seed = 123){
+  message('function: make_colors')
   pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
   set.seed(seed)
   pal <- sample(pal, length(pal))

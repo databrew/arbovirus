@@ -16,7 +16,7 @@ suppressPackageStartupMessages({
 })
 
 message('Working directory is: ', getwd())
-
+options(readr.show_col_types = FALSE)
 
 ### !!! Adjust the path according to your locale machine
 # source('R/pages/global_data.R')
@@ -108,23 +108,26 @@ regional_page_server <- function(input, output, session) {
   
   output$region_response_plot <- renderPlot({
     df <- get_region_plot_df( input$region_question )
-    if( input$region != "All" ){
-      df <- df %>% filter(Region == input$region)
+    if(!is.null(input$region)){
+      if( input$region != "All" ){
+        df <- df %>% filter(Region == input$region)
+      }
+      g <- ggplot(df, aes(x=Response, 
+                          y=n, 
+                          fill=Response)) + 
+        geom_col() + 
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+      if("Arbovirus" %in% colnames(df)){
+        g + facet_grid( Region ~ Arbovirus )
+      } else{
+        g + facet_wrap( ~Region ) 
+      }
     }
-    g <- ggplot(df, aes(x=Response, 
-                        y=n, 
-                        fill=Response)) + 
-      geom_col() + 
-      theme(legend.position = "bottom",
-            legend.direction="horizontal",
-            axis.title.x=element_blank(),
-            axis.text.x=element_blank(),
-            axis.ticks.x=element_blank())
-    if("Arbovirus" %in% colnames(df)){
-      g + facet_grid( Region ~ Arbovirus )
-    } else{
-      g + facet_wrap( ~Region ) 
-    }
+
   })
   
 }
@@ -179,21 +182,24 @@ country_page_server <- function(input, output, session) {
   
   output$country_response_plot <- renderPlot({
     df <- get_country_plot_df( input$country_question )
-    g <- ggplot(df, 
-                aes(x=Response, 
-                    y=n, 
-                    fill=Response)) + 
-      geom_col() + 
-      theme(legend.position = "bottom",
-            legend.direction="horizontal",
-            axis.title.x=element_blank(),
-            axis.text.x=element_blank(),
-            axis.ticks.x=element_blank())
-    if("Arbovirus" %in% colnames(df)){
-      g + facet_wrap( ~ Arbovirus )
-    } else{
-      g
+    if(!is.null(df)){
+      g <- ggplot(df, 
+                  aes(x=Response, 
+                      y=n, 
+                      fill=Response)) + 
+        geom_col() + 
+        theme(legend.position = "bottom",
+              legend.direction="horizontal",
+              axis.title.x=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank())
+      if("Arbovirus" %in% colnames(df)){
+        g + facet_wrap( ~ Arbovirus )
+      } else{
+        g
+      }
     }
+
     
   })
   
