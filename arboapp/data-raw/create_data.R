@@ -72,6 +72,7 @@ region_shp <- rgeos::gUnaryUnion(spgeom = helper,
 IDs <- data.frame(ID=sapply(slot(region_shp, "polygons"), function(x) slot(x, "ID")))
 rownames(IDs)  <- IDs$ID
 region_shp <- SpatialPolygonsDataFrame(region_shp, IDs)
+region_shp@data$region <- region_shp@data$ID
 
 usethis::use_data(region_shp, overwrite = TRUE)
 usethis::use_data(world_shp, overwrite = TRUE)

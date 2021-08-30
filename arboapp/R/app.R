@@ -61,10 +61,12 @@ regional_page_ui <- tagList(
                uiOutput('select_region_question')
                ),
         column(4,
-               uiOutput('select_region')
+               leafletOutput('region_map')
                )
       ),
       fluidRow(
+        column(4,
+               uiOutput('select_region')),
         column(4,
                tableOutput('region_response_table')
                ),
@@ -98,6 +100,23 @@ regional_page_server <- function(input, output, session) {
       rt
     }
   })
+  
+  output$region_map <- renderLeaflet({
+    question_number <- input$region_question
+    # Load data
+    data <- load_data()
+    # load data dictionary to facilitate processing survey results:
+    dict <- load_dict()
+    # Subset to just those data needed for plotting
+    df <- data %>% dplyr::rename(country = SI01) %>%
+      mutate(region = as.character(Region))
+    idx <- which( dict$`Question number` == question_number )[1]
+    var_names <- dict$`Variable name`[idx]
+    df <- df[,c('country', var_names, 'region')]
+    names(df)[2] <- 'value'
+    make_map(df = df, qualitative = FALSE)
+  })
+  
   
   output$region_question_text <- renderText({
     question <- get_question_text( input$region_question )

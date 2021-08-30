@@ -15,15 +15,51 @@ make_map <- function(df,
  #              value = c(1,2,3))
  # df$value <- c('A', 'b', 'CCC')
  
+
+ # See if is regional or not
+ is_regional <- 'region' %in% names(df)
+ 
+ # See if qualitative (override logic)
+ if(!qualitative){
+   if(!is.numeric(df$value)){
+     qualitative <- TRUE
+   }
+ }
+ 
+ if(is_regional){
+   if(qualitative){
+     # regional, qualitative
+     df <- df %>%
+       group_by(region) %>%
+       summarise(value = length(which(value == 'Yes')))
+   } else {
+     # regional, quantitative
+     df <- df %>%
+       group_by(region) %>%
+       summarise(value = mean(value, na.rm = TRUE))
+   }
+ } #else {
+   # if(qualitative){
+   #   # non-regional, qualitative
+   # 
+   # } # else non-regional, quantitative, no action
+   
+
  # Join shapefile and map data
- shp <- world_shp
+ if(is_regional){
+   shp <- region_shp
+ } else {
+   shp <- world_shp
+ }
  shp@data <- left_join(shp@data, df)
+ 
  
  # Define color palette and values to show in tooltip
  if(qualitative){
    pal <- 'Set1'
    pal_fun <- colorFactor(palette = pal, domain=shp@data$value, na.color="transparent")
    vals <- shp@data$value
+
  } else {
    pal_fun <- colorNumeric(palette=pal, domain=shp@data$value, na.color="transparent")
    vals <- round(shp@data$value, 2)
@@ -31,7 +67,8 @@ make_map <- function(df,
  
  # Prepare the text for tooltips:
  tool_tip <- paste(
-   "Country: ", shp@data$country,"<br/>", 
+   ifelse(is_regional, 'Region: ', "Country: "), 
+   ifelse(is_regional, shp@data$region, shp@data$country),"<br/>", 
    "Value: ", vals, 
    sep="") %>%
    lapply(htmltools::HTML)
