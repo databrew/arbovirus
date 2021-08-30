@@ -52,7 +52,7 @@ global_page_server <- function(input, output, session) {
 
 regional_page_ui <- tagList(
   div(class = 'custom-container',
-      h1("Regional Page"),
+      h3("Aggregated results by region"),
       p("Question:"),
       textOutput('region_question_text'),
       br(),
@@ -60,6 +60,11 @@ regional_page_ui <- tagList(
         column(4,
                uiOutput('select_region_question')
                ),
+        column(4,
+               uiOutput('select_region')
+               )
+      ),
+      fluidRow(
         column(4,
                tableOutput('region_response_table')
                ),
@@ -73,17 +78,25 @@ regional_page_ui <- tagList(
 ############## SERVER Regional ######################
 regional_page_server <- function(input, output, session) {
   
-  questions <- get_questions( )
+  questions <- get_questions()
+  regions <- c("All", get_regions())
 
   output$select_region_question <- renderUI({
     selectInput("region_question", label = h3("Select a question"), choices = questions )
   })
   
+  output$select_region <- renderUI({
+    selectInput("region", label = h3("Select a region"), choices = regions )
+  })
+  
   output$region_response_table <- renderTable({
     rt <- get_region_table( input$region_question )
     if( !is.null(rt) ){
+      if( input$region != "All" ){
+        rt <- rt %>% filter(Region == input$region)
+      }
       rt
-    } 
+    }
   })
   
   output$region_question_text <- renderText({
@@ -95,30 +108,22 @@ regional_page_server <- function(input, output, session) {
   
   output$region_response_plot <- renderPlot({
     df <- get_region_plot_df( input$region_question )
+    if( input$region != "All" ){
+      df <- df %>% filter(Region == input$region)
+    }
+    g <- ggplot(df, aes(x=Response, 
+                        y=n, 
+                        fill=Response)) + 
+      geom_col() + 
+      theme(legend.position = "bottom",
+            legend.direction="horizontal",
+            axis.title.x=element_blank(),
+            axis.text.x=element_blank(),
+            axis.ticks.x=element_blank())
     if("Arbovirus" %in% colnames(df)){
-      ggplot(df, 
-             aes(x=Response, 
-                 y=n, 
-                 fill=Response)) + 
-        geom_col() + 
-        facet_grid( Region ~ Arbovirus ) +
-        theme(legend.position = "bottom",
-              legend.direction="horizontal",
-              axis.title.x=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank())
+      g + facet_grid( Region ~ Arbovirus )
     } else{
-      ggplot( df, 
-              aes( x = Response,
-                   y = n,
-                   fill = Response)) +
-        geom_col() +
-        facet_wrap( ~Region ) +
-        theme(legend.position = "bottom",
-              legend.direction="horizontal",
-              axis.title.x=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank())
+      g + facet_wrap( ~Region ) 
     }
   })
   
@@ -129,14 +134,16 @@ regional_page_server <- function(input, output, session) {
 ############## UI Country ######################
 country_page_ui <- tagList(
   div(class = 'custom-container',
-      h1("Country Page"),
+      h3("Aggregated results for all countries"),
       p("Question:"),
       textOutput('country_question_text'),
       br(),
       fluidRow(
         column(4,
                uiOutput('select_country_question')
-        ),
+        )
+      ),
+      fluidRow(
         column(4,
                tableOutput('country_response_table')
         ),
@@ -172,30 +179,22 @@ country_page_server <- function(input, output, session) {
   
   output$country_response_plot <- renderPlot({
     df <- get_country_plot_df( input$country_question )
+    g <- ggplot(df, 
+                aes(x=Response, 
+                    y=n, 
+                    fill=Response)) + 
+      geom_col() + 
+      theme(legend.position = "bottom",
+            legend.direction="horizontal",
+            axis.title.x=element_blank(),
+            axis.text.x=element_blank(),
+            axis.ticks.x=element_blank())
     if("Arbovirus" %in% colnames(df)){
-      ggplot(df, 
-             aes(x=Response, 
-                 y=n, 
-                 fill=Response)) + 
-        geom_col() + 
-        facet_wrap( ~ Arbovirus ) +
-        theme(legend.position = "bottom",
-              legend.direction="horizontal",
-              axis.title.x=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank())
+      g + facet_wrap( ~ Arbovirus )
     } else{
-      ggplot( df, 
-              aes( x = Response,
-                   y = n,
-                   fill = Response)) +
-        geom_col() +
-        theme(legend.position = "bottom",
-              legend.direction="horizontal",
-              axis.title.x=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank())
+      g
     }
+    
   })
   
 }

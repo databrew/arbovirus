@@ -50,6 +50,34 @@ load_dict <- function(){
   read_csv("misc/Data_dictionary_Survey375147.csv")
 }
 
+#' Questions standardizer
+#' @description Function for retrieving question numbers
+#' @return A character vector
+#' @noRd
+get_questions <- function( ){
+  # NOTE: We should only have to read each CSV once!
+  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+  idx <- c( which( is.na( dict$`Question number` )),
+            which( grepl('upload', dict$`Type of variable`)),
+            which ( grepl('filecount', dict$`Question number`) ))
+  questions <- dict$`Question number`[-idx]
+  idx <- which( questions == "5" )
+  questions <- unique( questions[ idx:length( questions )] )
+  return( questions )
+}
+
+#' Questions standardizer
+#' @description Function for retrieving question text
+#' @return A character string
+#' @noRd
+get_question_text <- function( question_number ){
+  # NOTE: We should only have to read each CSV once!
+  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+  idx <- min( which( dict$`Question number` == question_number ) )
+  question_text <- dict$Description[ idx ]
+  return( question_text )
+}
+
 #' Responses standardizer
 #' @description Function for retrieving responses to a given question
 #' @return A dataframe
@@ -67,6 +95,17 @@ get_responses <- function( question_number ){
     colnames( responses ) <- "Response"
   }
   return( responses )
+}
+
+#' Regions standardizer
+#' @description Function for retrieving WHO region names
+#' @return A character vector
+#' @noRd
+get_regions <- function( ){
+  # NOTE: We should only have to load data once!
+  load("data/data.RData")
+  regions <- levels( data$Region )
+  return( regions )
 }
 
 #' Responses standardizer
@@ -89,10 +128,10 @@ get_region_table <- function( question_number ){
     }
     df <- cbind( Region = data$Region, responses) %>% 
       pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+      drop_na(Region) %>% 
       group_by(Region, Arbovirus, Response) %>% 
       tally %>% 
-      pivot_wider( names_from=Response, values_from=n) # %>% 
-      # drop_na(Region) 
+      pivot_wider( names_from=Response, values_from=n) 
   } else{
     colnames( responses ) <- "Response"
     df <- data.frame(Region = data$Region, Response = responses) %>% 
@@ -158,6 +197,7 @@ get_region_plot_df <- function( question_number ){
     }
     df <- cbind( Region = data$Region, responses) %>% 
       pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+      drop_na(Region) %>% 
       group_by(Region, Arbovirus, Response) %>% 
       tally 
   } else{
@@ -199,34 +239,6 @@ get_country_plot_df <- function( question_number ){
       tally 
   }
   return( df )
-}
-
-#' Questions standardizer
-#' @description Function for retrieving question numbers
-#' @return A character vector
-#' @noRd
-get_questions <- function( ){
-  # NOTE: We should only have to read each CSV once!
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
-  idx <- c( which( is.na( dict$`Question number` )),
-            which( grepl('upload', dict$`Type of variable`)),
-            which ( grepl('filecount', dict$`Question number`) ))
-  questions <- dict$`Question number`[-idx]
-  idx <- which( questions == "5" )
-  questions <- unique( questions[ idx:length( questions )] )
-  return( questions )
-}
-
-#' Questions standardizer
-#' @description Function for retrieving question text
-#' @return A character string
-#' @noRd
-get_question_text <- function( question_number ){
-  # NOTE: We should only have to read each CSV once!
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
-  idx <- min( which( dict$`Question number` == question_number ) )
-  question_text <- dict$Description[ idx ]
-  return( question_text )
 }
 
 
