@@ -3,3 +3,4 @@ data/
 *.pdf
 figures/
 .Rproj.user
+.Rhistory
