@@ -1,0 +1,8 @@
+---
+title: "Indicators page"
+---
+
+Indicators page.
+
+```{r, child="_sessioninfo.Rmd"}
+```

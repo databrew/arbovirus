@@ -1,0 +1,10 @@
+---
+title: "Global page"
+---
+
+Global page!
+
+```{r, child="_sessioninfo.Rmd"}
+```
+
+ABC 123
