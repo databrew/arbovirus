@@ -1,0 +1,212 @@
+---
+title: "WHO Global Arbovirus Survey"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+options(scipen = '999')
+```
+
+#### 1  Country: 
+
+#### 2 Respondent/person to be contacted for clarification, if needed  (last name, first name, e-mail address) 
+
+#### 3 Professional title and affiliation 
+
+#### 4 Date (dd/mm/yyyy): 
+
+#### 5  Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission 
+
+#### 6 Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country? 
+
+#### 6b  For which of the following arboviruses do you have written surveillance and control plans for your country? Please choose all that apply 
+
+#### 7  Is there a specific national programme for arboviral diseases surveillance or is it integrated in another programme?  Please select the appropriate answer: 
+
+#### 7b Please specify the programme into which arboviral diseases is integrated 
+
+#### 8  For which level of the health structure are individual and aggregated  data available ?  (select all relevant levels) 
+
+#### 9 What are the tools used for recording case data for surveillance purposes? Select all that apply 
+
+#### 10 Which training has been provided to the staff working on arboviral disease surveillance data 
+
+#### 11  Is reporting mandatory for any arboviral disease cases in your country?  
+
+#### 11b For which of the following arboviral disease cases is reporting mandatory in your country? 
+
+#### 11c For which other arboviral diseases is reporting mandatory?  
+
+#### 12  In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease?  
+
+#### 12b How frequently are surveillance data reported to the national level? Please choose one of the following: 
+
+#### 12c What type of national epidemiological surveillance was conducted? Please choose one the following:     Definitions:  Active surveillance is defined as having dedicated systems and staff that routinely and with effort survey for cases of disease or detection of vectors and associated pathogens by the public health department 
+
+#### 13 Does your country provide regular training sessions for healthcare workers on notification of Aedes-borne arboviral diseases? 
+
+#### 14 What do the arboviral disease surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges to arboviral disease surveillance in humans? 
+
+#### 15 Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively)     
+
+#### 15b On average, for what percentage of suspected arboviral disease cases your country is laboratory confirmatory testing performed? Please indicate for outbreak and non-outbreak periods, respectively 
+
+#### 16 In the last two years, were the positive cases of arboviruses confirmed by a national reference laboratory? 
+
+#### 16b If your country does not have capacity to type and serotype arboviruses, do you send samples for typing to other countries? 
+
+#### 17  Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes 
+
+#### 18 Which additional resources are most needed for your country to perform adequate testing for arboviral diseases? Please describe what would be needed for each checked resource in the adjacent comment field 
+
+#### 19 Do you perform virological surveillance on humans, ie, tracking of prevailing genotypes/serotypes? Please select all that apply 
+
+#### 19b Which samples do you use for virological surveillance? [Samples from suspected arboviral diseases routinely notified                     ] 
+
+#### 19c For which viruses do you perform virological surveillance? (check all that apply)  [Chikungunya virus ] 
+
+#### 19d Does your country provide regular training sessions for healthcare workers on arboviruses virological surveillance? 
+
+#### 20 What do the arboviral diagnostic laboratory staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections?  
+
+#### 21 Does your country have clinical guidelines for healthcare workers on diagnosis and clinical management of cases and severe cases of Aedes-borne arboviral diseases? 
+
+#### 22 Are severe cases of arboviral diseases managed in a special area  (part of the hospital, isolation beds)? 
+
+#### 23 How many hospital beds are available per 100,000 population? 
+
+#### 24 Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? 
+
+#### 25 What do the arboviral disease surveillance/clinical staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to case management? 
+
+#### 26 Is there a disease programme, agency, or service in charge of arbovirus vector surveillance in your country?  
+
+#### 27  Which institution/department is in charge of reporting entomologic surveillance data to the national ministry of health/health department? (Check all that apply) 
+
+#### 28 For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? 
+
+#### 28c  Did the entomologic surveillance entail country wide programmes or was it restricted to specific locations?  
+
+#### 28d How many sentinel surveillance sites do you have? 
+
+#### 28e  How often was the surveillance conducted? Please choose one of the following: 
+
+#### 29 Do you conduct adult mosquito surveillance? 
+
+#### 30 Do you conduct larval/pupal mosquito surveillance? 
+
+#### 31 Are trapped mosquitoes identified to species? 
+
+#### 32 Does your country either calculate minimum infection rates (MIR) for any Aedes-borne arboviruses with your mosquito data or receive such data from other agencies?  Please choose only one of the following: 
+
+#### 33  Which laboratories performed testing for arboviruses on mosquito pools collected in your country in the last two years? (check all that apply)  [National public health laboratory] 
+
+#### 34  Is there a record of Aedes aegypti or Aedes albopictus being found in your country in the past 5 years? Please choose only one of the following 
+
+#### 34b  Please describe the potential public health threat from Aedes aegypti in your country 
+
+#### 34c  Please describe the potential public health threat from Aedes albopictus in your country 
+
+#### 35 Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply 
+
+#### 35b Would your country have conducted or financially supported adulticiding/larviciding or source reduction activities in the last two years if sufficient funding were available? 
+
+#### 35c  Which adulticides and/or larvicides (brand and product name) were used?  
+
+#### 36 Does your country provide regular training sessions for staff in charge of vector control and vector surveillance? 
+
+#### 37 For the last two years, did your country have a plan for mosquito-borne disease control that includes a threshold (eg,  level of vector mosquito abundance or minimum infection rate) that would result in a recommendation for mosquito adulticiding/other mosquito reduction measures?) 
+
+#### 37b Which indicator(s) is(are) used as threshold(s)? 
+
+#### 38 Overall, are data on any of the following arboviral outbreak risk factors routinely collected and analysed? (Select all that apply) 
+
+#### 39 Is there a surveillance system in place for monitoring Aedes resistance to the insecticide(s) used? 
+
+#### 40 What do the vector surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control in the country? 
+
+#### 41 During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (eg, epizootic surveillance for yellow fever in endemic areas)? 
+
+#### 41b How often was the animal surveillance conducted?  
+
+#### 41c  What type of surveillance was conducted in animals?     
+
+#### 42 Does your country (or local jurisdictions within the country) perform sentinel animal surveillance or epizootic surveillance, eg, for yellow fever in nonhuman primates in endemic regions?  
+
+#### 42b  For which viruses is sentinel surveillance conducted and in which animal species? 
+
+#### 43  Does your country have a community outreach program that also covers arboviral diseases? 
+
+#### 43b What entity(ies) is(are) in charge of the outreach program in your country ? 
+
+#### 43c What is the geographical coverage of the outreach program in your country? 
+
+#### 43d Is the community outreach/social mobilization program sufficiently funded to cover staff time, prevention and outreach activities as needed? 
+
+#### 43e Which resources would help ensure adequate capacity? 
+
+#### 44 Did your national arboviral disease program issue notifications to the public about local transmission risk and/or possible vector-control activities (eg larviciding, adulticiding, community mobilization and participation, etc) as a prevention message for arboviral diseases within last 2 years? (Check all that apply) 
+
+#### 44b Which means does your program use for community sensitization, mobilisation and acceptance of interventions in your country? (Check all that apply) 
+
+#### 45 Does your country provide regular training sessions for staff in charge of community sensitization, mobilisation and acceptance of interventions dedicated to control arboviral diseases? 
+
+#### 46 What do the community outreach staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to community participation 
+
+#### 47 Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose? 
+
+#### 48 Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)? 
+
+#### 49 Are there defined or established criteria for declaring an outbreak of arboviral disease outbreak in your country? 
+
+#### 50 Do you have established collaborations with national/regional research institutions / international agencies that are planned to be activated in case of arboviral outbreak? 
+
+#### 51 What vector control interventions are deployed in case of an emergency? 
+
+#### 52 For the last 2 years, which of the following government levels had an emergency fund or a specified emergency funding mechanism for arbovirus outbreak response? 
+
+#### 53 Does your country provide regular training sessions for staff/committee in charge of preparedness for arboviral outbreaks/epidemics? 
+
+#### 54 What do the arboviral disease surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics in your country? 
+
+#### 55  Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) 
+
+#### 55b Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020? 
+
+#### 55c Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020 
+
+#### 55d Please provide total number of cases and deaths due to each of the following other arboviruses that you selected from 2015-2020 
+
+#### 56 Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019 
+
+#### 57 Do arbovirus surveillance staff have any perceived reasons for increasing trends in arboviral disease incidence? Check all answers that apply 
+
+#### 58 During 2019 (prior to the Covid-19 pandemic), indicate below the number of arbovirus surveillance staff at the national level 
+
+#### 59 Indicate below how many total staff persons are needed at the national level in your country to achieve full epidemiology and laboratory capacity* to conduct arbovirus surveillance 
+
+#### 60 Optional comments to explain responses to questions 58 and 59 above 
+
+#### 61 The national health authority/ministry of health has access to expertise in clinical management of arboviruses (Check all that apply) [Within the ministry of health (eg, public health medical officers, clinicians in state hospitals)] 
+
+#### 62 The national health authority/ministry of health has access to expertise in arbovirus epidemiology (Check all that apply 
+
+#### 63 The national health authority/ministry of health has access to expertise in arbovirus laboratory diagnosis (Check all that apply) 
+
+#### 64 The national health authority/ministry of health has access to expertise in entomology (Check all that apply) 
+
+#### 65 Optional comments to explain responses to any of Questions 61-64 
+
+#### 66  If you have any further comments to add regarding arbovirus surveillance and control in your country, including whether arboviruses other than Aedes-borne arboviruses are of higher priority, please do so in the text field below 
+

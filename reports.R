@@ -1,10 +1,14 @@
----
-title: "WHO Global Arbovirus Survey"
-author: "Survey results"
-date: "`r format(Sys.time(), '%Y %B %d')`"
+library(tidyverse)
+library(readxl)
+library(stringr)
+library(pander)
+# library(flextable)
+# library(RColorBrewer)
+# library(janitor)
+
+write_lines("---
+title: \"WHO Global Arbovirus Survey\"
 output: html_document
-params:
-  country: "Afghanistan"
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -21,29 +25,11 @@ opts_chunk$set(comment = NA,
                fig.path = 'figures/')
 options(scipen = '999')
 ```
+", "reports.Rmd")
 
-```{r}
+# get the survey results:
 
-library(tidyverse)
-library(readxl)
-library(flextable)
-library(stringr)
-library(pander)
-library(RColorBrewer)
-library( janitor )
-make_colors <- function(n, seed = 123){
-  pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
-  set.seed(seed)
-  pal <- sample(pal, length(pal))
-  out <- colorRampPalette(pal)(n)
-  return(out)
-}
-ggplot2::theme_set(theme_bw())
-
-# get the survey results: processed by WHO script (lightly edited),
-# then WHO regions added
-
-if( file.exists("data/data.RData" )){
+if( file.exists("data/data.RData")){
   load("data/data.RData")
 } else{
   source("misc/survey_375147_R_syntax_file.R")
@@ -63,9 +49,7 @@ if( file.exists("data/data.RData" )){
   save(data, file="data/data.RData")
 }
 
-# Create report for selected country only:
-data <- data %>%
-  filter( SI01 == params$country )
+data <- data %>% filter(SI01 == params$country)
 
 # load data dictionary to facilitate processing survey results:
 dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
@@ -73,8 +57,6 @@ dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
 # utility function 
 get_responses <- function( question_number ){
   idx <- which( dict$`Question number` == question_number )
-  # question <- dict$Description[ idx[1] ]
-  # cat( paste("Question", question_number, ":", question) )
   var_names <- dict$`Variable name`[idx]
   responses <- data %>% select( all_of(var_names) )
   if( !is.na(dict$Subquestion[ idx[1] ]) ){
@@ -86,18 +68,19 @@ get_responses <- function( question_number ){
   return( responses )
 }
 
-```
+# write_lines("Survey submitted on",data$SI04),"reports/reports.Rmd", append=TRUE)
+# write_lines(paste("by",data$SI02, data$SI03),"reports/reports.Rmd", append=TRUE)
 
-# Submission information
-
-Survey submitted on `r data$SI04`
-
-by `r data$SI02`, `r data$SI03`
-
-```{r}
-
-start <- which( dict$`Question number` == 1 )
-stop <- length( dict$`Question number`)
-(question_nums <- unique( dict$`Question number`[start:stop]))
-
-```
+idx <- c( which( is.na( dict$`Question number` )),
+          which( grepl('upload', dict$`Type of variable`)),
+          which ( grepl('filecount', dict$`Question number`) ))
+all_questions <- dict$`Question number`[-idx]
+idx <- which( all_questions == "1" )
+all_questions <- unique( all_questions[ idx:length( all_questions )] )
+n_questions <- length( all_questions )
+for( i in 1:n_questions ){
+  num <- all_questions[i]
+  idx <- min( which( dict$`Question number` == num))
+  question <- dict$Description[idx]
+  write_lines(paste("####",num, question,"\n"), "reports.Rmd", append=TRUE)
+}
