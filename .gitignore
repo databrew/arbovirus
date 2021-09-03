@@ -2,5 +2,8 @@ data/
 *.html
 *.pdf
 figures/
+missingness/*.csv
+missingness/*.html
+missingness/.Rhistory
 .Rproj.user
 .Rhistory
