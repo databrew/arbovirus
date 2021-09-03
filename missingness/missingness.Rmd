@@ -48,7 +48,7 @@ n_countries <- length( data$SI01 )
 summary <- data.frame( Country = rep( data$SI01, rep(n_questions, n_countries )), # country name
                       Question = rep( all_questions, n_countries ), # question name
                       Type = rep( type, n_countries ), # standard or special
-                      Status = rep( status, n_countries) # answered, skipped, or not shown
+                      Status = as.character( rep( status, n_countries) ) # answered, skipped, or not shown
                       ) 
 
 update_special <- function( country_idx, question ){
