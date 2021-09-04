@@ -2,7 +2,7 @@
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
 output: html_document
 params:
-  country: "Afghanistan"
+  country: "Germany"
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -17,7 +17,7 @@ opts_chunk$set(comment = NA,
                fig.width = 9.64,
                fig.height = 5.9,
                fig.path = 'figures/')
-options(scipen = '999')
+# options(scipen = '999')
 ```
 
 ```{r}
@@ -87,6 +87,17 @@ get_responses <- function( question_number ){
 
 ```{r}
 responses <- get_responses("5")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -102,6 +113,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("6b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -135,6 +157,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("8")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -144,6 +177,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("9")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -153,6 +197,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("10")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -168,6 +223,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("11b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -177,6 +243,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("11c")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -204,6 +281,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("12b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -231,6 +319,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("13")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -246,6 +345,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("15")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -255,6 +365,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("15b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -264,6 +385,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("16")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -273,6 +405,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("16b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -282,6 +425,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("17")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -291,6 +445,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("18")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -300,6 +465,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("19")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -309,6 +485,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("19b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -318,6 +505,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("19c")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -357,6 +555,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("22")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -372,6 +581,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("24")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -387,6 +607,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("26")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -396,6 +627,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("27")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -423,6 +665,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("28c")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -438,6 +691,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("28e")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -465,6 +729,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("32")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -474,6 +749,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("33")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -489,6 +775,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("34b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -498,6 +795,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("34c")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -507,6 +815,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("35")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -540,6 +859,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("37b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -549,6 +879,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("38")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -576,6 +917,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("41b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -609,6 +961,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("42b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -642,6 +1005,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("43c")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -657,6 +1031,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("43e")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -666,6 +1051,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("44")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -675,6 +1071,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("44b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -684,6 +1091,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("45")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -723,6 +1141,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("49")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -732,6 +1161,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("50")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -747,6 +1187,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("52")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -768,6 +1219,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("55")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -783,6 +1245,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("55c")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -792,6 +1265,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("55d")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -801,6 +1285,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("56")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -810,6 +1305,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("57")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -819,6 +1325,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("58")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -828,6 +1345,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("59")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -843,6 +1371,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("61")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -852,6 +1391,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("62")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -861,6 +1411,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("63")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 
@@ -870,6 +1431,17 @@ knitr::kable(responses)
 
 ```{r}
 responses <- get_responses("64")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+}
 knitr::kable(responses)
 ```
 

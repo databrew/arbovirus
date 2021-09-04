@@ -49,7 +49,7 @@ write_lines("---
 title: \"Arboviral Surveillance and Response Capacity Survey 2021\"
 output: html_document
 params:
-  country: \"Afghanistan\"
+  country: \"Germany\"
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -64,7 +64,7 @@ opts_chunk$set(comment = NA,
                fig.width = 9.64,
                fig.height = 5.9,
                fig.path = 'figures/')
-options(scipen = '999')
+# options(scipen = '999')
 ```
 
 ```{r}
@@ -110,15 +110,30 @@ for( j in 1:n_questions ){
   num <- all_questions[j]
   idx <- which( dict$`Question number` == num)
   question <- str_trim( dict$Description[idx[1]] )
-  write_lines(paste0("\n#### ",num,". ",question,"\n"), "report.Rmd", append=TRUE)
-  # response <- get_responses( df, num )
-  # sink(outfile, append=TRUE)
-  # cat( pander(response), sep="\n" )
-  # sink()
+  write_lines(paste0("\n#### ",num,". ",question,"\n"), 
+              "report.Rmd", 
+              append=TRUE)
   if( length(idx)==1){
     var_name <- dict$`Variable name`[idx]
-    write_lines(paste0("`r data$",var_name,"` \n\n*****"), "report.Rmd", append=TRUE)
+    write_lines(paste0("`r data$",var_name,"` \n\n*****"), 
+                "report.Rmd", 
+                append=TRUE)
   } else{
-    write_lines(paste0("```{r}\nresponses <- get_responses(\"",num,"\")\nknitr::kable(responses)\n```\n\n*****"),"report.Rmd",append=TRUE)
+    write_lines(paste0("```{r}\nresponses <- get_responses(\"",num,"\")\n"),
+                "report.Rmd",
+                append=TRUE)
+    write_lines("if( all( grepl(\"\\\\]\\\\[\", colnames(responses)) ) ){
+responses <- responses %>% 
+\tpivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, \"\\\\]\\\\[\") ), ncol=2, byrow=T)
+responses <- responses %>% 
+\tmutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+\tselect(-name) %>%
+\tmutate( value = case_when( value == 1 ~ \"Yes\", is.na(value) ~ \"No\")) %>%
+\tpivot_wider(names_from=Response, values_from=value)
+}
+knitr::kable(responses)\n```\n\n*****",
+    "report.Rmd",
+    append=TRUE)
   }
 }
