@@ -131,8 +131,11 @@ responses <- responses %>%
 \tselect(-name) %>%
 \tmutate( value = case_when( value == 1 ~ \"Yes\", is.na(value) ~ \"No\")) %>%
 \tpivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)\n```\n\n*****",
+flextable( responses ) %>% autofit
+# knitr::kable(responses)\n```\n\n*****",
     "report.Rmd",
     append=TRUE)
   }

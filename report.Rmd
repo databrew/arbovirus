@@ -79,7 +79,7 @@ get_responses <- function( question_number ){
 
 #### 4. Date (dd/mm/yyyy):
 
-`r data$SI04` 
+`r paste0(day(data$SI04),"/",month(data$SI04),"/",year(data$SI04))` 
 
 *****
 
@@ -97,8 +97,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything(), names_to="Arbovirus", values_to="Response" )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -123,8 +126,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -166,9 +172,13 @@ responses <- responses %>%
 	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
+	pivot_wider(names_from=Response, values_from=value) %>%
+  rename("Health structure" = Level)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -187,8 +197,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything(), names_to="Level", values_to="Tools" )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -207,8 +220,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -233,8 +249,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything(), names_to="Arbovirus", values_to="Cases" )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -253,8 +272,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -291,8 +313,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -329,8 +354,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -355,8 +383,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -375,8 +406,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -395,8 +429,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -415,8 +452,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -435,8 +475,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -455,8 +498,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -475,8 +521,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -495,8 +544,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -515,8 +567,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -565,8 +620,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -591,8 +649,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -617,8 +678,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -637,8 +701,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -675,8 +742,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -701,8 +771,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -739,8 +812,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -759,8 +835,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -785,8 +864,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -805,8 +887,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -825,8 +910,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -869,8 +957,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -889,8 +980,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -927,8 +1021,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -971,8 +1068,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1015,8 +1115,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1041,8 +1144,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1061,8 +1167,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1081,8 +1190,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1101,8 +1213,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1151,8 +1266,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1171,8 +1289,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1197,8 +1318,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1229,8 +1353,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1255,8 +1382,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1275,8 +1405,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1295,8 +1428,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1315,8 +1451,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1335,8 +1474,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1355,8 +1497,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1381,8 +1526,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1401,8 +1549,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1421,8 +1572,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
@@ -1441,8 +1595,11 @@ responses <- responses %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+flextable( responses ) %>% autofit
+# knitr::kable(responses)
 ```
 
 *****
