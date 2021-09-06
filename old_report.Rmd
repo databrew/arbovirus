@@ -67,7 +67,6 @@ get_responses <- function( question_number ){
 > `r data$SI01` 
 
 
-
 #### 2. Respondent/person to be contacted for clarification, if needed  (last name, first name, e-mail address)
 
 > `r data$SI02` 
@@ -296,20 +295,32 @@ knitr::kable(responses, col.names=NULL)
 
 
 
-#### 12b. How frequently are surveillance data reported to the national level? 
+#### 12b. How frequently are surveillance data reported to the national level? Please choose one of the following:
 
-> `r if( !is.na( data$SII12b ) ){ data$SII12b } else{ data$SII12b_other }`
+```{r}
+responses <- get_responses("12b")
+
+if( all( grepl("\\]\\[", colnames(responses)) ) ){
+responses <- responses %>% 
+	pivot_longer(everything())
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	pivot_wider(names_from=Response, values_from=value)
+} else{
+responses <- responses %>% pivot_longer( everything() )
+}
+knitr::kable(responses, col.names=NULL)
+```
 
 
-#### 12c. What type of national epidemiological surveillance was conducted? 
+
+#### 12c. What type of national epidemiological surveillance was conducted? Please choose one the following:     Definitions:  Active surveillance is defined as having dedicated systems and staff that routinely and with effort survey for cases of disease or detection of vectors and associated pathogens by the public health department
 
 > `r data$SII12c` 
 
-> For reference, here are the relevant definitions:
-
-**Active surveillance** is defined as having dedicated systems and staff that routinely and with effort survey for cases of disease or detection of vectors and associated pathogens by the public health department.
-
-**Passive surveillance** is defined as having a reporting system where physicians, laboratories, mosquito control districts, academic institutions or others routinely report cases of disease or detection of vectors and associated pathogens to the public health department.
 
 
 #### 12d. If available, please upload upload the most recent report(s) on arboviral surveillance in humans
@@ -326,9 +337,7 @@ knitr::kable(responses, col.names=NULL)
 
 #### 13. Does your country provide regular training sessions for healthcare workers on notification of Aedes-borne arboviral diseases?
 
-> `r if(grepl("Yes", data$SII13)){ paste0("Yes : ",data$SII13_comment) } else{ data$SII13 }`
-
-```{r eval=FALSE}
+```{r}
 responses <- get_responses("13")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
@@ -354,7 +363,6 @@ knitr::kable(responses, col.names=NULL)
 
 
 # Section III: Arbovirus laboratory capacity
-
 
 #### 15. Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively)
 
@@ -642,7 +650,6 @@ knitr::kable(responses, col.names=NULL)
 
 
 # Section V: Routine vector surveillance and control
-
 
 #### 26. Is there a disease programme, agency, or service in charge of arbovirus vector surveillance in your country?
 
@@ -971,7 +978,6 @@ knitr::kable(responses, col.names=NULL)
 
 # Section VI: Animal surveillance 
 
-
 #### 41. During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (eg, epizootic surveillance for yellow fever in endemic areas)?
 
 > `r data$SVI41` 
@@ -1058,7 +1064,6 @@ knitr::kable(responses, col.names=NULL)
 
 
 # Section VII: Community sensitization and participation
-
 
 #### 43. Does your country have a community outreach program that also covers arboviral diseases?
 
@@ -1195,7 +1200,6 @@ knitr::kable(responses, col.names=NULL)
 
 # Section VIII: Preparedness for arboviral outbreaks/epidemics
 
-
 #### 47. Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose?
 
 > `r data$SVIII47` 
@@ -1305,7 +1309,6 @@ knitr::kable(responses, col.names=NULL)
 
 # Section IX: Arboviral disease surveillance data
 
-
 #### 55. Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available)
 
 ```{r}
@@ -1325,250 +1328,5 @@ responses <- responses %>% pivot_longer( everything() )
 }
 knitr::kable(responses, col.names=NULL)
 ```
-
-
-
-#### 55b. Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020?
-
-> `r data$SIX55b` 
-
-
-
-#### 55c. Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020
-
-```{r}
-responses <- get_responses("55c")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 55d. Please provide total number of cases and deaths due to each of the following other arboviruses that you selected from 2015-2020
-
-```{r}
-responses <- get_responses("55d")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 56. Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019
-
-```{r}
-responses <- get_responses("56")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 57. Do arbovirus surveillance staff have any perceived reasons for increasing trends in arboviral disease incidence? Check all answers that apply
-
-```{r}
-responses <- get_responses("57")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-# Section X: Surveillance staffing
-
-#### 58. During 2019 (prior to the Covid-19 pandemic), indicate below the number of arbovirus surveillance staff at the national level
-
-```{r}
-responses <- get_responses("58")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 59. Indicate below how many total staff persons are needed at the national level in your country to achieve full epidemiology and laboratory capacity* to conduct arbovirus surveillance
-
-```{r}
-responses <- get_responses("59")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 60. Optional comments to explain responses to questions 58 and 59 above
-
-> `r data$SX60` 
-
-
-
-#### 61. The national health authority/ministry of health has access to expertise in clinical management of arboviruses (Check all that apply) [Within the ministry of health (eg, public health medical officers, clinicians in state hospitals)]
-
-```{r}
-responses <- get_responses("61")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 62. The national health authority/ministry of health has access to expertise in arbovirus epidemiology (Check all that apply
-
-```{r}
-responses <- get_responses("62")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 63. The national health authority/ministry of health has access to expertise in arbovirus laboratory diagnosis (Check all that apply)
-
-```{r}
-responses <- get_responses("63")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 64. The national health authority/ministry of health has access to expertise in entomology (Check all that apply)
-
-```{r}
-responses <- get_responses("64")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 65. Optional comments to explain responses to any of Questions 61-64
-
-> `r data$SX65` 
-
-
-# Section XI: Survey conclusion
-
-#### 66. If you have any further comments to add regarding arbovirus surveillance and control in your country, including whether arboviruses other than Aedes-borne arboviruses are of higher priority, please do so in the text field below
-
-> `r data$SC1` 
 
 

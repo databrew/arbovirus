@@ -84,8 +84,8 @@ if( file.exists(\"data/data.RData\")){
 
 data <- data %>% filter( SI01 == params$country )
 
-if( file.exists(\"misc/Data_dictionary_Survey375147.csv\")){
-  dict <- read_csv(\"misc/Data_dictionary_Survey375147.csv\")
+if( file.exists(\"misc/Data_dictionary_Survey375147_unabridged.csv\")){
+  dict <- read_csv(\"misc/Data_dictionary_Survey375147_unabridged.csv\")
 } else{
   message(\"You need the data dictionary!\")
 }
@@ -115,7 +115,7 @@ for( j in 1:n_questions ){
               append=TRUE)
   if( length(idx)==1){
     var_name <- dict$`Variable name`[idx]
-    write_lines(paste0("`r data$",var_name,"` \n\n*****"), 
+    write_lines(paste0("> `r data$",var_name,"` \n\n"), 
                 "report.Rmd", 
                 append=TRUE)
   } else{
@@ -134,8 +134,7 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-flextable( responses ) %>% autofit
-# knitr::kable(responses)\n```\n\n*****",
+knitr::kable(responses, col.names=NULL)\n```\n\n",
     "report.Rmd",
     append=TRUE)
   }
