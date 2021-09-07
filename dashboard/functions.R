@@ -115,6 +115,8 @@ load_data <- function(modify_variable_names = FALSE){
   }
   return(df)
 }
+# simple <- load_data(modify_variable_names = TRUE)
+# write_csv(simple, '~/Desktop/simplified_dataset.csv')
 
 # rmarkdown::render('region.Rmd')
 # rmarkdown::render('country.Rmd')
