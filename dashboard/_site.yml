@@ -8,8 +8,6 @@ name: "WHO-ABR"
 #       href: region.html
 #     - text: "Country"
 #       href: country.html
-#     - text: "Indicators"
-#       href: indicators.html
 #     - text: "About"
 #       href: about.html
 output:

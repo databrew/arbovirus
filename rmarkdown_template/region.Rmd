@@ -1,8 +1,0 @@
----
-title: "Region page"
----
-
-Region page.
-
-```{r, child="_sessioninfo.Rmd"}
-```
