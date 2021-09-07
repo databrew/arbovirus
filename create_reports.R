@@ -1,13 +1,23 @@
 
+# Need to investigate problems with the following countries:
+# Greece, i=9 
+# China, i=17
+# Iraq, i=47
+# Unicode issues???
+
 if( file.exists("data/data.RData")){
   load("data/data.RData")
 } else{
   message("You need the data!")
 }
 
-for(i in 1:length( data$SI01)){
-  if( !is.na( data$SI01[i] ) ){
-    report_name <- paste0("reports/",data$SI01[i],".pdf")
-    rmarkdown::render( "report.Rmd", params=list(country=data$SI01[i]),output_file = report_name )
+countries <- data$SI01
+
+for(i in 1:length( countries )){
+  
+  nom <- countries[i]
+  if( !is.na( nom ) ){
+    report_name <- paste0("reports/",nom,".pdf")
+    rmarkdown::render( "report.Rmd", params=list(country=nom),output_file = report_name )
   }
 }
