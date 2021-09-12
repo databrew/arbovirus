@@ -132,7 +132,8 @@ load_data <- function(modify_variable_names = FALSE){
 make_map <- function(df,
                      pal = 'YlGnBu',
                      qualitative = FALSE,
-                     opacity = 0.8){
+                     opacity = 0.8,
+                     provider = providers$OpenStreetMap){
   
   # load('../data/world_shp.rda')
   # df <- tibble(country = c('France', 'Germany', 'Spain'),
@@ -151,6 +152,8 @@ make_map <- function(df,
   }
   
   if(is_regional){
+    # Remove duplicates
+    df <- df %>% filter(!duplicated(region))
     if(qualitative){
       # regional, qualitative
       df <- df %>%
@@ -162,12 +165,10 @@ make_map <- function(df,
         group_by(region) %>%
         summarise(value = mean(value, na.rm = TRUE))
     }
-  } #else {
-  # if(qualitative){
-  #   # non-regional, qualitative
-  # 
-  # } # else non-regional, quantitative, no action
-  
+  } else {
+    # Remove duplicates
+    df <- df %>% filter(!duplicated(country))
+  }
   
   # Join shapefile and map data
   if(is_regional){
@@ -190,21 +191,30 @@ make_map <- function(df,
   }
   
   # Prepare the text for tooltips:
+  if(is_regional){
+    part1 <- 'Region: '
+    part2 <- shp@data$region
+  } else {
+    part1 <- 'Country: '
+    part2 <- shp@data$country
+  }
   tool_tip <- paste(
-    ifelse(is_regional, 'Region: ', "Country: "), 
-    ifelse(is_regional, shp@data$region, shp@data$country),"<br/>", 
+    part1,
+    part2, 
+    "<br/>", 
     "Value: ", vals, 
     sep="") %>%
     lapply(htmltools::HTML)
   
   m <- leaflet(shp) %>% 
-    addTiles()  %>% 
+    addProviderTiles(provider = provider)  %>% 
     addPolygons( 
       fillColor = ~pal_fun(value), 
+      color = 'black',
       stroke=TRUE, 
       fillOpacity = opacity, 
-      color="white", 
-      weight=0.3,
+      # color="white", 
+      weight=1.3,
       label = tool_tip,
       labelOptions = labelOptions( 
         style = list("font-weight" = "normal", padding = "3px 8px"), 

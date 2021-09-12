@@ -24,10 +24,43 @@ opts_chunk$set(comment = NA,
 
 ```{r, echo = FALSE}
 source('functions.R')
+library(RColorBrewer)
+library(scales)
+library(leaflet)
 load('../arboapp/data/world_shp.rda') # load world shape file
 load('../arboapp/data/region_shp.rda')
 df <- load_data(modify_variable_names = TRUE)
 ```
+
+# Responses by country
+
+```{r}
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd <- pd %>% filter(!duplicated(country))
+pd$value <- 'Responded'
+make_map(df = pd,
+         qualitative = TRUE,
+         provider = providers$Stamen.TonerBackground)
+```
+
+```{r, eval = FALSE}
+# Responses by country with Africa filled in
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd <- pd %>% filter(!duplicated(country))
+pd$value <- 'Responded'
+pd2 <- world_shp@data %>%
+  filter(REGION == 2) %>%
+  dplyr::select(country) %>%
+  mutate(value = 'Responded')
+pd <- bind_rows(pd, pd2)
+
+make_map(df = pd,
+         qualitative = TRUE,
+         provider = providers$Stamen.TonerBackground)
+```
+
 
 # Surveillance capacity indicators
 
