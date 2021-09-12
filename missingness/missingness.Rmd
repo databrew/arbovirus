@@ -2,7 +2,9 @@
 title: "Arboviral Surveillance and Response Capacity Survey"
 author: "Missingness analysis"
 date: "`r format(Sys.time(), '%Y %B %d')`"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
@@ -228,8 +230,9 @@ df <- data.frame( Country = countries, Skipped = skipped ) %>%
   rename("Skipped question(s)" = Skipped)
 df <- inner_join( count_by_country, df, by="Country")
 regulartable( df ) %>%
+  align(j=2, align="center") %>% 
   width( j=3, width=3 ) %>%
-  hline %>%
-  autofit
+  hline # %>%
+  # autofit
 
 ```

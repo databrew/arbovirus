@@ -1,10 +1,4 @@
 
-# Need to investigate problems with the following countries:
-# Greece, i=9 
-# China, i=17
-# Iraq, i=47
-# Unicode issues???
-
 if( file.exists("data/data.RData")){
   load("data/data.RData")
 } else{

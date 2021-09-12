@@ -1,10 +1,13 @@
 ---
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
 output:
-  pdf_document: default
+  pdf_document: 
+    latex_engine: xelatex
+    extra_dependencies: ["booktabs"]
   html_document: default
+fontsize: 12pt
 params:
-  country: France
+  country: Germany
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -28,6 +31,7 @@ library(tidyverse)
 library(stringr)
 library(pander)
 library(knitr)
+library(kableExtra)
 library(flextable)
 library(lubridate)
 
@@ -90,6 +94,10 @@ get_responses <- function( question_number ){
 
 #### 5. Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission.
 
+\quad 
+
+\begin{center}
+
 ```{r}
 responses <- get_responses("5")
 
@@ -105,68 +113,76 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
 
+\end{center} 
 
 
 #### 6. Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country?
 
-> `r data$SII06` 
+> `r data$SII06`
 
 
 
 #### 6b. For which of the following arboviruses do you have written surveillance and control plans for your country? Please choose all that apply.
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("6b")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() ) %>% drop_na()
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
+\end{center}
 
 
 
 #### 6c. Please upload surveillance and control plan(s) or protocol(s), or guideline(s)
 
 
-> `r if(!is.na(data$SII06c__filecount)){ paste0(data$SII06c__filecount, " files submitted")} ` 
+> `r if(!is.na(data$SII06c__filecount)){ paste0(data$SII06c__filecount, " files submitted")} `
 
 
 
 #### 7. Is there a specific national programme for arboviral diseases surveillance or is it integrated in another programme?  Please select the appropriate answer:
 
-> `r data$SII07` 
+> `r data$SII07`
 
 
 
 #### 7b. Please specify the programme into which arboviral diseases is integrated
 
-> `r data$SII07b` 
+> `r data$SII07b`
 
 
 #### 8. For which level of the health structure are individual and aggregated data available? (Select all relevant levels)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("8")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value) %>%
@@ -174,126 +190,142 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 9. What are the tools used for recording case data for surveillance purposes? Select all that apply
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("9")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
+\end{center}
 
 
+#### 10. Which training has been provided to the staff working on arboviral disease surveillance data?
 
-#### 10. Which training has been provided to the staff working on arboviral disease surveillance data
+\quad
+
+\begin{center}
 
 ```{r}
 responses <- get_responses("10")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() ) %>% drop_na()
 }
-knitr::kable(responses, col.names=NULL)
+# kable( responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
+  column_spec(1, width="5in")
 ```
 
+\end{center}
 
 
 #### 11. Is reporting mandatory for any arboviral disease cases in your country?
 
-> `r data$SII11` 
+> `r data$SII11`
 
 
 
 #### 11b. For which of the following arboviral disease cases is reporting mandatory in your country?
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("11b")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 11c. For which other arboviral diseases is reporting mandatory?
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("11c")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	pivot_wider(names_from=Response, values_from=value) %>%
   drop_na()
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 11d. Please upload document(s) containing surveillance case definitions used for reporting of arboviral diseases
 
 
-> `r if(!is.na(data$SII11d__filecount)){ paste0(data$SII11d__filecount, " files submitted") } ` 
+> `r if(!is.na(data$SII11d__filecount)){ paste0(data$SII11d__filecount, " files submitted") } `
 
 
 
 #### 12. In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease?
 
-> `r data$SII12` 
+> `r data$SII12`
 
 
 
-#### 12b. How frequently are surveillance data reported to the national level? 
+#### 12b. How frequently are surveillance data reported to the national level?
 
 > `r if( !is.na( data$SII12b ) ){ data$SII12b } else{ data$SII12b_other }`
 
 
-#### 12c. What type of national epidemiological surveillance was conducted? 
+#### 12c. What type of national epidemiological surveillance was conducted?
 
-> `r data$SII12c` 
+> `r data$SII12c`
 
 > For reference, here are the relevant definitions:
 
@@ -305,7 +337,7 @@ knitr::kable(responses, col.names=NULL)
 #### 12d. If available, please upload the most recent report(s) on arboviral surveillance in humans
 
 
-> `r if(!is.na(data$SII12d__filecount)){ paste0(data$SII12d__filecount, " files submitted") } ` 
+> `r if(!is.na(data$SII12d__filecount)){ paste0(data$SII12d__filecount, " files submitted") } `
 
 
 
@@ -317,7 +349,7 @@ knitr::kable(responses, col.names=NULL)
 
 #### 14. What do the arboviral disease surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges to arboviral disease surveillance in humans?
 
-> `r data$SII14` 
+> `r data$SII14`
 
 
 # Section III: Arbovirus laboratory capacity
@@ -325,46 +357,52 @@ knitr::kable(responses, col.names=NULL)
 
 #### 15. Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("15")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 15b. On average, for what percentage of suspected arboviral disease cases your country is laboratory confirmatory testing performed? Please indicate for outbreak and non-outbreak periods, respectively
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("15b")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	# mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 16. In the last two years, were the positive cases of arboviruses confirmed by a national reference laboratory?
@@ -381,30 +419,37 @@ knitr::kable(responses, col.names=NULL)
 
 #### 17. Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes
 
+\quad
+
+\begin{center}
+
 ```{r}
 responses <- get_responses("17")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Testing = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Testing = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Level, values_from=value) 
+	pivot_wider(names_from=Level, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+# kable(responses)
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
+  column_spec(1, width="2in")
 ```
 
+\end{center}
 
 
 #### 18. Which additional resources are most needed for your country to perform adequate testing for arboviral diseases? Please describe what would be needed for each checked resource in the adjacent comment field
 
 
-`r if( data$SIII18_SQ001 == "Yes" ){ paste0("Additional personnel: Yes\n\nEstimate of number of full-time staff: ", data$SIII18_SQ001comment) }`
+`r if( !is.na(data$SIII18_SQ001) & data$SIII18_SQ001 == "Yes" ){ paste0("Additional personnel: Yes\n\nEstimate of number of full-time staff: ", data$SIII18_SQ001comment) }`
 
 `r if(!is.na(data$SIII18_SQ002comment)){ paste0("\nAdditional training of personnel: ", data$SIII18_SQ002comment) } `
 
@@ -415,73 +460,78 @@ knitr::kable(responses)
 
 #### 19. Do you perform virological surveillance on humans, ie, tracking of prevailing genotypes/serotypes? Please select all that apply
 
-`r if( data$SIII19_SQ001 == "Yes" ){ paste0("Yes, using virus isolation: ", data$SIII19_SQ001comment) }`
+`r if( !is.na(data$SIII19_SQ001) & data$SIII19_SQ001 == "Yes" ){ paste0("Yes, using virus isolation: ", data$SIII19_SQ001comment) }`
 
-`r if( data$SIII19_SQ002 == "Yes" ){ paste0("Yes, using RT-PCR: ", data$SIII19_SQ002comment) }`
+`r if( !is.na(data$SIII19_SQ002) & data$SIII19_SQ002 == "Yes" ){ paste0("Yes, using RT-PCR: ", data$SIII19_SQ002comment) }`
 
-`r if( data$SIII19_SQ003 == "Yes" ){ paste0("Yes, using other acid nucleic tests. Please specify: ", data$SIII19_SQ003comment) }`
+`r if( !is.na(data$SIII19_SQ003) & data$SIII19_SQ003 == "Yes" ){ paste0("Yes, using other acid nucleic tests. Please specify: ", data$SIII19_SQ003comment) }`
 
-`r if( data$SIII19_SQ004 == "Yes" ){ paste0("Yes, using serological testing. Please specify: ", data$SIII19_SQ004comment) }`
+`r if( !is.na(data$SIII19_SQ004) & data$SIII19_SQ004 == "Yes" ){ paste0("Yes, using serological testing. Please specify: ", data$SIII19_SQ004comment) }`
 
-`r if( data$SIII19_SQ005 == "Yes" ){ paste0("No: ", data$SIII19_SQ005comment) }`
+`r if( !is.na(data$SIII19_SQ005) & data$SIII19_SQ005 == "Yes" ){ paste0("No: ", data$SIII19_SQ005comment) }`
 
-`r if( data$SIII19_SQ006 == "Yes" ){ paste0("I don't know: ", data$SIII19_SQ006comment) }`
+`r if( !is.na(data$SIII19_SQ006) & data$SIII19_SQ006 == "Yes" ){ paste0("I don't know: ", data$SIII19_SQ006comment) }`
 
 
 #### 19b. Which samples do you use for virological surveillance?
 
+\quad
 
+\begin{center}
 ```{r}
 responses <- get_responses("19b")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 19c. For which viruses do you perform virological surveillance? (check all that apply)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("19c")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 19d. Does your country provide regular training sessions for healthcare workers on arboviruses virological surveillance?
 
-> `r data$SIII19d` 
+> `r data$SIII19d`
 
 
 
 #### 20. What do the arboviral diagnostic laboratory staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections?
 
-> `r data$SIII20` 
+> `r data$SIII20`
 
 
 # Section IV: Management of arboviral disease cases
@@ -489,14 +539,14 @@ knitr::kable(responses, col.names=NULL)
 
 #### 21. Does your country have clinical guidelines for healthcare workers on diagnosis and clinical management of cases and severe cases of Aedes-borne arboviral diseases?
 
-> `r data$SIV21` 
+> `r data$SIV21`
 
 
 
 #### 21b. Please upload the clinical guideline(s) for arboviral disease management
 
 
-> `r if(!is.na(data$SIV21b__filecount)){ paste0(data$SIV21b__filecount, " files submitted") } ` 
+> `r if(!is.na(data$SIV21b__filecount)){ paste0(data$SIV21b__filecount, " files submitted") } `
 
 
 
@@ -507,7 +557,7 @@ knitr::kable(responses, col.names=NULL)
 
 #### 23. How many hospital beds are available per 100,000 population?
 
-> `r if(!is.na(data$SIV23)){ data$SIV23 } ` 
+> `r if(!is.na(data$SIV23)){ data$SIV23 } `
 
 
 
@@ -519,7 +569,7 @@ knitr::kable(responses, col.names=NULL)
 
 #### 25. What do the arboviral disease surveillance/clinical staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to case management?
 
-> `r data$SIV25` 
+> `r data$SIV25`
 
 
 # Section V: Routine vector surveillance and control
@@ -533,36 +583,39 @@ knitr::kable(responses, col.names=NULL)
 
 #### 27. Which institution/department is in charge of reporting entomologic surveillance data to the national ministry of health/health department? (Check all that apply)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("27")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 28. For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors?
 
-> `r data$SV28` 
+> `r data$SV28`
 
 
 
 #### 28b. Please upload the most recent national vector surveillance report
 
 
-> `r if(!is.na(data$SV28b__filecount)){ paste0(data$SV28b__filecount, " files submitted") } ` 
+> `r if(!is.na(data$SV28b__filecount)){ paste0(data$SV28b__filecount, " files submitted") } `
 
 
 
@@ -575,7 +628,7 @@ knitr::kable(responses, col.names=NULL)
 
 #### 28d. How many sentinel surveillance sites do you have?
 
-> `r data$SV28d` 
+> `r data$SV28d`
 
 
 
@@ -586,19 +639,19 @@ knitr::kable(responses, col.names=NULL)
 
 #### 29. Do you conduct adult mosquito surveillance?
 
-> `r data$SV29` 
+> `r data$SV29`
 
 
 
 #### 30. Do you conduct larval/pupal mosquito surveillance?
 
-> `r data$SV30` 
+> `r data$SV30`
 
 
 
 #### 31. Are trapped mosquitoes identified to species?
 
-> `r data$SV31` 
+> `r data$SV31`
 
 
 
@@ -608,32 +661,35 @@ knitr::kable(responses, col.names=NULL)
 
 
 
-#### 33. Which laboratories performed testing for arboviruses on mosquito pools collected in your country in the last two years? (check all that apply)  
+#### 33. Which laboratories performed testing for arboviruses on mosquito pools collected in your country in the last two years? (check all that apply)
 
+\quad
 
+\begin{center}
 ```{r}
 responses <- get_responses("33")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
+  column_spec(1, width="3in")
 ```
-
+\end{center}
 
 
 #### 34. Is there a record of Aedes aegypti or Aedes albopictus being found in your country in the past 5 years? Please choose only one of the following
 
-> `r data$SV34` 
+> `r data$SV34`
 
 
 
@@ -652,111 +708,120 @@ knitr::kable(responses, col.names=NULL)
 
 #### 35. Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("35")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 35b. Would your country have conducted or financially supported adulticiding/larviciding or source reduction activities in the last two years if sufficient funding were available?
 
-> `r data$SV35b` 
+> `r data$SV35b`
 
 
 
 #### 35c. Which adulticides and/or larvicides (brand and product name) were used?
 
-> `r data$SV35c` 
+> `r data$SV35c`
 
 
 
 #### 36. Does your country provide regular training sessions for staff in charge of vector control and vector surveillance?
 
-> `r data$SV36` 
+> `r data$SV36`
 
 
 
 #### 37. For the last two years, did your country have a plan for mosquito-borne disease control that includes a threshold (eg,  level of vector mosquito abundance or minimum infection rate) that would result in a recommendation for mosquito adulticiding/other mosquito reduction measures?)
 
-> `r data$SV37` 
+> `r data$SV37`
 
 
 
 #### 37b. Which indicator(s) is(are) used as threshold(s)?
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("37b")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 38. Overall, are data on any of the following arboviral outbreak risk factors routinely collected and analysed? (Select all that apply)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("38")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 39. Is there a surveillance system in place for monitoring Aedes resistance to the insecticide(s) used?
 
-> `r data$SV39` 
+> `r data$SV39`
 
 
 
 #### 40. What do the vector surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control in the country?
 
-> `r data$SV40` 
+> `r data$SV40`
 
 
-# Section VI: Animal surveillance 
+# Section VI: Animal surveillance
 
 
 #### 41. During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (eg, epizootic surveillance for yellow fever in endemic areas)?
 
-> `r data$SVI41` 
+> `r data$SVI41`
 
 
 
@@ -769,50 +834,53 @@ knitr::kable(responses, col.names=NULL)
 
 #### 41c. What type of surveillance was conducted in animals?
 
-> `r data$SVI41c` 
+> `r data$SVI41c`
 
 
 
 #### 41d. Please upload a report on the animal surveillance
 
 
-> `r if(!is.na(data$SVI41d__filecount)){ paste0(data$SVI41d__filecount, " files submitted") } ` 
+> `r if(!is.na(data$SVI41d__filecount)){ paste0(data$SVI41d__filecount, " files submitted") } `
 
 
 
 
 #### 42. Does your country (or local jurisdictions within the country) perform sentinel animal surveillance or epizootic surveillance, eg, for yellow fever in nonhuman primates in endemic regions?
 
-> `r data$SVI42` 
+> `r data$SVI42`
 
 
 
 #### 42b. For which viruses is sentinel surveillance conducted and in which animal species?
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("42b")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 42c. Please upload the most recent report(s) on sentinel animal surveillance
 
 
-> `r if(!is.na(data$SVI42c__filecount)){ paste0(data$SVI42c__filecount, " files submitted") } ` 
+> `r if(!is.na(data$SVI42c__filecount)){ paste0(data$SVI42c__filecount, " files submitted") } `
 
 
 
@@ -821,13 +889,13 @@ knitr::kable(responses, col.names=NULL)
 
 #### 43. Does your country have a community outreach program that also covers arboviral diseases?
 
-> `r data$SVII43` 
+> `r data$SVII43`
 
 
 
-#### 43b. What entity(ies) is(are) in charge of the outreach program in your country ?
+#### 43b. What entity(ies) is(are) in charge of the outreach program in your country?
 
-> `r if(!is.na(data$SVII43b)){ data$SVII43b }` 
+> `r if(!is.na(data$SVII43b)){ data$SVII43b }`
 
 
 
@@ -840,42 +908,50 @@ knitr::kable(responses, col.names=NULL)
 
 #### 43d. Is the community outreach/social mobilization program sufficiently funded to cover staff time, prevention and outreach activities as needed?
 
-> `r if(!is.na(data$SVII43d)){ data$SVII43d }` 
+> `r if(!is.na(data$SVII43d)){ data$SVII43d }`
 
 
 
 #### 43e. Which resources would help ensure adequate capacity?
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("43e")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
+\end{center}
 
 
 #### 44. Did your national arboviral disease program issue notifications to the public about local transmission risk and/or possible vector-control activities (eg larviciding, adulticiding, community mobilization and participation, etc) as a prevention message for arboviral diseases within last 2 years? (Check all that apply)
+
+\quad
+
+\begin{center}
 
 ```{r}
 responses <- get_responses("44")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Level, values_from=value) %>%
@@ -883,31 +959,37 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+#kable(responses)
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
+  column_spec(2:3, width="1in")
 ```
 
+\end{center}
 
 
 #### 44b. Which means does your program use for community sensitization, mobilisation and acceptance of interventions in your country? (Check all that apply)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("44b")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 45. Does your country provide regular training sessions for staff in charge of community sensitization, mobilisation and acceptance of interventions dedicated to control arboviral diseases?
@@ -919,7 +1001,7 @@ knitr::kable(responses, col.names=NULL)
 
 #### 46. What do the community outreach staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to community participation
 
-> `r if(!is.na(data$SVII46)){ data$SVII46 }` 
+> `r if(!is.na(data$SVII46)){ data$SVII46 }`
 
 
 # Section VIII: Preparedness for arboviral outbreaks/epidemics
@@ -927,20 +1009,20 @@ knitr::kable(responses, col.names=NULL)
 
 #### 47. Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose?
 
-> `r data$SVIII47` 
+> `r data$SVIII47`
 
 
 
 #### 48. Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)?
 
-> `r data$SVIII48` 
+> `r data$SVIII48`
 
 
 
 #### 48b. Please upload the contingency plan
 
 
-> `r if(!is.na(data$SVIII48b__filecount)){ paste0(data$SVIII48b__filecount, " files submitted") } ` 
+> `r if(!is.na(data$SVIII48b__filecount)){ paste0(data$SVIII48b__filecount, " files submitted") } `
 
 
 
@@ -961,41 +1043,44 @@ knitr::kable(responses, col.names=NULL)
 
 #### 51. What vector control interventions are deployed in case of an emergency?
 
-> `r data$SVIII51` 
+> `r data$SVIII51`
 
 
 
 #### 52. For the last 2 years, which of the following government levels had an emergency fund or a specified emergency funding mechanism for arbovirus outbreak response?
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("52")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 53. Does your country provide regular training sessions for staff/committee in charge of preparedness for arboviral outbreaks/epidemics?
 
-> `r data$SVIII53` 
+> `r data$SVIII53`
 
 
 
 #### 54. What do the arboviral disease surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics in your country?
 
-> `r data$SVIII54` 
+> `r data$SVIII54`
 
 
 # Section IX: Arboviral disease surveillance data
@@ -1003,258 +1088,301 @@ knitr::kable(responses, col.names=NULL)
 
 #### 55. Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("55")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
-	pivot_wider(names_from=Level, values_from=value) %>% 
+	pivot_wider(names_from=Level, values_from=value) %>%
   rename( " " = Response )
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+# kable(responses)
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 55b. Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020?
 
-> `r data$SIX55b` 
+> `r data$SIX55b`
 
 
 
 #### 55c. Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("55c")
-other_reported <- responses %>% 
-  pivot_longer( everything() ) %>% 
+other_reported <- responses %>%
+  pivot_longer( everything() ) %>%
   filter( value == "Yes")
 
-knitr::kable(other_reported, col.names = NULL)
-```
+# kable(other_reported, col.names = NULL)
+kable(other_reported, col.names = NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 
+```
+\end{center}
 
 
 #### 55d. Please provide total number of cases and deaths due to each of the following other arboviruses that you selected from 2015-2020
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("55d")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	pivot_wider(names_from=Level, values_from=value) %>%
   select( Response, other_reported$name ) %>%
   rename(" " = Response)
-} 
-
-knitr::kable(responses)
+}
+# kable(responses)
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 56. Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("56")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+# kable(responses)
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
+\end{center}
 
 
+#### 57. Do arbovirus surveillance staff have any perceived reasons for increasing trends in arboviral disease incidence? Check all answers that apply.
 
-#### 57. Do arbovirus surveillance staff have any perceived reasons for increasing trends in arboviral disease incidence? Check all answers that apply
+\quad
 
+\begin{center}
 ```{r}
 responses <- get_responses("57")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
+  column_spec(1, width="4in")
 ```
+\end{center}
 
 # Section X: Surveillance staffing
 
-#### 58. During 2019 (prior to the Covid-19 pandemic), indicate below the number of arbovirus surveillance staff at the national level
+#### 58. During 2019 (prior to the Covid-19 pandemic), indicate below the number of arbovirus surveillance staff at the national level.
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("58")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	pivot_wider(names_from=Level, values_from=value) %>% 
-  rename(" " = Response)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses)
-```
-
-
-
-#### 59. Indicate below how many total staff persons are needed at the national level in your country to achieve full epidemiology and laboratory capacity* to conduct arbovirus surveillance
-
-```{r}
-responses <- get_responses("59")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	pivot_wider(names_from=Level, values_from=value) %>%
   rename(" " = Response)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses)
+# kable(responses)
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
+\end{center}
 
+
+#### 59. Indicate below how many total staff persons are needed at the national level in your country to achieve full epidemiology and laboratory capacity* to conduct arbovirus surveillance.
+
+\quad
+
+\begin{center}
+```{r}
+responses <- get_responses("59")
+
+if( !all( is.na( responses ))){
+  if( all( grepl("\\]\\[", colnames(responses)) ) ){
+    responses <- responses %>%
+      pivot_longer(everything())
+    new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+    responses <- responses %>%
+      mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+      select(-name) %>%
+      pivot_wider(names_from=Level, values_from=value) %>%
+      rename(" " = Response)
+    } else{
+      responses <- responses %>% pivot_longer( everything() )
+    }
+  kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+}
+
+```
+\end{center}
 
 
 #### 60. Optional comments to explain responses to questions 58 and 59 above
 
-> `r data$SX60` 
+> `r data$SX60`
 
 
 
-#### 61. The national health authority/ministry of health has access to expertise in clinical management of arboviruses (Check all that apply) 
+#### 61. The national health authority/ministry of health has access to expertise in clinical management of arboviruses (Check all that apply)
 
+\quad
 
+\begin{center}
 ```{r}
 responses <- get_responses("61")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
+  column_spec(1, width="4in")
 ```
+\end{center}
 
 
+#### 62. The national health authority/ministry of health has access to expertise in arbovirus epidemiology (Check all that apply)
 
-#### 62. The national health authority/ministry of health has access to expertise in arbovirus epidemiology (Check all that apply
+\quad
 
+\begin{center}
 ```{r}
 responses <- get_responses("62")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 63. The national health authority/ministry of health has access to expertise in arbovirus laboratory diagnosis (Check all that apply)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("63")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
+  column_spec(1, width="4in")
 ```
-
+\end{center}
 
 
 #### 64. The national health authority/ministry of health has access to expertise in entomology (Check all that apply)
 
+\quad
+
+\begin{center}
 ```{r}
 responses <- get_responses("64")
 
 if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
+responses <- responses %>%
 	pivot_longer(everything())
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+responses <- responses %>%
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
 	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
 	pivot_wider(names_from=Response, values_from=value)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-knitr::kable(responses, col.names=NULL)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
 ```
-
+\end{center}
 
 
 #### 65. Optional comments to explain responses to any of Questions 61-64
 
-> `r data$SX65` 
+> `r data$SX65`
 
 
 # Section XI: Survey conclusion
 
 #### 66. If you have any further comments to add regarding arbovirus surveillance and control in your country, including whether arboviruses other than Aedes-borne arboviruses are of higher priority, please do so in the text field below
 
-> `r data$SC1` 
-
+> `r data$SC1`
 
