@@ -77,7 +77,7 @@ load_data <- function(modify_variable_names = FALSE){
     '34', '34b', '34c',
     '55', '55b', '55c',
     '56')
-  df <- data[,dict$`Variable name`[dict$`Question number` %in% keep_questions]]
+  df <- data[,c(dict$`Variable name`[dict$`Question number` %in% keep_questions], 'Region')]
   
   # Modify variable names
   if(modify_variable_names){
@@ -112,11 +112,14 @@ load_data <- function(modify_variable_names = FALSE){
     names(df)[1] <- '1. State'
     names(df) <- gsub("\\[|\\]", "", names(df))
     names(df) <- trimws(names(df))
+    names(df)[names(df) == 'Region'] <- 'region'
+    df$region <- as.character(df$region)
   }
+  
   return(df)
 }
-# simple <- load_data(modify_variable_names = TRUE)
-# write_csv(simple, '~/Desktop/simplified_dataset.csv')
+simple <- load_data(modify_variable_names = TRUE)
+write_excel_csv(simple, '~/Desktop/simplified_dataset.csv')
 
 # rmarkdown::render('region.Rmd')
 # rmarkdown::render('country.Rmd')
