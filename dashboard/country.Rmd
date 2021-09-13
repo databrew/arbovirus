@@ -22,6 +22,7 @@ opts_chunk$set(comment = NA,
 
 ```{r, echo = FALSE}
 source('functions.R')
+dict <- load_dict()
 df <- load_data()
 ```
 
@@ -42,12 +43,13 @@ responses <- get_responses("11")
 qdf <- responses %>%  
   group_by(Response) %>% 
   tally 
-tab <- qdf %>% 
-  pivot_wider(names_from=Response, values_from=n) 
-regulartable( tab ) %>%
-  colformat_num( na_str = "-" ) %>%
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  pander()
+  # regulartable( ) %>%
+  # colformat_num( na_str = "-" ) %>%
   # hline(i=1) %>%
-  autofit 
+  # autofit 
 
 ggplot( qdf, 
         aes( x = Response,
@@ -81,14 +83,14 @@ qdf <- responses %>%
   group_by(Arbovirus, Response) %>% 
   tally
 qdf$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", qdf$Response))
-tab <- qdf %>% 
+qdf %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
   relocate("Confirmed cases only", .after="All suspect cases") %>%
-  rename("No answer"='NA')
-tab %>% 
-  regulartable %>% 
-  colformat_num(na_str = "-") %>%
-  fix_border_issues() 
+  rename("No answer"='NA') %>% 
+  kable()
+  # regulartable %>% 
+  # colformat_num(na_str = "-") %>%
+  # fix_border_issues() 
   # width( j=2, width=2 )
   # autofit() 
 
@@ -110,7 +112,40 @@ ggplot(qdf, aes(x=Response, y=n, fill=Response)) +
 
 ### History of any arbovirus circulation since 2000 
 
-(q5)
+#### Question 5 
+
+Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission.
+
+```{r}
+
+# relevant question: q5
+
+responses <- get_responses("5")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+qdf <- responses %>% 
+  pivot_longer(everything(), names_to="Arbovirus", values_to="Response") %>% 
+  group_by(Arbovirus, Response) %>% 
+  tally
+qdf %>% 
+  pivot_wider( names_from=Response, values_from=n) %>% 
+  kable()
+  # regulartable %>% 
+  # colformat_num( na_str = "-" ) %>%
+  # fix_border_issues %>%
+  # autofit 
+
+ggplot(data = qdf %>% filter(Response == 'Yes'),
+       aes(x = Arbovirus,
+           y = n,
+           fill = Arbovirus)) +
+  geom_col() +
+  scale_fill_manual(name = '',
+                    guide = "none",
+                    values = make_colors(length(unique(qdf$Arbovirus)))) +
+  labs(y = 'Entries')
+
+```
 
 
 ### Conducting surveillance on humans

@@ -37,7 +37,7 @@ library(flextable)
 library(stringr)
 library(pander)
 library(RColorBrewer)
-library( janitor )
+library(janitor)
 make_colors <- function(n, seed = 123){
   pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
   set.seed(seed)
