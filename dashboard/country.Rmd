@@ -45,11 +45,11 @@ qdf <- responses %>%
   tally 
 qdf %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
-  pander()
-  # regulartable( ) %>%
-  # colformat_num( na_str = "-" ) %>%
+  # pander()
+  regulartable( ) %>%
+  colformat_num( na_str = "-" ) %>%
   # hline(i=1) %>%
-  # autofit 
+  autofit 
 
 ggplot( qdf, 
         aes( x = Response,
@@ -87,12 +87,12 @@ qdf %>%
   pivot_wider(names_from=Response, values_from=n) %>% 
   relocate("Confirmed cases only", .after="All suspect cases") %>%
   rename("No answer"='NA') %>% 
-  kable()
-  # regulartable %>% 
-  # colformat_num(na_str = "-") %>%
-  # fix_border_issues() 
+  # kable()
+  regulartable %>% 
+  colformat_num(na_str = "-") %>%
+  fix_border_issues() %>%
   # width( j=2, width=2 )
-  # autofit() 
+  autofit() 
 
 ggplot(qdf, aes(x=Response, y=n, fill=Response)) +
   geom_col() +
@@ -129,11 +129,11 @@ qdf <- responses %>%
   tally
 qdf %>% 
   pivot_wider( names_from=Response, values_from=n) %>% 
-  kable()
-  # regulartable %>% 
-  # colformat_num( na_str = "-" ) %>%
+  # kable()
+  regulartable %>% 
+  colformat_num( na_str = "-" ) %>%
   # fix_border_issues %>%
-  # autofit 
+  autofit 
 
 ggplot(data = qdf %>% filter(Response == 'Yes'),
        aes(x = Arbovirus,
@@ -150,24 +150,140 @@ ggplot(data = qdf %>% filter(Response == 'Yes'),
 
 ### Conducting surveillance on humans
 
-(q12)
+#### Question 12 
+
+In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? 
+
+```{r}
+
+# relevant question: q12 (surveillance on humans)
+
+responses <- get_responses("12")
+responses %>% 
+  group_by(Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  regulartable() %>%
+  colformat_num( na_str="-" ) %>%
+  autofit 
+
+```
+
 
 ### Conducting surveillance on vectors 
 
-(q28) 
+#### Question 28 
+
+For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors?
+
+```{r}
+# relevant question: q28 (surveillance on vectors)
+
+responses <- get_responses("28")
+responses %>% 
+  group_by(Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  regulartable() %>%
+  colformat_num( na_str="-" ) %>%
+  autofit 
+
+```
 
 
 ### Conducting surveillance on animals 
 
-(q41)
+#### Question 41 
+
+During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (e.g., epizootic surveillance for yellow fever in endemic areas)?
+
+```{r}
+
+# relevant question: q41 (surveillance on animals)
+
+responses <- get_responses("41")
+responses %>% 
+  group_by(Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  regulartable() %>%
+  colformat_num( na_str="-" ) %>%
+  autofit 
+
+```
 
 ### Training of surveillance personnel and clinicians
 
-(q10) (q24)
+#### Question 10 
+
+Which training has been provided to the staff working on arboviral disease surveillance data?
+
+```{r}
+
+# relevant question: q10 
+
+responses <- get_responses("10")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+responses %>% 
+  pivot_longer(everything(), names_to="Training", values_to="Response") %>% 
+  group_by(Training, Response) %>% 
+  tally %>% 
+  pivot_wider( names_from=Response, values_from=n) %>% 
+  regulartable %>% 
+  colformat_num( na_str = "-" ) %>%
+  fix_border_issues %>%
+  # width( j=2, width=3 ) %>%
+  autofit 
+
+```
+
+
+#### Question 24 
+
+Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases?
+
+```{r}
+
+# relevant question: q24
+
+responses <- get_responses("24")
+colnames(responses) <- c("Response", "Comments")
+comments <- responses %>% select(Comments)
+responses <- responses %>% select(Response)
+qdf <- responses %>% 
+  group_by(Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n)
+colnames(qdf)[1] <- "Yes"
+regulartable( qdf ) %>%
+  colformat_num( na_str="-" ) %>% 
+  autofit 
+
+```
 
 ### Presence written arbovirus surveillance and control plans
 
-(q6)
+#### Question 6 
+
+Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country?
+
+```{r}
+
+# relevant question: q6
+
+responses <- get_responses("6")
+
+responses %>% 
+  group_by(Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  regulartable() %>%
+  colformat_num( na_str="-" ) %>%
+  # width( j=2:3, width=1.5 ) %>%
+  autofit 
+
+```
 
 ### Arbovirus program independent or integrated
 
@@ -182,11 +298,72 @@ ggplot(data = qdf %>% filter(Response == 'Yes'),
 
 ### Testing in outbreak vs non-outbreak settings 
 
-(q15)
+#### Question 15
+
+Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively)  
+
+```{r}
+
+# relevant question: q15
+
+responses <- get_responses("15")
+
+responses %>% 
+  pivot_longer(everything(), names_to="Period", values_to="Response") %>% 
+  group_by(Period, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  regulartable %>% 
+  colformat_num( na_str = "-" ) %>%
+  # fix_border_issues %>%
+  # width( j=2, width=1) %>%
+  autofit 
+
+```
 
 ### Laboratory tests available 
 
-(q17)
+#### Question 17 
+
+Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes.
+
+```{r} 
+# fig.height=8}
+
+# relevant question: q17
+
+responses <- get_responses("17")
+qdf <- responses %>% 
+  pivot_longer(everything(), names_to="Testing", values_to="Response")
+new_cols <- matrix( unlist( strsplit(qdf$Testing, "\\]\\[") ), ncol=2, byrow=T)
+qdf <- qdf %>% 
+  mutate(Arbovirus = new_cols[,1], Testing = new_cols[,2])
+qdf$Response <- as.numeric( qdf$Response)
+qdf <- qdf %>% 
+  group_by(Arbovirus, Testing) %>%
+  summarize(Total = sum(Response, na.rm=T))
+qdf$Arbovirus <- factor( qdf$Arbovirus )
+qdf$Testing <- factor( qdf$Testing )
+
+qdf %>% 
+  pivot_wider(names_from=Testing, values_from=Total) %>% 
+  regulartable %>% 
+  colformat_num( na_str = "-" ) %>%
+  autofit 
+
+ggplot(qdf, aes(x=Testing, y=Total, fill=Testing)) + 
+  geom_col() + 
+  facet_wrap( ~ Arbovirus ) + 
+  theme(legend.position = "bottom",
+        legend.direction="horizontal",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  guides(fill = guide_legend(ncol = 2)) + 
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(qdf$Testing))))
+
+```
 
 ### Serotyping and sequencing capacity? 
 
@@ -197,7 +374,7 @@ ggplot(data = qdf %>% filter(Response == 'Yes'),
 
 ### Surveillance and control plans available 
 
-(q 6)
+(q 6) Note: question 6 is shown above
 
 ### Clinical guidelines for healthcare workers 
 
@@ -215,7 +392,28 @@ ggplot(data = qdf %>% filter(Response == 'Yes'),
 
 ### Most common vector control methods used 
 
-(q35)
+#### Question 35 
+
+Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply.
+
+```{r}
+
+# relevant question: q35
+
+responses <- get_responses("35")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other) 
+
+responses %>% 
+  pivot_longer(everything(), names_to="Method", values_to="Response") %>% 
+  group_by(Method, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  regulartable %>% 
+  colformat_num( na_str = "-" ) 
+
+```
+
 
 
 ### Indicators used for thresholds 
