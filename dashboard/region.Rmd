@@ -22,15 +22,99 @@ opts_chunk$set(comment = NA,
 
 ```{r, echo = FALSE}
 source('functions.R')
+dict <- load_dict()
 df <- load_data()
 ```
-
 
 # Surveillance capacity indicators
 
 ### Reportable arboviral diseases
 
-(q11, q11b)
+#### Question 11  
+
+Is reporting mandatory for any arboviral disease cases in your country? 
+
+```{r}
+
+# relevant question: q11
+
+responses <- get_responses("11")
+qdf <- data.frame(Region = df$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  group_by(Region, Response) %>% 
+  tally 
+tab <- qdf %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  adorn_totals() 
+regulartable( tab ) %>%
+  colformat_num( na_str = "-" ) %>%
+  hline(i=4) %>%
+  autofit 
+
+ggplot( qdf, 
+        aes( x = Response,
+             y = n,
+             fill = Response)) +
+  geom_col() +
+  facet_wrap( ~Region ) +
+  theme(legend.position = "bottom",
+        legend.direction="horizontal",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  guides(fill=guide_legend(ncol=3)) +
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(qdf$Response)))) +
+  labs(title = "Mandatory reporting of cases", 
+       y = 'Responses')
+  
+
+```
+
+#### Question 11b 
+
+For which of the following arboviral disease cases is reporting mandatory in your country?
+
+```{r}
+
+# relevant question: q11b
+
+responses <- get_responses("11b")
+qdf <- cbind(Region = df$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+  group_by(Region, Arbovirus, Response) %>% 
+  tally
+qdf$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", qdf$Response))
+tab <- qdf %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  drop_na(Region) %>% 
+  relocate("Confirmed cases only", .after="All suspect cases") %>%
+  rename("No answer"='NA')
+tab %>% 
+  regulartable %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  hline(i=6*(1:4)) %>% 
+  colformat_num(na_str = "-") %>%
+  fix_border_issues() %>%
+  width( j=2, width=2 )
+  # autofit() 
+
+ggplot(qdf, aes(x=Response, y=n, fill=Response)) + 
+  geom_col() + 
+  facet_grid( Region ~ Arbovirus ) +
+  theme(legend.position = "bottom",
+        legend.direction="horizontal",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  guides(fill=guide_legend(ncol=4)) +
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(qdf$Response)))) +
+  labs(title = "Regional reporting of cases", 
+       y = 'Responses')
+
+```
 
 ### History of any arbovirus circulation since 2000 
 

@@ -4,6 +4,29 @@ library(pander)
 library(knitr)
 library(flextable)
 library(lubridate)
+library(RColorBrewer)
+library(janitor)
+
+make_colors <- function(n, seed = 123){
+  pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
+  set.seed(seed)
+  pal <- sample(pal, length(pal))
+  out <- colorRampPalette(pal)(n)
+  return(out)
+}
+
+load_dict <- function(){
+  owd <- getwd()
+  setwd('../')
+  if( file.exists("misc/Data_dictionary_Survey375147_unabridged.csv")){
+    dict <- read_csv("misc/Data_dictionary_Survey375147_unabridged.csv")
+  } else{
+    message("You need the data dictionary!")
+  }
+  setwd(owd)
+  
+  return( dict )
+}
 
 #' @param modify_variable_names If TRUE, then variable names will be overwritten / modified to be more meaningful
 load_data <- function(modify_variable_names = FALSE){
@@ -15,13 +38,11 @@ load_data <- function(modify_variable_names = FALSE){
   } else{
     message("You need the data!")
   }
-  # data <- data %>% dplyr::filter( SI01 == params$country )
-  if( file.exists("misc/Data_dictionary_Survey375147_unabridged.csv")){
-    dict <- read_csv("misc/Data_dictionary_Survey375147_unabridged.csv")
-  } else{
-    message("You need the data dictionary!")
-  }
+
   setwd(owd)
+  
+  # Read in data dictionary
+  dict <- load_dict()
   
   # # Having retrieved the data, extract only those variables of relevance
   # 1. Surveillance capacity indicators:
@@ -120,6 +141,23 @@ load_data <- function(modify_variable_names = FALSE){
 }
 simple <- load_data(modify_variable_names = TRUE)
 write_excel_csv(simple, '~/Desktop/simplified_dataset.csv')
+
+# get_responses assumes that load_dict() and load_data() have been called!
+
+get_responses <- function( question_number ){
+  idx <- which( dict$`Question number` == question_number )
+  # question <- dict$Description[ idx[1] ]
+  # cat( paste("Question", question_number, ":", question) )
+  var_names <- dict$`Variable name`[idx]
+  responses <- df %>% select( all_of(var_names) )
+  if( !is.na(dict$Subquestion[ idx[1] ]) ){
+    # remove square brackets at beginning and end, then rename columns:
+    colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
+  } else{
+    colnames( responses ) <- "Response"
+  }
+  return( responses )
+}
 
 # rmarkdown::render('region.Rmd')
 # rmarkdown::render('country.Rmd')

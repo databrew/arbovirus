@@ -30,7 +30,83 @@ df <- load_data()
 
 ### Reportable arboviral diseases
 
-(q11, q11b)
+#### Question 11  
+
+Is reporting mandatory for any arboviral disease cases in your country? 
+
+```{r}
+
+# relevant question: q11
+
+responses <- get_responses("11")
+qdf <- responses %>%  
+  group_by(Response) %>% 
+  tally 
+tab <- qdf %>% 
+  pivot_wider(names_from=Response, values_from=n) 
+regulartable( tab ) %>%
+  colformat_num( na_str = "-" ) %>%
+  # hline(i=1) %>%
+  autofit 
+
+ggplot( qdf, 
+        aes( x = Response,
+             y = n,
+             fill = Response)) +
+  geom_col() +
+  theme(legend.position = "bottom",
+        legend.direction="horizontal",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  guides(fill=guide_legend(ncol=3)) +
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(qdf$Response)))) +
+  labs(title = "Mandatory reporting of cases", 
+       y = 'Responses')
+  
+```
+
+#### Question 11b 
+
+For which of the following arboviral disease cases is reporting mandatory in your country?
+
+```{r}
+
+# relevant question: q11b
+
+responses <- get_responses("11b")
+qdf <- responses %>% 
+  pivot_longer(everything(), names_to="Arbovirus", values_to="Response") %>% 
+  group_by(Arbovirus, Response) %>% 
+  tally
+qdf$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", qdf$Response))
+tab <- qdf %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  relocate("Confirmed cases only", .after="All suspect cases") %>%
+  rename("No answer"='NA')
+tab %>% 
+  regulartable %>% 
+  colformat_num(na_str = "-") %>%
+  fix_border_issues() 
+  # width( j=2, width=2 )
+  # autofit() 
+
+ggplot(qdf, aes(x=Response, y=n, fill=Response)) +
+  geom_col() +
+  facet_wrap(~Arbovirus) +
+  theme(legend.position = "bottom",
+        legend.direction="horizontal",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  guides(fill=guide_legend(ncol=4)) +
+  scale_fill_manual(name = '',
+                    values = make_colors(length(unique(qdf$Response)))) +
+  labs(title = "Overall reporting of cases",
+       y = 'Responses')
+
+```
 
 ### History of any arbovirus circulation since 2000 
 

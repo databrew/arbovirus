@@ -1,6 +1,7 @@
 data/
 *.html
 *.pdf
+*.tex
 figures/
 missingness/*.csv
 missingness/*.html

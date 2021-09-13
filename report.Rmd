@@ -1,13 +1,27 @@
 ---
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
-output:
-  pdf_document: 
+output: 
+  pdf_document:
+    keep_tex: true
     latex_engine: xelatex
-    extra_dependencies: ["booktabs"]
-  html_document: default
+header-includes: 
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
 fontsize: 12pt
 params:
-  country: Germany
+  country: Greece
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
