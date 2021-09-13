@@ -2,6 +2,7 @@ data/
 *.html
 *.pdf
 *.tex
+*.zip
 figures/
 missingness/*.csv
 missingness/*.html
