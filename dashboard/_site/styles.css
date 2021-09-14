@@ -77,6 +77,62 @@ a:link, a:visited, a:hover, a:active {
     color: #1589d1cf;
 }
 
+
+
+#TOC > ul > li > a {
+    color: #ff7700 !important;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: medium;
+    transition: all 0.7s ease;
+}
+
+
+#TOC > ul > li > a:hover {
+    color: #e26b02!important;
+    font-size: 17px;
+}
+
+#TOC > ul > li {
+    list-style-type: none;
+    list-style-position: inside;
+}
+
+#TOC > ul > li > ul > li {
+    list-style-type: '-';
+    list-style-position: inside;
+}
+
+#TOC > ul > li > ul > li > a {
+    color: black;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: small;
+    margin-left: 15px;
+    transition: all 0.7s ease;
+}
+
+#TOC > ul > li > ul > li > a:hover {
+    color: #068fcad1;
+}
+
+#TOC > ul > li > ul > li > ul > li > a {
+    color: #3a3939;
+    font-weight: 300;
+    margin-left: 35px;
+    font-size: smaller;
+    text-transform: uppercase;
+    transition: all 0.7s ease;
+}
+
+#TOC > ul > li > ul > li > ul > li > a:hover {
+    color: #068fca;
+}
+
+#TOC > ul > li > ul > li > ul > li {
+    list-style-type: none;
+}
+
 /* *********** media queries *********** */
 @media all and (max-width: 990px) {
   .flex-container {
