@@ -42,8 +42,10 @@ names(pd) <- c('country')
 pd <- pd %>% filter(!duplicated(country))
 pd$value <- 'Responded'
 make_map(df = pd,
+         pal = 'Dark2',
          qualitative = TRUE,
          provider = providers$OpenStreetMap)
+# htmltools::save_html(l, file = '~/Desktop/map1.html')
 ```
 
 ```{r, eval = FALSE}
@@ -58,9 +60,12 @@ pd2 <- world_shp@data %>%
   mutate(value = 'Responded')
 pd <- bind_rows(pd, pd2)
 
-make_map(df = pd,
+l <- make_map(df = pd,
+        pal = 'Dark2',
          qualitative = TRUE,
          provider = providers$OpenStreetMap)
+l
+# htmltools::save_html(l, file = '~/Desktop/map2.html')
 ```
 
 

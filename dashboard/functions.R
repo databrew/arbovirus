@@ -222,8 +222,8 @@ make_map <- function(df,
   
   # Define color palette and values to show in tooltip
   if(qualitative){
-    pal <- 'Set2'
-    pal_fun <- colorFactor(palette = pal, domain=shp@data$value, na.color="transparent")
+    # pal <- 'Set3'
+    pal_fun <- colorFactor(palette = pal, domain=shp@data$value, na.color="transparent", reverse = TRUE)
     vals <- shp@data$value
     
   } else {
