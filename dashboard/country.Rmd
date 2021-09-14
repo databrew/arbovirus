@@ -14,6 +14,7 @@ opts_chunk$set(comment = NA,
                fig.width = 9.64,
                fig.height = 5.9,
                fig.path = 'figures/')
+ggplot2::theme_set(ggplot2::theme_bw())
 # options(scipen = '999')
 ```
 
