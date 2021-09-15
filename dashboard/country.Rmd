@@ -48,7 +48,7 @@ qdf %>%
   pivot_wider(names_from=Response, values_from=n) %>% 
   # pander()
   regulartable( ) %>%
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   # hline(i=1) %>%
   autofit 
 
@@ -90,7 +90,7 @@ qdf %>%
   rename("No answer"='NA') %>% 
   # kable()
   regulartable %>% 
-  colformat_num(na_str = "-") %>%
+  colformat_num(na_str = "0") %>%
   fix_border_issues() %>%
   # width( j=2, width=2 )
   autofit() 
@@ -132,7 +132,7 @@ qdf %>%
   pivot_wider( names_from=Response, values_from=n) %>% 
   # kable()
   regulartable %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   # fix_border_issues %>%
   autofit 
 
@@ -165,7 +165,7 @@ responses %>%
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
   regulartable() %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   autofit 
 
 ```
@@ -186,7 +186,7 @@ responses %>%
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
   regulartable() %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   autofit 
 
 ```
@@ -208,7 +208,7 @@ responses %>%
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
   regulartable() %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   autofit 
 
 ```
@@ -232,7 +232,7 @@ responses %>%
   tally %>% 
   pivot_wider( names_from=Response, values_from=n) %>% 
   regulartable %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   # width( j=2, width=3 ) %>%
   autofit 
@@ -258,7 +258,7 @@ qdf <- responses %>%
   pivot_wider(names_from=Response, values_from=n)
 colnames(qdf)[1] <- "Yes"
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>% 
+  colformat_num( na_str="0" ) %>% 
   autofit 
 
 ```
@@ -280,7 +280,7 @@ responses %>%
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
   regulartable() %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   # width( j=2:3, width=1.5 ) %>%
   autofit 
 
@@ -315,7 +315,7 @@ responses %>%
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
   regulartable %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   # fix_border_issues %>%
   # width( j=2, width=1) %>%
   autofit 
@@ -349,7 +349,7 @@ qdf$Testing <- factor( qdf$Testing )
 qdf %>% 
   pivot_wider(names_from=Testing, values_from=Total) %>% 
   regulartable %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   autofit 
 
 ggplot(qdf, aes(x=Testing, y=Total, fill=Testing)) + 
@@ -411,7 +411,7 @@ responses %>%
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
   regulartable %>% 
-  colformat_num( na_str = "-" ) 
+  colformat_num( na_str = "0" ) 
 
 ```
 

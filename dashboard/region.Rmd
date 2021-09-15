@@ -49,7 +49,7 @@ tab <- qdf %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals() 
 regulartable( tab ) %>%
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   hline(i=4) %>%
   autofit 
 
@@ -97,7 +97,7 @@ tab %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=6*(1:4)) %>% 
-  colformat_num(na_str = "-") %>%
+  colformat_num(na_str = "0") %>%
   fix_border_issues() %>%
   width( j=2, width=2 )
   # autofit() 
@@ -142,7 +142,7 @@ qdf %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=4*(1:4)) %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   autofit 
 
@@ -190,7 +190,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   hline(i=4) %>%
   autofit 
 
@@ -214,7 +214,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   hline(i=4) %>% 
   autofit 
 
@@ -239,7 +239,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   hline(i=4) %>% 
   autofit 
 
@@ -269,7 +269,7 @@ qdf %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=5*(1:4)) %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   width( j=2, width=3 ) %>%
   autofit 
@@ -296,7 +296,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   adorn_totals() 
 colnames(qdf)[2] <- "Yes"
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>% 
+  colformat_num( na_str="0" ) %>% 
   hline(i=4) %>%
   autofit 
 
@@ -321,7 +321,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   hline(i=4) %>% 
   # width( j=2:3, width=1.5 ) %>%
   autofit 
@@ -362,7 +362,7 @@ qdf %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=8) %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   width( j=2, width=1) %>%
   autofit 
@@ -400,7 +400,7 @@ qdf %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=5*(1:4)) %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   autofit 
 
@@ -458,7 +458,7 @@ cbind( Region = df$Region, responses) %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=6*(1:4)) %>% 
-  colformat_num( na_str = "-" ) 
+  colformat_num( na_str = "0" ) 
 
 ```
 
