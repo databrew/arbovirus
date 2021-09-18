@@ -1,92 +1,92 @@
-name: "WHO-ARBO"
-navbar:
-  title: "WHO-ARBO"
-  left:
-    - text: "Global"
-      # href: index.html
-      menu:
-        - text: "Surveillance capacity indicators"
-          menu:
-            - text: "Reportable arboviral diseases"
-              href: index.html
-            - text: "History of arbovirus circulation since 2000"
-              href: index.html
-            - text: "Conducting surveillance on humans"
-              href: index.html
-            - text: "Conducting surveillance on vectors"
-              href: index.html
-            - text: "Conducting surveillance on animals"
-              href: index.html
-        - text: "Laboratory diagnostic indicators"
-          menu:
-            - text: "Testing in outbreak vs non-outbreak settings"
-              href: index.html
-            - text: "Laboratory tests available"
-              href: index.html
-            - text: "Serotyping and sequencing capacity?"
-              href: index.html
-        - text: "Response capacity indicators"
-          href: index.html
-        - text: "Epidemiological risk data"
-          href: index.html
-    - text: "Regional"
-      # href: region.html
-      menu:
-        - text: "Surveillance capacity indicators"
-          menu:
-            - text: "Reportable arboviral diseases"
-              href: region.html
-            - text: "History of arbovirus circulation since 2000"
-              href: region.html
-            - text: "Conducting surveillance on humans"
-              href: region.html
-            - text: "Conducting surveillance on vectors"
-              href: region.html
-            - text: "Conducting surveillance on animals"
-              href: region.html
-        - text: "Laboratory diagnostic indicators"
-          menu:
-            - text: "Testing in outbreak vs non-outbreak settings"
-              href: region.html
-            - text: "Laboratory tests available"
-              href: region.html
-            - text: "Serotyping and sequencing capacity?"
-              href: region.html
-        - text: "Response capacity indicators"
-          href: region.html
-        - text: "Epidemiological risk data"
-          href: region.html
-    - text: "Country"
-      # href: country.html
-      menu:
-        - text: "Surveillance capacity indicators"
-          menu:
-            - text: "Reportable arboviral diseases"
-              href: country.html
-            - text: "History of arbovirus circulation since 2000"
-              href: country.html
-            - text: "Conducting surveillance on humans"
-              href: country.html
-            - text: "Conducting surveillance on vectors"
-              href: country.html
-            - text: "Conducting surveillance on animals"
-              href: country.html
-        - text: "Laboratory diagnostic indicators"
-          menu:
-            - text: "Testing in outbreak vs non-outbreak settings"
-              href: country.html
-            - text: "Laboratory tests available"
-              href: country.html
-            - text: "Serotyping and sequencing capacity?"
-              href: country.html
-        - text: "Response capacity indicators"
-          href: country.html
-        - text: "Epidemiological risk data"
-          href: country.html
-    - text: "About"
-      href: about.html
+# name: "WHO-ARBO"
+# navbar:
+#   title: "WHO-ARBO"
+#   left:
+#     - text: "Global"
+#       # href: index.html
+#       menu:
+#         - text: "Surveillance capacity indicators"
+#           menu:
+#             - text: "Reportable arboviral diseases"
+#               href: index.html
+#             - text: "History of arbovirus circulation since 2000"
+#               href: index.html
+#             - text: "Conducting surveillance on humans"
+#               href: index.html
+#             - text: "Conducting surveillance on vectors"
+#               href: index.html
+#             - text: "Conducting surveillance on animals"
+#               href: index.html
+#         - text: "Laboratory diagnostic indicators"
+#           menu:
+#             - text: "Testing in outbreak vs non-outbreak settings"
+#               href: index.html
+#             - text: "Laboratory tests available"
+#               href: index.html
+#             - text: "Serotyping and sequencing capacity?"
+#               href: index.html
+#         - text: "Response capacity indicators"
+#           href: index.html
+#         - text: "Epidemiological risk data"
+#           href: index.html
+#     - text: "Regional"
+#       # href: region.html
+#       menu:
+#         - text: "Surveillance capacity indicators"
+#           menu:
+#             - text: "Reportable arboviral diseases"
+#               href: region.html
+#             - text: "History of arbovirus circulation since 2000"
+#               href: region.html
+#             - text: "Conducting surveillance on humans"
+#               href: region.html
+#             - text: "Conducting surveillance on vectors"
+#               href: region.html
+#             - text: "Conducting surveillance on animals"
+#               href: region.html
+#         - text: "Laboratory diagnostic indicators"
+#           menu:
+#             - text: "Testing in outbreak vs non-outbreak settings"
+#               href: region.html
+#             - text: "Laboratory tests available"
+#               href: region.html
+#             - text: "Serotyping and sequencing capacity?"
+#               href: region.html
+#         - text: "Response capacity indicators"
+#           href: region.html
+#         - text: "Epidemiological risk data"
+#           href: region.html
+#     - text: "Country"
+#       # href: country.html
+#       menu:
+#         - text: "Surveillance capacity indicators"
+#           menu:
+#             - text: "Reportable arboviral diseases"
+#               href: country.html
+#             - text: "History of arbovirus circulation since 2000"
+#               href: country.html
+#             - text: "Conducting surveillance on humans"
+#               href: country.html
+#             - text: "Conducting surveillance on vectors"
+#               href: country.html
+#             - text: "Conducting surveillance on animals"
+#               href: country.html
+#         - text: "Laboratory diagnostic indicators"
+#           menu:
+#             - text: "Testing in outbreak vs non-outbreak settings"
+#               href: country.html
+#             - text: "Laboratory tests available"
+#               href: country.html
+#             - text: "Serotyping and sequencing capacity?"
+#               href: country.html
+#         - text: "Response capacity indicators"
+#           href: country.html
+#         - text: "Epidemiological risk data"
+#           href: country.html
+#     - text: "About"
+#       href: about.html
       
-# name: "WHO-ABR"
+name: "WHO-ABR"
 # navbar:
 #   title: "WHO-ABR"
 #   left:
@@ -98,12 +98,12 @@ navbar:
 #       href: country.html
 #     - text: "About"
 #       href: about.html
-# output:
-#   html_document:
-#     toc: true
-#     toc_depth: 5
-#     highlight: textmate
-#     include:
-#       in_header: header.html
-#       after_body: footer.html
-#     css: styles.css
+output:
+  html_document:
+    # toc: true
+    # toc_depth: 5
+    # highlight: textmate
+    include:
+      in_header: header.html
+      after_body: footer.html
+    css: styles.css
