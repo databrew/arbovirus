@@ -149,10 +149,11 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   drop_na(Region) %>% 
   group_by(Region, Response) %>% 
   tally 
-tab <- df %>% 
+df %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
-  adorn_totals() 
-regulartable( tab ) %>%
+  rename( "Unanswered" = "NA" ) %>%
+  adorn_totals() %>% 
+  regulartable() %>%
   colformat_num( na_str = "0" ) %>%
   hline(i=4) %>%
   autofit 
