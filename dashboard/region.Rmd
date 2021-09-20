@@ -32,9 +32,7 @@ df <- load_data()
 
 ### Reportable arboviral diseases
 
-#### Question 11 
-
-Is reporting mandatory for any arboviral disease cases in your country? 
+#### Is reporting mandatory for any arboviral disease cases in your country? (Question 11) 
 
 ```{r}
 
@@ -49,7 +47,7 @@ tab <- qdf %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals() 
 regulartable( tab ) %>%
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   hline(i=4) %>%
   autofit 
 
@@ -73,9 +71,7 @@ ggplot( qdf,
 
 ```
 
-#### Question 11b 
-
-For which of the following arboviral disease cases is reporting mandatory in your country?
+#### For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
 
 ```{r}
 
@@ -97,7 +93,7 @@ tab %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=6*(1:4)) %>% 
-  colformat_num(na_str = "-") %>%
+  colformat_num(na_str = "0") %>%
   fix_border_issues() %>%
   width( j=2, width=2 )
   # autofit() 
@@ -120,9 +116,7 @@ ggplot(qdf, aes(x=Response, y=n, fill=Response)) +
 
 ### History of any arbovirus circulation since 2000 
 
-#### Question 5 
-
-Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission.
+#### Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission. (Question 5) 
 
 ```{r}
 
@@ -142,7 +136,7 @@ qdf %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=4*(1:4)) %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   autofit 
 
@@ -174,9 +168,7 @@ ggplot(data = qdf %>% filter(Response == 'Yes'),
 
 ### Conducting surveillance on humans
 
-#### Question 12 
-
-In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? 
+#### In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? (Question 12) 
 
 ```{r}
 
@@ -190,7 +182,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   hline(i=4) %>%
   autofit 
 
@@ -199,9 +191,7 @@ regulartable( qdf ) %>%
 
 ### Conducting surveillance on vectors 
 
-#### Question 28 
-
-For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors?
+#### For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? (Question 28) 
 
 ```{r}
 # relevant question: q28 (surveillance on vectors)
@@ -214,7 +204,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   hline(i=4) %>% 
   autofit 
 
@@ -223,9 +213,7 @@ regulartable( qdf ) %>%
 
 ### Conducting surveillance on animals 
 
-#### Question 41 
-
-During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (e.g., epizootic surveillance for yellow fever in endemic areas)?
+#### During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (e.g., epizootic surveillance for yellow fever in endemic areas)? (Question 41) 
 
 ```{r}
 
@@ -239,7 +227,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   hline(i=4) %>% 
   autofit 
 
@@ -247,9 +235,7 @@ regulartable( qdf ) %>%
 
 ### Training of surveillance personnel and clinicians
 
-#### Question 10 
-
-Which training has been provided to the staff working on arboviral disease surveillance data?
+#### Which training has been provided to the staff working on arboviral disease surveillance data? (Question 10) 
 
 ```{r}
 
@@ -269,7 +255,7 @@ qdf %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=5*(1:4)) %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   width( j=2, width=3 ) %>%
   autofit 
@@ -277,9 +263,7 @@ qdf %>%
 ```
 
 
-#### Question 24 
-
-Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases?
+#### Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? (Question 24) 
 
 ```{r}
 # relevant question: q24
@@ -296,7 +280,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   adorn_totals() 
 colnames(qdf)[2] <- "Yes"
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>% 
+  colformat_num( na_str="0" ) %>% 
   hline(i=4) %>%
   autofit 
 
@@ -304,9 +288,7 @@ regulartable( qdf ) %>%
 
 ### Presence written arbovirus surveillance and control plans
 
-#### Question 6 
-
-Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country?
+#### Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country? (Question 6) 
 
 ```{r}
 
@@ -321,7 +303,7 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
 regulartable( qdf ) %>%
-  colformat_num( na_str="-" ) %>%
+  colformat_num( na_str="0" ) %>%
   hline(i=4) %>% 
   # width( j=2:3, width=1.5 ) %>%
   autofit 
@@ -341,9 +323,7 @@ regulartable( qdf ) %>%
 
 ### Testing in outbreak vs non-outbreak settings 
 
-#### Question 15
-
-Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively)  
+#### Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and during non-outbreak periods, respectively) (Question 15) 
 
 ```{r}
 
@@ -362,7 +342,7 @@ qdf %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=8) %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   width( j=2, width=1) %>%
   autofit 
@@ -371,9 +351,7 @@ qdf %>%
 
 ### Laboratory tests available 
 
-#### Question 17 
-
-Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes.
+#### Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes. (Question 17) 
 
 ```{r} 
 # fig.height=8}
@@ -400,7 +378,7 @@ qdf %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=5*(1:4)) %>% 
-  colformat_num( na_str = "-" ) %>%
+  colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
   autofit 
 
@@ -436,9 +414,7 @@ ggplot(qdf, aes(x=Testing, y=Total, fill=Testing)) +
 
 ### Vector control method employed
 
-#### Question 35 
-
-Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply.
+#### Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply. (Question 35) 
 
 ```{r}
 
@@ -458,7 +434,7 @@ cbind( Region = df$Region, responses) %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=6*(1:4)) %>% 
-  colformat_num( na_str = "-" ) 
+  colformat_num( na_str = "0" ) 
 
 ```
 
