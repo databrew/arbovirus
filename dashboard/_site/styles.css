@@ -77,6 +77,62 @@ a:link, a:visited, a:hover, a:active {
     color: #1589d1cf;
 }
 
+
+
+#TOC > ul > li > a {
+    color: #ff7700 !important;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: medium;
+    transition: all 0.7s ease;
+}
+
+
+#TOC > ul > li > a:hover {
+    color: #e26b02!important;
+    font-size: 17px;
+}
+
+#TOC > ul > li {
+    list-style-type: none;
+    list-style-position: inside;
+}
+
+#TOC > ul > li > ul > li {
+    list-style-type: '-';
+    list-style-position: inside;
+}
+
+#TOC > ul > li > ul > li > a {
+    color: black;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: small;
+    margin-left: 15px;
+    transition: all 0.7s ease;
+}
+
+#TOC > ul > li > ul > li > a:hover {
+    color: #068fcad1;
+}
+
+#TOC > ul > li > ul > li > ul > li > a {
+    color: #3a3939;
+    font-weight: 300;
+    margin-left: 35px;
+    font-size: smaller;
+    text-transform: uppercase;
+    transition: all 0.7s ease;
+}
+
+#TOC > ul > li > ul > li > ul > li > a:hover {
+    color: #068fca;
+}
+
+#TOC > ul > li > ul > li > ul > li {
+    list-style-type: none;
+}
+
 /* *********** media queries *********** */
 @media all and (max-width: 990px) {
   .flex-container {
@@ -117,3 +173,92 @@ a:link, a:visited, a:hover, a:active {
     border-bottom: none;
   }
 }
+
+
+/* Dropdown menu */
+
+.top-level-menu > li:nth-child(3) > .second-level-menu > li > .third-level-menu {
+  left: -120% !important;
+  right: 0 !important;
+}
+
+.third-level-menu
+{
+    position: absolute;
+    top: 0;
+    right: -120%;
+    width: 120%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
+}
+
+.third-level-menu > li
+{
+    /* height: 30px; */
+    background: #068fca;
+}
+.third-level-menu > li:hover { background: #0784bb; }
+
+.second-level-menu
+{
+    position: absolute;
+    /* top: 30px; */
+    left: 0;
+    /* width: 150px; */
+    list-style: none;
+    /* padding: 0; */
+    /* margin: 0; */
+    display: none;
+    width: 100%;
+    text-align: justify;
+}
+
+.second-level-menu > li
+{
+    position: relative;
+    /* height: 30px; */
+    background: #068fca;
+}
+.second-level-menu > li:hover { background: #0484bb; }
+
+.top-level-menu
+{
+    /* list-style: none; */
+    /* padding: 0; */
+    /* margin: 0; */
+}
+
+.top-level-menu > li
+{
+    position: relative;
+    float: left;
+    /* height: 30px; */
+    /* width: 150px; */
+    /* background: #999999; */
+}
+.top-level-menu > li:hover { background: #0484bb; }
+
+.top-level-menu li:hover > ul
+{
+    /* On hover, display the next level's menu */
+    display: inline;
+}
+
+
+/* Menu Link Styles */
+
+.top-level-menu a /* Apply to all links inside the multi-level menu */
+{
+    font: bold 14px Arial, Helvetica, sans-serif;
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 0 0 0 10px;
+
+    /* Make the link cover the entire list item-container */
+    display: block;
+    /* line-height: 30px;* /
+}
+.top-level-menu a:hover { color: #000000; }
+

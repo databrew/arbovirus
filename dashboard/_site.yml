@@ -1,6 +1,6 @@
-name: "WHO-ABR"
+name: "WHO-ARBO"
 # navbar:
-#   title: "WHO-ABR"
+#   title: "WHO-ARBO"
 #   left:
 #     - text: "Home"
 #       href: index.html
@@ -12,7 +12,9 @@ name: "WHO-ABR"
 #       href: about.html
 output:
   html_document:
-    highlight: textmate
+    # toc: true
+    # toc_depth: 5
+    # highlight: textmate
     include:
       in_header: header.html
       after_body: footer.html
