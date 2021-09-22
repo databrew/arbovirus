@@ -476,7 +476,7 @@ responses <- responses %>% pivot_longer( everything() )
 # kable(responses)
 kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
   kable_styling( full_width=TRUE ) %>% 
-  column_spec(1, width="1.5in")
+  column_spec(1, width="1.25in")
 ```
 
 \end{center}
@@ -820,7 +820,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="3in")
 ```
 \end{center}
 
@@ -831,21 +833,12 @@ kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), bo
 
 \begin{center}
 ```{r}
-responses <- get_responses("38")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>%
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>%
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+responses <- get_responses("38") %>% 
+  pivot_longer( everything() ) %>% 
+  drop_na()
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="3in")
 ```
 \end{center}
 
@@ -912,12 +905,15 @@ new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=
 responses <- responses %>%
 	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
 	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
+  drop_na() %>%
+	pivot_wider(names_from=Response, values_from=value) %>% 
+  select(-Level)
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(2, width="4in")
 ```
 \end{center}
 
@@ -1005,8 +1001,10 @@ responses <- responses %>%
 responses <- responses %>% pivot_longer( everything() )
 }
 #kable(responses)
-kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
-  column_spec(2:3, width="1in")
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="3in")
+
 ```
 
 \end{center}
