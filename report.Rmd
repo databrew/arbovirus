@@ -1,24 +1,26 @@
 ---
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
-output: 
+output:
   pdf_document:
-    keep_tex: true
+    keep_tex: yes
     latex_engine: xelatex
-header-includes: 
-  - \usepackage{booktabs}
-  - \usepackage{longtable}
-  - \usepackage{array}
-  - \usepackage{multirow}
-  - \usepackage{wrapfig}
-  - \usepackage{float}
-  - \usepackage{colortbl}
-  - \usepackage{pdflscape}
-  - \usepackage{tabu}
-  - \usepackage{threeparttable}
-  - \usepackage{threeparttablex}
-  - \usepackage[normalem]{ulem}
-  - \usepackage{makecell}
-  - \usepackage{xcolor}
+  html_document:
+    df_print: paged
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{xcolor}
 fontsize: 12pt
 params:
   country: Greece
@@ -128,7 +130,8 @@ responses <- responses %>%
 responses <- responses %>% pivot_longer( everything() )
 }
 kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
-  kable_styling( full_width=TRUE )
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
 
 ```
 
@@ -162,7 +165,8 @@ responses <- responses %>%
 responses <- responses %>% pivot_longer( everything() ) %>% drop_na()
 }
 kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
-  kable_styling( full_width=TRUE )
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
 ```
 \end{center}
 
@@ -208,7 +212,8 @@ responses <- responses %>%
 responses <- responses %>% pivot_longer( everything() )
 }
 kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
-  kable_styling( full_width=TRUE )
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
 ```
 \end{center}
 
@@ -234,7 +239,8 @@ responses <- responses %>%
 responses <- responses %>% pivot_longer( everything() )
 }
 kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
-  kable_styling( full_width=TRUE )
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
 ```
 \end{center}
 
@@ -263,7 +269,7 @@ responses <- responses %>% pivot_longer( everything() ) %>% drop_na()
 # kable( responses, col.names=NULL)
 kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)  %>%
   kable_styling( full_width=TRUE ) %>% 
-  column_spec(1, width="4in")
+  column_spec(2, width="1in")
 ```
 
 \end{center}
@@ -295,7 +301,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
 ```
 \end{center}
 
@@ -320,7 +328,10 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width=".5in") %>% 
+  column_spec(3, width="2in")
 ```
 \end{center}
 
@@ -395,7 +406,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
 ```
 \end{center}
 
@@ -420,7 +433,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), align=c('l','l'), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
 ```
 \end{center}
 
@@ -459,8 +474,9 @@ responses <- responses %>%
 responses <- responses %>% pivot_longer( everything() )
 }
 # kable(responses)
-kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
-  column_spec(1, width="2in")
+kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="1.5in")
 ```
 
 \end{center}
@@ -513,7 +529,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
 ```
 \end{center}
 
@@ -538,7 +556,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
 ```
 \end{center}
 
@@ -621,7 +641,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
 ```
 \end{center}
 
@@ -701,8 +723,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>% 
-  column_spec(1, width="3in")
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
 ```
 \end{center}
 
@@ -746,7 +769,9 @@ responses <- responses %>%
 } else{
 responses <- responses %>% pivot_longer( everything() )
 }
-kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)
+kable(responses, col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
 ```
 \end{center}
 
