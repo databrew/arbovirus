@@ -38,8 +38,8 @@ idx <- which( all_questions == "1" )
 all_questions <- unique( all_questions[ idx:length( all_questions )] )
 n_questions <- length( all_questions )
 
-# questions that only appear when triggered:
-special_questions <- c("6b","7b","11b","11c","12b","12c","28c","28d","28e","34b","34c","35b","37b","41b","41c","42b","43b","43c","43d","43e","55c","55d")
+# questions that only appear when triggered OR only need to be answered conditionally:
+special_questions <- c("6b","7b","11b","11c","12b","12c","19b","19c","19d","28c","28d","28e","34b","34c","35b","37b","41b","41c","42b","43b","43c","43d","43e","55c","55d")
 idx <- which( all_questions %in% special_questions )
 standard_questions <- all_questions[-idx]
 
@@ -125,6 +125,16 @@ for(i in 1:nrow(data)){
             update_special(i, "12b")
             update_special(i, "12c")
           }
+        } 
+        
+        if( question == 19 ){
+          # if "Yes", then 19b, 19c, and 19d should be answered
+          # answers <- data[i,idx] %>% pivot_longer( everything() ) %>% drop_na()
+          # if( "Yes" %in% answers$value ){
+          #    update_special(i, "19b")
+          #   update_special(i, "19b")
+          #   update_special(i, "19b")
+          # }
         } 
         
         if( question == 28 ){
