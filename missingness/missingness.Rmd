@@ -3,8 +3,8 @@ title: "Arboviral Surveillance and Response Capacity Survey"
 author: "Missingness analysis"
 date: "`r format(Sys.time(), '%Y %B %d')`"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 fontsize: 12pt
 ---
 
@@ -129,12 +129,12 @@ for(i in 1:nrow(data)){
         
         if( question == 19 ){
           # if "Yes", then 19b, 19c, and 19d should be answered
-          # answers <- data[i,idx] %>% pivot_longer( everything() ) %>% drop_na()
-          # if( "Yes" %in% answers$value ){
-          #    update_special(i, "19b")
-          #   update_special(i, "19b")
-          #   update_special(i, "19b")
-          # }
+          answers <- data[i,idx] %>% pivot_longer( everything() ) %>% drop_na()
+          if( "Yes" %in% answers$value ){
+            update_special(i, "19b")
+            update_special(i, "19c")
+            update_special(i, "19d")
+          }
         } 
         
         if( question == 28 ){
