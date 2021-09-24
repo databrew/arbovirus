@@ -22,7 +22,7 @@ data <- data %>%
   filter( SI01 != "Iceland")
 
 # load data dictionary to facilitate processing results:
-dict <- read_csv("Data_dictionary_Survey375147.csv")
+dict <- read.csv("Data_dictionary_Survey375147.csv", na.strings=c("") ) #, encoding="UTF-8" )
 
 ##########################################################
 #
@@ -30,10 +30,10 @@ dict <- read_csv("Data_dictionary_Survey375147.csv")
 #
 ##########################################################
 
-idx <- c( which( is.na( dict$`Question number` )),
-          which( grepl('upload', dict$`Type of variable`)),
-          which ( grepl('filecount', dict$`Question number`) ))
-all_questions <- dict$`Question number`[-idx]
+idx <- c( which( dict$Question.number == "NA" ),
+          which( grepl('upload', dict$Type.of.variable)),
+          which ( grepl('filecount', dict$Question.number) ))
+all_questions <- dict$Question.number[-idx]
 idx <- which( all_questions == "1" )
 all_questions <- unique( all_questions[ idx:length( all_questions )] )
 n_questions <- length( all_questions )
@@ -53,6 +53,7 @@ summary <- data.frame( Country = rep( data$SI01, rep(n_questions, n_countries ))
                       Type = rep( type, n_countries ), # standard or special
                       Status = as.character( rep( status, n_countries) ) # answered, skipped, or not shown
                       ) 
+summary$Status <- as.character(summary$Status)
 
 update_special <- function( country_idx, question ){
   idx <- which( dict$`Question number` == question )
@@ -73,8 +74,9 @@ for(i in 1:nrow(data)){
   if( !is.na(country) ){
     
     for(j in 1:length(standard_questions)){
+      
       question <- standard_questions[j] 
-      idx <- which( dict$`Question number` == question )
+      idx <- which( dict$Question.number == question )
       if( all( is.na( data[i, idx] ) ) ){
         summary_idx <-  offset + which( all_questions == question )
         summary$Status[ summary_idx ] <- "skipped"
@@ -98,7 +100,7 @@ for(i in 1:nrow(data)){
         if( question == 11 ){
           # answering Yes triggers 11b, No does not
           if( data[i,idx] == levels( data[,idx] )[1] ){
-            subidx <- which( dict$`Question number` == "11b" )
+            subidx <- which( dict$Question.number == "11b" )
             summary_idx <-  offset + which( all_questions == "11b" )
             if( all( is.na( data[i, subidx] ))){
               summary$Status[ summary_idx ] <- "skipped"
@@ -107,7 +109,7 @@ for(i in 1:nrow(data)){
               summary$Status[ summary_idx ] <- "answered"
               if( !is.na( data[i, subidx[ length(subidx)]] ) ){
                 summary_idx <-  offset + which( all_questions == "11c" )
-                subidx <- which( dict$`Question number` == "11c" )
+                subidx <- which( dict$Question.number == "11c" )
                 if( all( is.na( data[i, subidx] ))){
                   summary$Status[ summary_idx ] <- "skipped"
                   missing <- c( missing, "11c" )
@@ -244,7 +246,7 @@ regulartable( df ) %>%
   align(align="center", part="header") %>%
   align(j=2, align="center") %>% 
   width( j=3, width=3 ) %>%
-  hline # %>%
-  # autofit
+  hline %>%
+  autofit
 
 ```

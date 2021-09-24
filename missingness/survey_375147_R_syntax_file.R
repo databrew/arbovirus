@@ -1,7 +1,12 @@
 # MBR edit 7/31/2021: 
 # commented out all attributes(data)$variable.labels settings to simplify things
 
-data <- read.csv("survey_375147_R_data_file.csv", quote = "'\"", na.strings=c("", "\"\""), stringsAsFactors=FALSE, fileEncoding="UTF-8-BOM")
+data <- read.csv("survey_375147_R_data_file.csv", 
+                 # quote = "", 
+                 na.strings=c("") )
+                 # encoding = "UTF-8" )
+                 #  stringsAsFactors=FALSE, 
+                 # fileEncoding="UTF-8-BOM"
 
 # LimeSurvey Field type: F
 data[, 1] <- as.numeric(data[, 1])
