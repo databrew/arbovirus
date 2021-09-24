@@ -399,11 +399,9 @@ if( !all(is.na(responses$value))){
 > `r if(grepl("Yes", data$SIII16)){ paste0(data$SIII16,"\n\n",data$SIII16_comment) } else{ data$SII16 }`
 
 
-
 #### 16b. If your country does not have capacity to type and serotype arboviruses, do you send samples for typing to other countries?
 
 > `r if(grepl("Yes", data$SIII16b)){ paste0(data$SIII16b,"\n\n",data$SIII16b_comment) } else{ data$SIII16b }`
-
 
 
 #### 17. Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes
@@ -421,11 +419,12 @@ if( !all(is.na(responses$value))){
   responses %>%
 	  mutate(Level = new_cols[,1], Testing = new_cols[,2]) %>%
 	  select(-name) %>%
-	  mutate( value = case_when( value == 1 ~ "Yes", value == 0 ~ "No", is.na(value) ~ "Not selected")) %>%
-	  pivot_wider(names_from=Level, values_from=value) %>% 
+	  mutate( value = case_when( value == 1 ~ "Yes", value == 0 ~ "No", is.na(value) ~ " ")) %>%
+    pivot_wider(names_from=Testing, values_from=value) %>% 
+    rename( " " = Level) %>%
     kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
-    kable_styling( full_width=TRUE ) %>% 
-    column_spec(1, width="1.25in")
+    kable_styling( full_width=TRUE, font_size=10 ) %>% 
+    column_spec(1, width=".85in")
 }
 
 ```
