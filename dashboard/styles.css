@@ -8,6 +8,7 @@ blockquote {
   justify-content: space-between;
   list-style-type: none;
   padding: 0px;
+  margin-bottom: 0px;
 }
 
 .blue-sub-nav > li {
@@ -30,15 +31,51 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .blue-sub-nav li a:hover {
-  background-color: #0484bb;
+  background-color: #d86422;
   color: #ffffff;
 } 
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+
+.sticky ~ #global-navigation, .sticky ~ #regional-navigation, .sticky ~ #country-navigation {
+    position: fixed !important;
+    top: 53px;
+}
+
+
+.activeMenuState {
+  background: #21313b;
+}
+
+.white_logo_appear{
+  width: 60% !important;
+}
+
+#whiteLogoPosition {
+  width: 0%;
+}
+
+#white_WHO_logo {
+  height: 53px;
+  padding: 5px;
+}
 
 #WHO_logo {
   width: 15%;
   padding-top: 5px;
   padding-bottom: 3px;
 }
+
+.main-container {
+  padding-top: 60px;
+}
+
+
 
 /* White navbar */
 * {padding: 0; margin: 0;}
@@ -78,6 +115,108 @@ a:link, a:visited, a:hover, a:active {
 }
 
 
+#global-navigation{
+  background: #21313b;
+  color:#fff;
+  position: absolute;
+  width: 100%;
+  /*top:50px;*/
+  
+}
+
+#global-navigation a{
+  color: #fff;
+  font-weight: bold;
+  margin-top: 50px;
+}
+#global-navigation a:hover,
+#global-navigation a:active{
+  text-decoration: none;
+}
+
+#global-navigation ul{
+  margin:40px 0;
+  padding:0;
+  list-style-type:none;
+  text-align: center;
+}
+
+#global-navigation li{
+  padding: 10px 0;
+}
+
+
+/* Regional */
+#regional-navigation {
+  background: #21313b;
+  color:#fff;
+  position: absolute;
+  width: 100%;
+  /*top:50px;*/
+  
+}
+
+#regional-navigation a{
+  color: #fff;
+  font-weight: bold;
+  margin-top: 50px;
+}
+#regional-navigation a:hover,
+#regional-navigation a:active{
+  text-decoration: none;
+}
+
+#regional-navigation ul{
+  margin:40px 0;
+  padding:0;
+  list-style-type:none;
+  text-align: center;
+}
+
+#regional-navigation li{
+  padding: 10px 0;
+}
+
+
+/* Country */
+#country-navigation {
+  background: #21313b;
+  color:#fff;
+  position: absolute;
+  width: 100%;
+  /*top:50px;*/
+  
+}
+
+#country-navigation a{
+  color: #fff;
+  font-weight: bold;
+  margin-top: 50px;
+}
+#country-navigation a:hover,
+#country-navigation a:active{
+  text-decoration: none;
+}
+
+#country-navigation ul{
+  margin:40px 0;
+  padding:0;
+  list-style-type:none;
+  text-align: center;
+}
+
+#country-navigation li{
+  padding: 10px 0;
+}
+
+.submenu-text-formating > li{
+  text-align: left;
+  padding: 10px !important;
+}
+
+.submenu-text-formating > li:hover {
+    background: #d86422;
+}
 
 #TOC > ul > li > a {
     color: #ff7700 !important;

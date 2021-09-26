@@ -1,5 +1,5 @@
 ---
-title: "Country data"
+title: "Country (Europe - List)"
 ---
 
 ```{r, include=FALSE, echo = FALSE}
