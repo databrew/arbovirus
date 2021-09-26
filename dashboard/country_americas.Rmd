@@ -1,5 +1,5 @@
 ---
-title: "Regional data (Surveillance capacity indicators)"
+title: "Country (Americas)"
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -15,7 +15,6 @@ opts_chunk$set(comment = NA,
                fig.height = 5.9,
                fig.path = 'figures/')
 ggplot2::theme_set(ggplot2::theme_bw())
-
 # options(scipen = '999')
 ```
 
@@ -99,7 +98,6 @@ $(document).on('click', function (e){
 
 ```
 
-
 ```{r, child="_sessioninfo.Rmd"}
 ```
 
@@ -109,27 +107,27 @@ dict <- load_dict()
 df <- load_data()
 ```
 
+
 # Surveillance capacity indicators
 
 ### Reportable arboviral diseases
 
-#### Is reporting mandatory for any arboviral disease cases in your country? (Question 11) 
+#### Is reporting mandatory for any arboviral disease cases in your country? (Question 11)
 
 ```{r}
 
 # relevant question: q11
 
 responses <- get_responses("11")
-qdf <- data.frame(Region = df$Region, Response = responses) %>% 
-  drop_na(Region) %>% 
-  group_by(Region, Response) %>% 
+qdf <- responses %>%  
+  group_by(Response) %>% 
   tally 
-tab <- qdf %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
-  adorn_totals() 
-regulartable( tab ) %>%
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  # pander()
+  regulartable( ) %>%
   colformat_num( na_str = "0" ) %>%
-  hline(i=4) %>%
+  # hline(i=1) %>%
   autofit 
 
 ggplot( qdf, 
@@ -137,7 +135,6 @@ ggplot( qdf,
              y = n,
              fill = Response)) +
   geom_col() +
-  facet_wrap( ~Region ) +
   theme(legend.position = "bottom",
         legend.direction="horizontal",
         axis.title.x=element_blank(),
@@ -149,7 +146,6 @@ ggplot( qdf,
   labs(title = "Mandatory reporting of cases", 
        y = 'Responses')
   
-
 ```
 
 #### For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
@@ -159,29 +155,25 @@ ggplot( qdf,
 # relevant question: q11b
 
 responses <- get_responses("11b")
-qdf <- cbind(Region = df$Region, responses) %>% 
-  pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
-  group_by(Region, Arbovirus, Response) %>% 
+qdf <- responses %>% 
+  pivot_longer(everything(), names_to="Arbovirus", values_to="Response") %>% 
+  group_by(Arbovirus, Response) %>% 
   tally
 qdf$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", qdf$Response))
-tab <- qdf %>% 
+qdf %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
-  drop_na(Region) %>% 
   relocate("Confirmed cases only", .after="All suspect cases") %>%
-  rename("No answer"='NA')
-tab %>% 
+  rename("No answer"='NA') %>% 
+  # kable()
   regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=6*(1:4)) %>% 
   colformat_num(na_str = "0") %>%
   fix_border_issues() %>%
-  width( j=2, width=2 )
-  # autofit() 
+  # width( j=2, width=2 )
+  autofit() 
 
-ggplot(qdf, aes(x=Response, y=n, fill=Response)) + 
-  geom_col() + 
-  facet_grid( Region ~ Arbovirus ) +
+ggplot(qdf, aes(x=Response, y=n, fill=Response)) +
+  geom_col() +
+  facet_wrap(~Arbovirus) +
   theme(legend.position = "bottom",
         legend.direction="horizontal",
         axis.title.x=element_blank(),
@@ -190,7 +182,7 @@ ggplot(qdf, aes(x=Response, y=n, fill=Response)) +
   guides(fill=guide_legend(ncol=4)) +
   scale_fill_manual(name = '',
                     values = make_colors(length(unique(qdf$Response)))) +
-  labs(title = "Regional reporting of cases", 
+  labs(title = "Overall reporting of cases",
        y = 'Responses')
 
 ```
@@ -206,43 +198,27 @@ ggplot(qdf, aes(x=Response, y=n, fill=Response)) +
 responses <- get_responses("5")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
-qdf <- cbind( Region = df$Region, responses) %>% 
-  drop_na(Region) %>% 
-  pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
-  group_by(Region, Arbovirus, Response) %>% 
+qdf <- responses %>% 
+  pivot_longer(everything(), names_to="Arbovirus", values_to="Response") %>% 
+  group_by(Arbovirus, Response) %>% 
   tally
 qdf %>% 
   pivot_wider( names_from=Response, values_from=n) %>% 
+  # kable()
   regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=4*(1:4)) %>% 
   colformat_num( na_str = "0" ) %>%
-  fix_border_issues %>%
+  # fix_border_issues %>%
   autofit 
-
-# qdf <- responses %>%
-#   pivot_longer(cols = colnames(responses), names_to="Arbovirus", values_to="Response") %>% 
-#   group_by(Arbovirus, Response) %>% 
-#   tally
-# 
 
 ggplot(data = qdf %>% filter(Response == 'Yes'),
        aes(x = Arbovirus,
            y = n,
            fill = Arbovirus)) +
   geom_col() +
-  facet_grid( ~Region ) +
-  theme(legend.position = "bottom",
-        legend.direction="horizontal",
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()) +
-  guides(fill=guide_legend(ncol=4)) +
   scale_fill_manual(name = '',
+                    guide = "none",
                     values = make_colors(length(unique(qdf$Arbovirus)))) +
-  labs(title = "Arbovirus circulation since 2000", 
-       y = 'Responses')
+  labs(y = 'Entries')
 
 ```
 
@@ -256,15 +232,12 @@ ggplot(data = qdf %>% filter(Response == 'Yes'),
 # relevant question: q12 (surveillance on humans)
 
 responses <- get_responses("12")
-qdf <- data.frame(Region = df$Region, Response = responses) %>% 
-  drop_na(Region) %>% 
-  group_by(Region, Response) %>% 
+responses %>% 
+  group_by(Response) %>% 
   tally %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
-  adorn_totals()
-regulartable( qdf ) %>%
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  regulartable() %>%
   colformat_num( na_str="0" ) %>%
-  hline(i=4) %>%
   autofit 
 
 ```
@@ -278,15 +251,12 @@ regulartable( qdf ) %>%
 # relevant question: q28 (surveillance on vectors)
 
 responses <- get_responses("28")
-qdf <- data.frame(Region = df$Region, Response = responses) %>% 
-  drop_na(Region) %>% 
-  group_by(Region, Response) %>% 
+responses %>% 
+  group_by(Response) %>% 
   tally %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
-  adorn_totals()
-regulartable( qdf ) %>%
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  regulartable() %>%
   colformat_num( na_str="0" ) %>%
-  hline(i=4) %>% 
   autofit 
 
 ```
@@ -301,15 +271,12 @@ regulartable( qdf ) %>%
 # relevant question: q41 (surveillance on animals)
 
 responses <- get_responses("41")
-qdf <- data.frame(Region = df$Region, Response = responses) %>% 
-  drop_na(Region) %>% 
-  group_by(Region, Response) %>% 
+responses %>% 
+  group_by(Response) %>% 
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
-  adorn_totals()
-regulartable( qdf ) %>%
+  regulartable() %>%
   colformat_num( na_str="0" ) %>%
-  hline(i=4) %>% 
   autofit 
 
 ```
@@ -325,20 +292,15 @@ regulartable( qdf ) %>%
 responses <- get_responses("10")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
-qdf <- cbind( Region = df$Region, responses) %>% 
-  pivot_longer(!Region, names_to="Training", values_to="Response") %>% 
-  group_by(Region, Training, Response) %>% 
-  tally
-qdf %>% 
+responses %>% 
+  pivot_longer(everything(), names_to="Training", values_to="Response") %>% 
+  group_by(Training, Response) %>% 
+  tally %>% 
   pivot_wider( names_from=Response, values_from=n) %>% 
-  drop_na(Region) %>% 
   regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=5*(1:4)) %>% 
   colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
-  width( j=2, width=3 ) %>%
+  # width( j=2, width=3 ) %>%
   autofit 
 
 ```
@@ -347,22 +309,20 @@ qdf %>%
 #### Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? (Question 24) 
 
 ```{r}
+
 # relevant question: q24
 
 responses <- get_responses("24")
 colnames(responses) <- c("Response", "Comments")
 comments <- responses %>% select(Comments)
 responses <- responses %>% select(Response)
-qdf <- data.frame(Region = df$Region, Response = responses) %>% 
-  drop_na(Region) %>% 
-  group_by(Region, Response) %>% 
+qdf <- responses %>% 
+  group_by(Response) %>% 
   tally %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
-  adorn_totals() 
-colnames(qdf)[2] <- "Yes"
+  pivot_wider(names_from=Response, values_from=n)
+colnames(qdf)[1] <- "Yes"
 regulartable( qdf ) %>%
   colformat_num( na_str="0" ) %>% 
-  hline(i=4) %>%
   autofit 
 
 ```
@@ -377,15 +337,12 @@ regulartable( qdf ) %>%
 
 responses <- get_responses("6")
 
-qdf <- data.frame(Region = df$Region, Response = responses) %>% 
-  drop_na(Region) %>% 
-  group_by(Region, Response) %>% 
+responses %>% 
+  group_by(Response) %>% 
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
-  adorn_totals()
-regulartable( qdf ) %>%
+  regulartable() %>%
   colformat_num( na_str="0" ) %>%
-  hline(i=4) %>% 
   # width( j=2:3, width=1.5 ) %>%
   autofit 
 
@@ -412,20 +369,15 @@ regulartable( qdf ) %>%
 
 responses <- get_responses("15")
 
-qdf <- cbind( Region = df$Region, responses) %>% 
-  pivot_longer(!Region, names_to="Training", values_to="Response") %>% 
-  group_by(Region, Training, Response) %>% 
-  tally 
-qdf %>% 
+responses %>% 
+  pivot_longer(everything(), names_to="Period", values_to="Response") %>% 
+  group_by(Period, Response) %>% 
+  tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
-  drop_na(Region) %>% 
   regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=8) %>% 
   colformat_num( na_str = "0" ) %>%
-  fix_border_issues %>%
-  width( j=2, width=1) %>%
+  # fix_border_issues %>%
+  # width( j=2, width=1) %>%
   autofit 
 
 ```
@@ -440,15 +392,14 @@ qdf %>%
 # relevant question: q17
 
 responses <- get_responses("17")
-qdf <- cbind( Region = df$Region, responses) %>% 
-  pivot_longer(!Region, names_to="Testing", values_to="Response")
+qdf <- responses %>% 
+  pivot_longer(everything(), names_to="Testing", values_to="Response")
 new_cols <- matrix( unlist( strsplit(qdf$Testing, "\\]\\[") ), ncol=2, byrow=T)
 qdf <- qdf %>% 
   mutate(Arbovirus = new_cols[,1], Testing = new_cols[,2])
 qdf$Response <- as.numeric( qdf$Response)
 qdf <- qdf %>% 
-  group_by(Region, Arbovirus, Testing) %>% 
-  drop_na( Region ) %>% 
+  group_by(Arbovirus, Testing) %>%
   summarize(Total = sum(Response, na.rm=T))
 qdf$Arbovirus <- factor( qdf$Arbovirus )
 qdf$Testing <- factor( qdf$Testing )
@@ -456,16 +407,12 @@ qdf$Testing <- factor( qdf$Testing )
 qdf %>% 
   pivot_wider(names_from=Testing, values_from=Total) %>% 
   regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=5*(1:4)) %>% 
   colformat_num( na_str = "0" ) %>%
-  fix_border_issues %>%
   autofit 
 
 ggplot(qdf, aes(x=Testing, y=Total, fill=Testing)) + 
   geom_col() + 
-  facet_grid( Region ~ Arbovirus ) + 
+  facet_wrap( ~ Arbovirus ) + 
   theme(legend.position = "bottom",
         legend.direction="horizontal",
         axis.title.x=element_blank(),
@@ -493,7 +440,16 @@ ggplot(qdf, aes(x=Testing, y=Total, fill=Testing)) +
 (q21)
 
 
-### Vector control method employed
+### Vector control method employed (q35)
+
+
+### Surveillance and response committee exists (q47)
+
+
+### Contingency plan exists (q48)
+
+
+### Most common vector control methods used 
 
 #### Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply. (Question 35) 
 
@@ -505,30 +461,16 @@ responses <- get_responses("35")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other) 
 
-cbind( Region = df$Region, responses) %>% 
-  pivot_longer(!Region, names_to="Method", values_to="Response") %>% 
-  group_by(Region, Method, Response) %>% 
+responses %>% 
+  pivot_longer(everything(), names_to="Method", values_to="Response") %>% 
+  group_by(Method, Response) %>% 
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
-  drop_na(Region) %>% 
   regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=6*(1:4)) %>% 
   colformat_num( na_str = "0" ) 
 
 ```
 
-
-### Surveillance and response committee exists (q47)
-
-
-### Contingency plan exists (q48)
-
-
-### Most common vector control methods used 
-
-(q35)
 
 
 ### Indicators used for thresholds 
