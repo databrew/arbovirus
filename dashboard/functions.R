@@ -174,7 +174,11 @@ make_map <- function(df,
                      pal = 'YlGnBu',
                      qualitative = FALSE,
                      opacity = 0.8,
-                     provider = providers$OpenStreetMap){
+                     provider = providers$OpenStreetMap,
+                     rev = TRUE,
+                     add_base_layer = TRUE,
+                     label_string = NULL,
+                     legend_title = ' '){
   
   # load('../data/world_shp.rda')
   # df <- tibble(country = c('France', 'Germany', 'Spain'),
@@ -223,11 +227,11 @@ make_map <- function(df,
   # Define color palette and values to show in tooltip
   if(qualitative){
     # pal <- 'Set3'
-    pal_fun <- colorFactor(palette = pal, domain=shp@data$value, na.color="transparent", reverse = TRUE)
+    pal_fun <- colorFactor(palette = pal, domain=shp@data$value, na.color="transparent", reverse = rev)
     vals <- shp@data$value
     
   } else {
-    pal_fun <- colorNumeric(palette=pal, domain=shp@data$value, na.color="transparent")
+    pal_fun <- colorNumeric(palette=pal, domain=shp@data$value, na.color="transparent", reverse = rev)
     vals <- round(shp@data$value, 2)
   }
   
@@ -246,9 +250,20 @@ make_map <- function(df,
     "Value: ", vals, 
     sep="") %>%
     lapply(htmltools::HTML)
-  
-  m <- leaflet(shp) %>% 
-    addProviderTiles(provider = provider)  %>% 
+  if(!is.null(label_string)){
+    # overwrite the labels
+    tool_tip <- paste0(part1, part2,     
+                       "<br/>", 
+                       label_string, ": ", 
+                       vals, sep = "")  %>%
+      lapply(htmltools::HTML)
+  }
+  m <- leaflet(shp)
+  if(add_base_layer){
+    m <- m %>%
+      addProviderTiles(provider = provider) 
+  }
+  m <- m %>%
     addPolygons( 
       fillColor = ~pal_fun(value), 
       color = 'black',
@@ -263,7 +278,7 @@ make_map <- function(df,
         direction = "auto"
       )
     ) %>%
-    addLegend( pal=pal_fun, values=~value, opacity=0.9, title = " ", position = "bottomleft" ) %>%
+    addLegend( pal=pal_fun, values=~value, opacity=0.9, title = legend_title, position = "bottomleft" ) %>%
     setView( lat=10, lng=0 , zoom=2) 
   m
 }
