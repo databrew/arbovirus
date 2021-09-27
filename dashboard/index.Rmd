@@ -109,9 +109,116 @@ source('functions.R')
 library(RColorBrewer)
 library(scales)
 library(leaflet)
+library(leaflet.extras)
 load('../arboapp/data/world_shp.rda') # load world shape file
 load('../arboapp/data/region_shp.rda')
 df <- load_data(modify_variable_names = TRUE)
+```
+
+# Virus map
+
+```{r}
+# Get data for each disease
+pd <- df[,c('1. State', names(df)[grepl('Which arboviruses have circulated in your country at any', names(df), fixed = TRUE)])]
+names(pd) <- c('country', 'Chikungunya', 'Dengue', 'Yellow fever', 'Zika', 'Other')
+pd$Other <- NULL
+# Simplify values
+for(j in 2:ncol(pd)){
+  vals <- pd[,j]
+  vals <- as.character(vals)
+  out_vals <- ifelse(is.na(vals), 'No', ifelse(vals == 'Yes', 'Yes', 'No'))
+  pd[,j] <- out_vals
+}
+# Get total number of viruses
+pd$total <- apply(pd[,2:5], 1, function(x){sum(ifelse(x == 'Yes', 1, 0))})
+# Clean up a bit
+pd <- pd %>%
+  filter(!is.na(country)) %>%
+  filter(country != 'Iceland') %>%
+  filter(!duplicated(country)) %>%
+  mutate(value = total)
+# Make markers for each disease
+library(leaflet)
+icons_chikungunya <- awesomeIcons(
+  icon = 'copyright-mark',
+  iconColor = 'black',
+  markerColor = 'green'
+)
+icons_dengue <- awesomeIcons(
+  icon = 'leaf',
+  iconColor = 'black',
+  markerColor = 'red'
+)
+icons_yellow_fever <- awesomeIcons(
+  icon = 'star-empty',
+  iconColor = 'black',
+  markerColor = 'orange'
+)
+icons_zika <- awesomeIcons(
+  icon = 'fire',
+  iconColor = 'black',
+  markerColor = 'blue'
+)
+joined <- world_shp
+joined@data <- left_join(joined@data, pd)
+disease_names <- names(pd)[2:5]
+for(j in 1:length(disease_names)){
+  this_disease_name <- disease_names[j]
+  vals <- joined@data[,this_disease_name]
+  vals <- ifelse(is.na(vals), 'No', vals)
+  joined@data[,this_disease_name] <- vals
+}
+coords <- coordinates(joined)
+joined <- joined@data
+joined$lng <- coords[,1]; joined$lat <- coords[,2]
+jitter_factor <- 14
+pd_chikungunya <- joined[joined$Chikungunya == 'Yes',] #%>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_dengue <- joined[joined$Dengue == 'Yes',] %>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_yellow_fever <- joined[joined$`Yellow fever` == 'Yes',] %>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_zika <- joined[joined$Zika == 'Yes',] %>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+
+
+make_map(df = pd,
+         pal = 'Spectral',
+         qualitative = FALSE,
+         add_base_layer = FALSE,
+         label_string = 'Number of arboviruses',
+         legend_title = 'Number of\narboviruses') %>%
+  addTiles(group = 'OSM (default)') %>%
+  addProviderTiles(providers$Stamen.Toner, group = "Toner") %>%
+  addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+  addAwesomeMarkers(data = pd_chikungunya, 
+                    ~lng, 
+                    ~lat, 
+                    icon=icons_chikungunya, 
+                    label=paste0(pd_chikungunya$country, '. ', 'Chikungunya'),
+                    group = 'Chikungunya') %>%
+    addAwesomeMarkers(data = pd_dengue, 
+                    ~lng, 
+                    ~lat, 
+                    icon=icons_dengue, 
+                    label=paste0(pd_dengue$country, '. ', 'Dengue'),
+                    group = 'Dengue') %>%
+      addAwesomeMarkers(data = pd_yellow_fever, 
+                    ~lng, 
+                    ~lat, 
+                    icon=icons_yellow_fever, 
+                    label=paste0(pd_yellow_fever$country, '. ', 'Yellow fever'),
+                    group = 'Yellow fever') %>%
+      addAwesomeMarkers(data = pd_zika, 
+                    ~lng, 
+                    ~lat, 
+                    icon=icons_zika, 
+                    label=paste0(pd_zika$country, '. ', 'Zika'),
+                    group = 'Zika') %>%
+
+  addLayersControl(
+    baseGroups = c("OSM (default)", "Toner", "Toner Lite"),
+    overlayGroups = c("Chikungunya", "Dengue", "Yellow fever", "Zika"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%    addFullscreenControl()
+
+  
 ```
 
 # Responses by country
