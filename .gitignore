@@ -1,6 +1,7 @@
 data/
 *.html
 *.pdf
+*.docx
 *.tex
 *.zip
 figures/

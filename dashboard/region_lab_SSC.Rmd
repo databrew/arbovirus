@@ -110,47 +110,4 @@ df <- load_data()
 
 ## Laboratory tests available 
 
-#### Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes. (Question 17) 
-
-```{r} 
-# fig.height=8}
-
-# relevant question: q17
-
-responses <- get_responses("17")
-qdf <- cbind( Region = df$Region, responses) %>% 
-  pivot_longer(!Region, names_to="Testing", values_to="Response")
-new_cols <- matrix( unlist( strsplit(qdf$Testing, "\\]\\[") ), ncol=2, byrow=T)
-qdf <- qdf %>% 
-  mutate(Arbovirus = new_cols[,1], Testing = new_cols[,2])
-qdf$Response <- as.numeric( qdf$Response)
-qdf <- qdf %>% 
-  group_by(Region, Arbovirus, Testing) %>% 
-  drop_na( Region ) %>% 
-  summarize(Total = sum(Response, na.rm=T))
-qdf$Arbovirus <- factor( qdf$Arbovirus )
-qdf$Testing <- factor( qdf$Testing )
-
-qdf %>% 
-  pivot_wider(names_from=Testing, values_from=Total) %>% 
-  regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=5*(1:4)) %>% 
-  colformat_num( na_str = "0" ) %>%
-  fix_border_issues # %>%
-  # autofit 
-
-# ggplot(qdf, aes(x=Testing, y=Total, fill=Testing)) + 
-#   geom_col() + 
-#   facet_grid( Region ~ Arbovirus ) + 
-#   theme(legend.position = "bottom",
-#         legend.direction="horizontal",
-#         axis.title.x=element_blank(),
-#         axis.text.x=element_blank(),
-#         axis.ticks.x=element_blank()) +
-#   guides(fill = guide_legend(ncol = 2)) + 
-#   scale_fill_manual(name = '',
-#                     values = make_colors(length(unique(qdf$Testing))))
-
-```
+q19
