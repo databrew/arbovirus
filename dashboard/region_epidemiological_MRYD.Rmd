@@ -112,5 +112,12 @@ df <- load_data()
 
 ### Most recent year data 
 
-(q56)
+#### Please provide the number of cases of locally acquired, mosquito-borne _Aedes_-borne arbovirus infections by case classification for 2020 and, if not available, for 2019. (Question 56) 
 
+```{r}
+
+# relevant question: q56
+
+responses <- get_responses("56")
+
+```

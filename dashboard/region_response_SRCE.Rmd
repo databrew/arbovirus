@@ -110,4 +110,27 @@ df <- load_data()
 ```
 
 
-## Surveillance and response committee exists (q47)
+## Surveillance and response committee exists
+
+#### Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose? (Question 47) 
+
+```{r}
+
+# relevant question: q47
+
+responses <- get_responses("47")
+qdf <- data.frame(Region = df$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Yes", "No", "I don't know", "Unanswered")) %>% 
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
+
+```

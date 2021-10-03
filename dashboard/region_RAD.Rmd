@@ -109,7 +109,7 @@ dict <- load_dict()
 df <- load_data()
 ```
 
-## Reportable arboviral diseases
+## Reportable arbovirus diseases
 
 #### Is reporting mandatory for any arboviral disease cases in your country? (Question 11) 
 
@@ -126,11 +126,13 @@ qdf <- data.frame(Region = df$Region, Response = responses) %>%
   tally 
 qdf %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
   adorn_totals() %>%
+  # kable() %>%
+  # kable_classic( full_width=F )
   regulartable() %>%
-  colformat_num( na_str = "0" ) %>%
-  hline(i=4) # %>%
-  # autofit 
+  hline(i=4) %>%
+  autofit 
 
 # ggplot( qdf, 
 #         aes( x = Response,
@@ -151,6 +153,8 @@ qdf %>%
   
 
 ```
+
+<hr>
 
 #### For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
 
@@ -175,8 +179,8 @@ qdf %>%
   hline(i=6*(1:4)) %>% 
   colformat_num(na_str = "0") %>%
   fix_border_issues() %>%
-  width( j=2, width=2 ) # %>%
-  # autofit() 
+  width( j=2, width=2 ) %>%
+  autofit() 
 
 # ggplot(qdf, aes(x=Response, y=n, fill=Response)) + 
 #   geom_col() + 

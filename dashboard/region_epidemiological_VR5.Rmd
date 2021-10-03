@@ -1,5 +1,5 @@
 ---
-title: "Regional response capacity indicators"
+title: "Regional epidemiological risk data"
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -109,27 +109,34 @@ dict <- load_dict()
 df <- load_data()
 ```
 
-## Contingency plan exists
+## Vectors recorded in the last 5 years and the public health threat
 
-#### Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)? (Question 48) 
+#### Is there a record of _Aedes aegypti_ or _Aedes albopictus_ being found in your country in the past 5 years? Please choose only one of the following (Question 34) 
 
 ```{r}
 
-# relevant question: q48
+# relevant question: q34
 
-responses <- get_responses("48")
-qdf <- data.frame(Region = df$Region, Response = responses) %>% 
-  drop_na(Region) %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  mutate( Response = fct_relevel(Response, "Yes", "No", "I don't know", "Unanswered")) %>% 
-  group_by(Region, Response) %>%
-  tally 
-qdf %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>%
-  autofit 
+responses <- get_responses("34")
+
+```
+
+#### Please describe the potential public health threat from _Aedes aegypti_ in your country. (Question 34b) 
+
+```{r}
+
+# relevant question: q34b
+
+responses <- get_responses("34b")
+
+```
+
+#### Please describe the potential public health threat from _Aedes albopictus_ in your country. (Question 34c) 
+
+```{r}
+
+# relevant question: q34c
+
+responses <- get_responses("34c")
 
 ```

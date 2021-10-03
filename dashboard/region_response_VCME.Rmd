@@ -134,6 +134,8 @@ cbind( Region = df$Region, responses) %>%
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=6*(1:4)) %>% 
-  colformat_num( na_str = "0" ) 
+  colformat_num( na_str = "0" ) %>%
+  fix_border_issues() %>%
+  autofit()
 
 ```

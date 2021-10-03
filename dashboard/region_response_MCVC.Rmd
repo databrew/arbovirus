@@ -111,5 +111,40 @@ df <- load_data()
 
 ## Most common vector control methods used
 
-q35
+#### Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply. (Question 35) 
+
+```{r}
+
+# relevant question: q35
+
+responses <- get_responses("35")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+qdf <- cbind(Region = df$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Method", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Yes", "Not selected", "Unanswered")) %>%
+  mutate( Method = fct_relevel(Method,
+                                 "Adulticiding (insecticide application against adult mosquitoes)",
+                                 "Insect growth regulators (eg , pyriproxyfen)",
+                                 "Larviciding",
+                                 "Sterile insect release",
+                                 "Wolbachia method",
+                                 "None")) %>%
+  group_by(Region, Method, Response) %>% 
+  tally
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  drop_na(Region) %>% 
+  regulartable() %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  hline(i=6*(1:4)) %>% 
+  fix_border_issues() %>%
+  # width( j=2, width=2 ) %>%
+  autofit() 
+
+```
 

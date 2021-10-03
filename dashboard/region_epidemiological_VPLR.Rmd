@@ -111,4 +111,33 @@ df <- load_data()
 
 ## Vectors present and level of risk 
 
-(q34, q34b, q34c)
+#### Is there a record of _Aedes aegypti_ or _Aedes albopictus_ being found in your country in the past 5 years? Please choose only one of the following (Question 34) 
+
+```{r}
+
+# relevant question: q34
+
+responses <- get_responses("34")
+
+```
+
+#### Please describe the potential public health threat from _Aedes aegypti_ in your country. (Question 34b) 
+
+```{r}
+
+# relevant question: q34b
+
+responses <- get_responses("34b")
+
+```
+
+#### Please describe the potential public health threat from _Aedes albopictus_ in your country. (Question 34c) 
+
+```{r}
+
+# relevant question: q34c
+
+responses <- get_responses("34c")
+
+```
+

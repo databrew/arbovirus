@@ -114,4 +114,32 @@ df <- load_data()
 
 (q55, b, c)
 
+#### Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available). (Question 55) 
 
+```{r}
+
+# relevant question: q55
+
+responses <- get_responses("55")
+
+```
+
+#### Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020? (Question 55b) 
+
+```{r}
+
+# relevant question: q55b
+
+responses <- get_responses("55b")
+
+```
+
+#### Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020. (Question 55c) 
+
+```{r}
+
+# relevant question: q55c
+
+responses <- get_responses("55c")
+
+```

@@ -134,8 +134,8 @@ qdf %>%
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=4*(1:4)) %>% 
   colformat_num( na_str = "0" ) %>%
-  fix_border_issues # %>%
-  # autofit 
+  fix_border_issues %>%
+  autofit 
 
 # ggplot(data = qdf %>% filter(Response == 'Yes'),
 #        aes(x = Arbovirus,

@@ -2,6 +2,7 @@ library(tidyverse)
 library(stringr)
 library(pander)
 library(knitr)
+library(kableExtra)
 library(flextable)
 library(lubridate)
 library(RColorBrewer)
@@ -46,7 +47,7 @@ load_data <- function(modify_variable_names = FALSE){
   
   # # Having retrieved the data, extract only those variables of relevance
   # 1. Surveillance capacity indicators:
-  #   • Reportable arboviral diseases (q11, q11b)
+  # • Reportable arboviral diseases (q11, q11b)
   # • History of any arbovirus circulation since 2000 (q5)
   # • Conducting surveillance on humans (q12), vectors (q28) animals (q41)
   # • Training of surveillance personnel and clinicians? (q10) (q24)
@@ -54,11 +55,11 @@ load_data <- function(modify_variable_names = FALSE){
   # • Arbovirus program independent or integrated: (q7)
   # • Tools for case reporting: (q9)
   # 2. Laboratory diagnostic capacity indicators:
-  #   • Testing in outbreak vs non-outbreak settings (q15)
+  # • Testing in outbreak vs non-outbreak settings (q15)
   # • Laboratory tests available (q17)
   # • Serotyping and sequencing capacity? (q19)
   # 3. Response capacity indicators:
-  #   • Surveillance and control plans available (q 6)
+  # • Surveillance and control plans available (q 6)
   # • Clinical guidelines for healthcare workers (q21)
   # • Vector control method employed (q35)
   # • Surveillance and response committee exists (q47)
@@ -68,7 +69,7 @@ load_data <- function(modify_variable_names = FALSE){
   # • Insecticide resistance: (q39)
   # • Criteria for declaring an outbreak (q49)
   # 4. Epidemiologic risk data:
-  #   • Vectors present and level of risk (q34, q34b, q34c)
+  # • Vectors present and level of risk (q34, q34b, q34c)
   # • Entomological surveillance in the last 2 years (q28)
   # • How often is conducted: (q28e)
   # • Vectors recorded in the last 5 years (q34) and the public health threat (34b, 34c)
@@ -79,8 +80,7 @@ load_data <- function(modify_variable_names = FALSE){
     '1',
     '11', '11b',
     '5', 
-    '12',
-    '28', '41',
+    '12', '28', '41',
     '10', '24',
     '6',
     '7',
@@ -89,6 +89,8 @@ load_data <- function(modify_variable_names = FALSE){
     '19',
     '6', '21',
     '35',
+    '47',
+    '48',
     '37', '37b', '38',
     '39',
     '49',
@@ -146,8 +148,8 @@ write_excel_csv(simple, '~/Desktop/simplified_dataset.csv')
 
 get_responses <- function( question_number ){
   idx <- which( dict$`Question number` == question_number )
-  # question <- dict$Description[ idx[1] ]
-  # cat( paste("Question", question_number, ":", question) )
+  # question <- dict$Description[ idx[1] ] #
+  # cat( paste("Question", question_number, ":", question) ) #
   var_names <- dict$`Variable name`[idx]
   responses <- df %>% select( all_of(var_names) )
   if( !is.na(dict$Subquestion[ idx[1] ]) ){

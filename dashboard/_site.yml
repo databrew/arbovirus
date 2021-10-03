@@ -1,20 +1,6 @@
 name: "WHO-ARBO"
-# navbar:
-#   title: "WHO-ARBO"
-#   left:
-#     - text: "Home"
-#       href: index.html
-#     - text: "Regional"
-#       href: region.html
-#     - text: "Country"
-#       href: country.html
-#     - text: "About"
-#       href: about.html
 output:
   html_document:
-    # toc: true
-    # toc_depth: 5
-    # highlight: textmate
     include:
       in_header: header.html
       after_body: footer.html

@@ -109,19 +109,24 @@ dict <- load_dict()
 df <- load_data()
 ```
 
-## Contingency plan exists
+## Criteria for declaring an outbreak
 
-#### Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)? (Question 48) 
+#### Are there defined or established criteria for declaring an outbreak of arboviral disease outbreak in your country? (Question 49) 
 
 ```{r}
 
-# relevant question: q48
+# relevant question: q49
 
-responses <- get_responses("48")
+responses <- get_responses("49") %>%
+  select(Response)
 qdf <- data.frame(Region = df$Region, Response = responses) %>% 
   drop_na(Region) %>% 
   mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  mutate( Response = fct_relevel(Response, "Yes", "No", "I don't know", "Unanswered")) %>% 
+  mutate( Response = recode_factor(Response, 
+                                   "Yes. If so, in the comments field, please briefly describe the criteria or reference the document in which those are sta" = "Yes", 
+                                   "No" = "No", 
+                                   "I don't know" = "I don't know", 
+                                   "Unanswered" = "Unanswered" )) %>% 
   group_by(Region, Response) %>%
   tally 
 qdf %>% 
@@ -133,3 +138,5 @@ qdf %>%
   autofit 
 
 ```
+
+> ***Note***: How should free text comments be reported? 

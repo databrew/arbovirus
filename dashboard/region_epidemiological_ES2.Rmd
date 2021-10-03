@@ -1,5 +1,5 @@
 ---
-title: "Regional response capacity indicators"
+title: "Regional epidemiological risk data"
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -109,27 +109,14 @@ dict <- load_dict()
 df <- load_data()
 ```
 
-## Contingency plan exists
+## Entomological surveillance in the last 2 years 
 
-#### Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)? (Question 48) 
+#### For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? (Question 28) 
 
 ```{r}
 
-# relevant question: q48
+# relevant question: q28
 
-responses <- get_responses("48")
-qdf <- data.frame(Region = df$Region, Response = responses) %>% 
-  drop_na(Region) %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  mutate( Response = fct_relevel(Response, "Yes", "No", "I don't know", "Unanswered")) %>% 
-  group_by(Region, Response) %>%
-  tally 
-qdf %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>%
-  autofit 
+responses <- get_responses("28")
 
 ```
