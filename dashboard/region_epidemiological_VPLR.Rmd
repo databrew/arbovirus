@@ -118,6 +118,25 @@ df <- load_data()
 # relevant question: q34
 
 responses <- get_responses("34")
+qdf <- data.frame(Region = df$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = recode_factor(Response, 
+                                 "Yes, both Aedes aegypti and Aedes albopictus" = "Both Aedes aegypti and Aedes albopictus",
+                                 "Yes, only Aedes aegypti" = "Only Aedes aegypti",
+                                 "Yes, only Aedes albopictus" = "Only Aedes albopictus",
+                                 "Unknown within the country at this time" = "Unknown at this time",
+                                 "None found in the country at this time" = "None found at this time",
+                                 "Unanswered" = "Unanswered")) %>% 
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
 
 ```
 
@@ -127,7 +146,20 @@ responses <- get_responses("34")
 
 # relevant question: q34b
 
-responses <- get_responses("34b")
+responses <- get_responses("34b") %>%
+  select(-Other) 
+qdf <- data.frame(Region = df$Region, Response = responses$`Please choose only one of the following:`) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
 
 ```
 
@@ -137,7 +169,19 @@ responses <- get_responses("34b")
 
 # relevant question: q34c
 
-responses <- get_responses("34c")
+responses <- get_responses("34c") %>%
+  select(-Other) 
+qdf <- data.frame(Region = df$Region, Response = responses$`Please choose only one of the following:`) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
 
 ```
-

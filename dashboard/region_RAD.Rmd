@@ -154,8 +154,6 @@ qdf %>%
 
 ```
 
-<hr>
-
 #### For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
 
 ```{r}

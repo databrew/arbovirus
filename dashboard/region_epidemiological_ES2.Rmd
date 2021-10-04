@@ -119,4 +119,18 @@ df <- load_data()
 
 responses <- get_responses("28")
 
+qdf <- data.frame(Region = df$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Yes", "No", "Don't know", "Unanswered")) %>% 
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
+
 ```
