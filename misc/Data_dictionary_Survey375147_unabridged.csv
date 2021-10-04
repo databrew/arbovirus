@@ -177,8 +177,8 @@ SV28b__filecount,"filecount - 28b","Please upload the most recent national vect
 SV28c,28c," Did the entomologic surveillance entail country wide programmes or was it restricted to specific locations? ",NA,Categorical,"""Country wide"", ""Restricted to specific locations . Please specify where:"", ""Don’t know""",NA
 SV28c_comment,28c," Did the entomologic surveillance entail country wide programmes or was it restricted to specific locations?  [Comment]",NA,"Free text",n/a,NA
 SV28d,28d,"How many sentinel surveillance sites do you have?",NA,Numeric,Count,NA
-SV28e,28e," How often was the surveillance conducted? Please choose one of the following:",NA,Categorical,"""Once a year"", ""Every trimester"", ""Every semester""",NA
-SV28e_other,28e," How often was the surveillance conducted? Please choose one of the following:  [Other]",NA,"Free text",NA,NA
+SV28e,28e," How often was the surveillance conducted? Please choose one of the following:",[How often],Categorical,"""Once a year"", ""Every trimester"", ""Every semester""",NA
+SV28e_other,28e," How often was the surveillance conducted? Please choose one of the following:",[Other],"Free text",NA,NA
 SV29,29,"Do you conduct adult mosquito surveillance?",NA,Categorical,"""Yes"", ""No"", ""I don't know""",NA
 SV30,30,"Do you conduct larval/pupal mosquito surveillance?",NA,Categorical,"""Yes"", ""No"", ""I don't know""",NA
 SV31,31,"Are trapped mosquitoes identified to species?",NA,Categorical,"""Yes"", ""No"", ""Not applicable"", ""I don't know""",NA

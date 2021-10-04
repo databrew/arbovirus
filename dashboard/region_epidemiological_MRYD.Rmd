@@ -119,5 +119,23 @@ df <- load_data()
 # relevant question: q56
 
 responses <- get_responses("56")
+qdf <- cbind( Region = df$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Classification", values_to="Cases")
+new_cols <- matrix( unlist( strsplit(qdf$Classification, "\\]\\[") ), ncol=2, byrow=T)
+qdf <- qdf %>% 
+  mutate(Arbovirus = new_cols[,1], Classification = new_cols[,2]) %>%
+  group_by(Region, Arbovirus, Classification) %>% 
+  drop_na( Region )
+#  summarize(Total = sum(Cases, na.rm=T))
+
+qdf %>%   
+  pivot_wider(names_from=Classification, values_from=Cases) %>% 
+#   # mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  regulartable %>%
+  merge_v(j = ~Region) # %>% 
+#   valign(j = 1, valign = "top", part = "all") %>% 
+#   # hline(i=5*(1:4)) %>% 
+#   fix_border_issues %>%
+#   autofit 
 
 ```

@@ -118,5 +118,45 @@ df <- load_data()
 # relevant question: q28e
 
 responses <- get_responses("28e")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+qdf <- data.frame(Region = df$Region, Response = responses$`How often`) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
+
+```
+
+#### How often was the surveillance conducted? Free responses: (Question 28e)
+
+```{r}
+
+# relevant question: q28e (Other)
+
+qdf <- data.frame(Region = df$Region, Other = other$Other) %>% 
+  drop_na(Region) %>% 
+  drop_na(Other) %>%
+  group_by(Region, Other) %>%
+  tally %>%
+  select(Region, Other)
+qdf %>% 
+  # pivot_wider(names_from=Other, values_from=n, names_sort = TRUE) %>%
+  # mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  # adorn_totals() %>%
+  regulartable() %>%
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  hline(i=c(8,10,14)) %>% 
+  fix_border_issues() %>%
+  autofit 
 
 ```
