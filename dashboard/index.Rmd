@@ -140,24 +140,29 @@ pd <- pd %>%
 # Make markers for each disease
 library(leaflet)
 icons_chikungunya <- awesomeIcons(
-  icon = 'copyright-mark',
+  icon = NULL,
+  text = 'C',
+  # icon = 'copyright-mark',
   iconColor = 'black',
-  markerColor = 'green'
+  markerColor = 'lightgray'
 )
 icons_dengue <- awesomeIcons(
-  icon = 'leaf',
+  # icon = 'leaf',
+  text = 'D',
   iconColor = 'black',
-  markerColor = 'red'
+  markerColor = 'gray'
 )
 icons_yellow_fever <- awesomeIcons(
-  icon = 'star-empty',
+  # icon = 'star-empty',
+  text = 'Y',
   iconColor = 'black',
   markerColor = 'orange'
 )
 icons_zika <- awesomeIcons(
-  icon = 'fire',
+  # icon = 'fire',
+  text = 'Z',
   iconColor = 'black',
-  markerColor = 'blue'
+  markerColor = 'beige'
 )
 joined <- world_shp
 joined@data <- left_join(joined@data, pd)
@@ -171,16 +176,16 @@ for(j in 1:length(disease_names)){
 coords <- coordinates(joined)
 joined <- joined@data
 joined$lng <- coords[,1]; joined$lat <- coords[,2]
-jitter_factor <- 14
+jitter_factor <- 1.5
 pd_chikungunya <- joined[joined$Chikungunya == 'Yes',] #%>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
-pd_dengue <- joined[joined$Dengue == 'Yes',] %>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
-pd_yellow_fever <- joined[joined$`Yellow fever` == 'Yes',] %>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
-pd_zika <- joined[joined$Zika == 'Yes',] %>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_dengue <- joined[joined$Dengue == 'Yes',] %>% mutate(lng = lng + jitter_factor, lat = lat + 0) #  mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_yellow_fever <- joined[joined$`Yellow fever` == 'Yes',] %>% mutate(lng = lng - jitter_factor, lat = lat + jitter_factor)  #mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_zika <- joined[joined$Zika == 'Yes',] %>% mutate(lng = lng + jitter_factor, lat = lat - jitter_factor)#mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
 
 
 make_map(df = pd,
          pal = 'Spectral',
-         qualitative = FALSE,
+         qualitative = TRUE,
          add_base_layer = FALSE,
          label_string = 'Number of arboviruses',
          legend_title = 'Number of\narboviruses') %>%
