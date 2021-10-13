@@ -110,8 +110,8 @@ library(RColorBrewer)
 library(scales)
 library(leaflet)
 library(leaflet.extras)
-load('../arboapp/data/world_shp.rda') # load world shape file
-load('../arboapp/data/region_shp.rda')
+load('../data/world_shp.rda') # load world shape file
+load('../data/region_shp.rda') # load region shape file
 df <- load_data(modify_variable_names = TRUE)
 ```
 

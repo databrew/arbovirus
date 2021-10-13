@@ -7,6 +7,10 @@ if( file.exists("data/data.RData")){
 
 countries <- data$SI01
 
+if(!dir.exists('reports')){
+  dir.create('reports')
+}
+
 for(i in 1:length( countries )){
   nom <- countries[i]
   if( !is.na( nom ) ){
