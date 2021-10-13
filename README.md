@@ -85,9 +85,7 @@ monitoring.
 
 The above will write a file to your desktop of “simplified” data.
 
-## Generating a dashboard
+## Generating missingnes reports
 
   - Open `missingness/missing.Rmd` in Rstudio  
-  - Follow the instructions in `missingness/instructions.md`  
-  - A deploy-re will be created in `dashboard/_site`. It can be explored
-    by opening `dashboard/_site/index.html` in a web browswer
+  - Follow the instructions in `missingness/instructions.md`
