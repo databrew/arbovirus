@@ -31,9 +31,8 @@ monitoring.
   - Once you’ve got the repository on your local machine, in the main
     repo, create a folder named `data`. Populate it with the files in
     `data.zip` sent to you directly.
-  - In the main repo, create a folder named `misc`. Populate it with the
-    files in `misc.zip` sent to you directly.
-  - The contents of your `arbovirus` folder should look like this:
+  - The contents of your `arbovirus` `data` and `misc` folders should
+    look like this:
 
 <!-- end list -->
 
