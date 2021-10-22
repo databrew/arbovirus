@@ -1,5 +1,5 @@
 ---
-title: "Global data (Surveillance capacity indicators)"
+title: "Global Data (Surveillance capacity indicators)"
 ---
 
 
