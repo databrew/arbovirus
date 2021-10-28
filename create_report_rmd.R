@@ -17,8 +17,8 @@ if( file.exists("data/data.RData")){
   message("You need the data!")
 }
 
-if( file.exists("misc/Data_dictionary_Survey375147.csv")){
-  dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+if( file.exists("data/Data_dictionary_Survey375147.csv")){
+  dict <- read_csv("data/Data_dictionary_Survey375147.csv")
 } else{
   message("You need the data dictionary!")
 }
@@ -84,8 +84,8 @@ if( file.exists(\"data/data.RData\")){
 
 data <- data %>% filter( SI01 == params$country )
 
-if( file.exists(\"misc/Data_dictionary_Survey375147_unabridged.csv\")){
-  dict <- read_csv(\"misc/Data_dictionary_Survey375147_unabridged.csv\")
+if( file.exists(\"data/Data_dictionary_Survey375147_unabridged.csv\")){
+  dict <- read_csv(\"data/Data_dictionary_Survey375147_unabridged.csv\")
 } else{
   message(\"You need the data dictionary!\")
 }

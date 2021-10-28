@@ -53,7 +53,7 @@ ggplot2::theme_set(theme_bw())
 if( file.exists("data/data.RData" )){
   load("data/data.RData")
 } else{
-  source("misc/survey_375147_R_syntax_file.R")
+  source("data/survey_375147_R_syntax_file.R")
   n_countries <- length( data$SI01 )
   who_regions <- read_excel("data/Regions_Countries.xlsx")
   region <- character( length=n_countries )
@@ -75,7 +75,7 @@ data <- data %>%
   filter( SI01 != "Iceland")
 
 # load data dictionary to facilitate processing survey results:
-dict <- read_csv("misc/Data_dictionary_Survey375147.csv")
+dict <- read_csv("data/Data_dictionary_Survey375147.csv")
 
 # utility function 
 get_responses <- function( question_number ){

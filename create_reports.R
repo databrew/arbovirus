@@ -7,14 +7,14 @@ if( file.exists("data/data.RData")){
 
 countries <- data$SI01
 
-if(!dir.exists('country_reports')){
-  dir.create('country_reports')
+if(!dir.exists('reports')){
+  dir.create('reports')
 }
 
 for(i in 1:length( countries )){
   nom <- countries[i]
   if( !is.na( nom ) ){
-    report_name <- paste0("country_reports/",nom,".pdf")
+    report_name <- paste0("reports/",nom,".pdf")
     rmarkdown::render( "report.Rmd", 
                        params=list(country=nom), 
                        output_file = report_name )
