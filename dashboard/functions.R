@@ -19,8 +19,8 @@ make_colors <- function(n, seed = 123){
 load_dict <- function(){
   owd <- getwd()
   setwd('../')
-  if( file.exists("misc/Data_dictionary_Survey375147_unabridged.csv")){
-    dict <- read_csv("misc/Data_dictionary_Survey375147_unabridged.csv")
+  if( file.exists("data/Data_dictionary_Survey375147.csv")){
+    dict <- read_csv("data/Data_dictionary_Survey375147.csv")
   } else{
     message("You need the data dictionary!")
   }
