@@ -2,16 +2,26 @@
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
 output: html_document
 params:
-  country_selection: 
-    label: "Country selection"
-    value: "All countries"
-    input: select
-    choices: ["All countries","Select by WHO region(s)","Select by name(s)"]
-  summary_level:
+  scale: 
     label: "Summary level"
-    value: "Aggregate all"
+    value: "Global"
     input: select
-    choices: ["Aggregate all", "Summarize by region", "Summarize by country"]
+    choices: ["Global", "Regional", "National"]
+  region: 
+    label: "Region(s)"
+    value: "All"
+    input: select
+    choices: ["All", "Choose one from list..."]
+  country:
+    label: "Country level information"
+    value: "Anonymize (aggregate all)"
+    input: select
+    choices: ["Anonymize (aggregate all)","Identify by name"]
+  missingness:
+    label: "Missingness"
+    value: "Exclude missingness"
+    input: select
+    choices: ["Include missigness", "Exclude missingness"]
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
