@@ -4,7 +4,7 @@ data/
 *.docx
 *.tex
 *.zip
-figures/
+*.xlsx
 missingness/*.csv
 missingness/*.html
 missingness/.Rhistory

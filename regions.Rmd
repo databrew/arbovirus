@@ -21,8 +21,8 @@ opts_chunk$set(comment = NA,
                error = TRUE, 
                cache = FALSE,
                fig.width = 9.64,
-               fig.height = 5.9,
-               fig.path = 'figures/')
+               fig.height = 5.9)
+               # fig.path = 'figures/')
 options(scipen = '999')
 ```
 
@@ -131,12 +131,11 @@ ggplot(data = pd,
        title = 'Survey entries per country')
 ```
 
-
 # Surveillance capacity indicators
 
 ## Reportable arboviral diseases
 
-### Is reporting mandatory for any arboviral disease cases in your country? (Question 11) 
+* Is reporting mandatory for any arboviral disease cases in your country? (Question 11) 
 
 ```{r}
 
@@ -145,42 +144,40 @@ ggplot(data = pd,
 responses <- get_responses("11")
 df <- data.frame(Region = data$Region, Response = responses) %>% 
   drop_na(Region) %>% 
-  group_by(Region, Response) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Yes", "No", "Unanswered")) %>% 
+  group_by(Region, Response) %>%
   tally 
 df %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
-  rename( "Unanswered" = "NA" ) %>%
-  adorn_totals() %>% 
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  # kable() %>%
+  # kable_classic( full_width=F )
   regulartable() %>%
-  colformat_num( na_str = "0" ) %>%
   hline(i=4) %>%
   autofit 
-# tab
-# save_as_pptx(tab, path="q11.pptx")
 
-
-ggplot( df, 
-        aes( x = Response,
-             y = n,
-             fill = Response)) +
-  geom_col() +
-  facet_wrap( ~Region ) +
-  theme(legend.position = "bottom",
-        legend.direction="horizontal",
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()) +
-  guides(fill=guide_legend(ncol=3)) +
-  scale_fill_manual(name = '',
-                    values = make_colors(length(unique(df$Response)))) +
-  labs(title = "Mandatory reporting of cases", 
-       y = 'Responses')
+# ggplot( df, 
+#         aes( x = Response,
+#              y = n,
+#              fill = Response)) +
+#   geom_col() +
+#   facet_wrap( ~Region ) +
+#   theme(legend.position = "bottom",
+#         legend.direction="horizontal",
+#         axis.title.x=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.ticks.x=element_blank()) +
+#   guides(fill=guide_legend(ncol=3)) +
+#   scale_fill_manual(name = '',
+#                     values = make_colors(length(unique(qdf$Response)))) +
+#   labs(title = "Mandatory reporting of cases", 
+#        y = 'Responses')
   
-
 ```
 
-
-#### For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
+* For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
 
 ```{r}
 
@@ -189,61 +186,45 @@ ggplot( df,
 responses <- get_responses("11b")
 df <- cbind(Region = data$Region, responses) %>% 
   pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   group_by(Region, Arbovirus, Response) %>% 
   tally
 df$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", df$Response))
-tab <- df %>% 
+df %>% 
   pivot_wider(names_from=Response, values_from=n) %>% 
   drop_na(Region) %>% 
   relocate("Confirmed cases only", .after="All suspect cases") %>%
-  rename("No answer"='NA')
-tab %>% 
-  regulartable %>% 
+  regulartable() %>% 
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
   hline(i=6*(1:4)) %>% 
-  colformat_num( na_str = "0" ) %>%
+  colformat_num(na_str = "0") %>%
   fix_border_issues() %>%
-  width( j=2, width=2 )
-  # autofit() 
+  width( j=2, width=2 ) %>%
+  autofit() 
 
-ggplot(df, aes(x=Response, y=n, fill=Response)) + 
-  geom_col() + 
-  facet_wrap(~Arbovirus) +
-  theme(legend.position = "bottom",
-        legend.direction="horizontal",
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()) +
-  guides(fill=guide_legend(ncol=4)) +
-  scale_fill_manual(name = '',
-                    values = make_colors(length(unique(df$Response)))) +
-  labs(title = "Overall reporting of cases", 
-       y = 'Responses')
-
-ggplot(df, aes(x=Response, y=n, fill=Response)) + 
-  geom_col() + 
-  facet_grid( Region ~ Arbovirus ) +
-  theme(legend.position = "bottom",
-        legend.direction="horizontal",
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()) +
-  guides(fill=guide_legend(ncol=4)) +
-  scale_fill_manual(name = '',
-                    values = make_colors(length(unique(df$Response)))) +
-  labs(title = "Regional reporting of cases", 
-       y = 'Responses')
+# ggplot(df, aes(x=Response, y=n, fill=Response)) + 
+#   geom_col() + 
+#   facet_grid( Region ~ Arbovirus ) +
+#   theme(legend.position = "bottom",
+#         legend.direction="horizontal",
+#         axis.title.x=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.ticks.x=element_blank()) +
+#   guides(fill=guide_legend(ncol=4)) +
+#   scale_fill_manual(name = '',
+#                     values = make_colors(length(unique(qdf$Response)))) +
+#   labs(title = "Regional reporting of cases", 
+#        y = 'Responses')
 
 ```
 
    
 ##  History of any arbovirus circulation since 2000 
 
-### Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission. (Question 5) 
+* Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne, transmission. (Question 5) 
 
 ```{r}
-# fig.height=3.5}
 
 # relevant question: q5
 
@@ -251,12 +232,14 @@ responses <- get_responses("5")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
 df <- cbind( Region = data$Region, responses) %>% 
+  drop_na(Region) %>% 
   pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Yes", "Not selected", "Unanswered")) %>%
   group_by(Region, Arbovirus, Response) %>% 
   tally
 df %>% 
   pivot_wider( names_from=Response, values_from=n) %>% 
-  drop_na(Region) %>% 
   regulartable %>% 
   merge_v(j = ~Region) %>% 
   valign(j = 1, valign = "top", part = "all") %>% 
@@ -265,43 +248,55 @@ df %>%
   fix_border_issues %>%
   autofit 
 
-df <- responses %>%
-  pivot_longer(cols = colnames(responses), names_to="Arbovirus", values_to="Response") %>% 
-  group_by(Arbovirus, Response) %>% 
-  tally
-
-ggplot(data = df %>% filter(Response == 'Yes'),
-       aes(x = Arbovirus,
-           y = n)) +
-  geom_col() +
-  labs(y = 'Entries')
+# ggplot(data = df %>% filter(Response == 'Yes'),
+#        aes(x = Arbovirus,
+#            y = n,
+#            fill = Arbovirus)) +
+#   geom_col() +
+#   facet_grid( ~Region ) +
+#   theme(legend.position = "bottom",
+#         legend.direction="horizontal",
+#         axis.title.x=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.ticks.x=element_blank()) +
+#   guides(fill=guide_legend(ncol=4)) +
+#   scale_fill_manual(name = '',
+#                     values = make_colors(length(unique(qdf$Arbovirus)))) +
+#   labs(title = "Arbovirus circulation since 2000", 
+#        y = 'Responses')
 
 ```
 
- 
+
 ##  Conducting surveillance on humans,  vectors, and animals
 
-### In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? (Question 12) 
+  
+
+* In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? (Question 12) 
 
 ```{r}
 
 # relevant question: q12 (surveillance on humans)
 
-responses <- get_responses("12")
+responses <- get_responses("12") 
 df <- data.frame(Region = data$Region, Response = responses) %>% 
   drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>% 
+  mutate( Response = fct_relevel(Response, "Yes", "No", "I don't know", "Unanswered")) %>% 
   group_by(Region, Response) %>% 
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
   adorn_totals()
-regulartable( df ) %>%
+regulartable(df) %>%
   colformat_num( na_str="0" ) %>%
   hline(i=4) %>%
   autofit 
 
 ```
 
-### For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? (Question 28)
+  
+
+* For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? (Question 28)
 
 ```{r}
 # relevant question: q28 (surveillance on vectors)
@@ -309,6 +304,8 @@ regulartable( df ) %>%
 responses <- get_responses("28")
 df <- data.frame(Region = data$Region, Response = responses) %>% 
   drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>% 
+  mutate( Response = fct_relevel(Response, "Yes", "No", "Don't know", "Unanswered")) %>% 
   group_by(Region, Response) %>% 
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
@@ -320,7 +317,9 @@ regulartable( df ) %>%
 
 ```
 
-### During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (eg, epizootic surveillance for yellow fever in endemic areas)? (Question 41) 
+  
+
+* During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (eg, epizootic surveillance for yellow fever in endemic areas)? (Question 41) 
 
 ```{r}
 
@@ -329,6 +328,8 @@ regulartable( df ) %>%
 responses <- get_responses("41")
 df <- data.frame(Region = data$Region, Response = responses) %>% 
   drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>% 
+  mutate( Response = fct_relevel(Response, "Yes", "No", "I don't know", "Unanswered")) %>%
   group_by(Region, Response) %>% 
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
@@ -339,11 +340,12 @@ regulartable( df ) %>%
   autofit 
 
 ```
-
  
 ## Training of surveillance personnel and clinicians
 
-### Which training has been provided to the staff working on arboviral disease surveillance data? (Question 10) 
+  
+
+* Which training has been provided to the staff working on arboviral disease surveillance data? (Question 10) 
 
 ```{r}
 
@@ -354,6 +356,8 @@ other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
 df <- cbind( Region = data$Region, responses) %>% 
   pivot_longer(!Region, names_to="Training", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Yes", "Not selected", "Unanswered")) %>% 
   group_by(Region, Training, Response) %>% 
   tally
 df %>% 
@@ -365,13 +369,16 @@ df %>%
   hline(i=5*(1:4)) %>% 
   colformat_num( na_str = "0" ) %>%
   fix_border_issues %>%
-  width( j=2, width=3 )
-  # autofit 
+  width( j=2, width=3 ) %>%
+  autofit 
 
 ```
 
+
+
   
-### Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? (Question 24) 
+
+* Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? (Question 24) 
 
 ```{r}
 # relevant question: q24
@@ -382,11 +389,17 @@ comments <- responses %>% select(Comments)
 responses <- responses %>% select(Response)
 df <- data.frame(Region = data$Region, Response = responses) %>% 
   drop_na(Region) %>% 
+  mutate( Response = factor(replace_na(as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, 
+                                 "Yes, specific training is provided. If so, please specify:", 
+                                 "No", 
+                                 "I don't know", 
+                                 "Unanswered")) %>%
   group_by(Region, Response) %>% 
   tally %>% 
   pivot_wider(names_from=Response, values_from=n) %>%
-  adorn_totals() 
-colnames(df)[2] <- "Yes"
+  adorn_totals() %>%
+  rename( "Yes" = "Yes, specific training is provided. If so, please specify:")
 regulartable( df ) %>%
   colformat_num( na_str="0" ) %>% 
   hline(i=4) %>%
@@ -396,21 +409,110 @@ regulartable( df ) %>%
 
 ## Presence of written arbovirus surveillance and control plans
 
-### question 6
+  
 
-## Arbovirus program independent or integrated
+* Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country? (Question 6) 
 
-### question 7
+```{r}
+
+# relevant question: q6
+
+responses <- get_responses("6")
+
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor(replace_na(as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, 
+                                 "Yes, we have arbovirus-specific plans(s) or guidelines(s)", 
+                                 "Yes. We do not have arbovirus-specific guidelines, but arboviruses are included within general surveillance guidelines.",
+                                 "No", 
+                                 "I don't know", 
+                                 "Unanswered")) %>%
+  group_by(Region, Response) %>% 
+  tally %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals()
+regulartable( df ) %>%
+  hline(i=4) %>% 
+  # width( j=2:3, width=1.5 ) %>%
+  autofit 
+
+```
+
+
+## Arbovirus program: independent or integrated?
+
+  
+
+* Is there a specific national programme for arboviral diseases surveillance or is it integrated in another programme?  Please select the appropriate answer. (Question 7) 
+
+```{r}
+
+# relevant question: q7
+
+responses <- get_responses("7")
+df <- data.frame(Region = data$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, 
+                                 "Specific programme" , 
+                                 "Integrated in another programme", 
+                                 "No programme", 
+                                 "I don't know", 
+                                 "Unanswered")) %>% 
+  group_by(Region, Response) %>%
+  tally 
+df %>% 
+  pivot_wider(names_from=Response, values_from=n) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>%
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
+
+```
+
 
 ## Tools for case reporting
 
-### question 9
+  
+
+* What are the tools used for recording case data for surveillance purposes? Select all that apply. (Question 9) 
+
+```{r}
+
+# relevant question: q9
+
+responses <- get_responses("9")
+df <- cbind(Region = data$Region, responses) %>% 
+  pivot_longer(!Region, names_to="Level", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Électronic", "Mixed methods", "Paper-based", "Unanswered")) %>%
+  group_by(Region, Level, Response) %>% 
+  tally
+df %>% 
+  pivot_wider(names_from=Response, values_from=n) %>% 
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  drop_na(Region) %>% 
+  regulartable() %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "top", part = "all") %>% 
+  hline(i=3*(1:4)) %>% 
+  fix_border_issues() %>%
+  # width( j=2, width=2 ) %>%
+  autofit() 
+
+
+```
 
 # Laboratory diagnostic capacity indicators
 
 ## Testing in outbreak vs non-outbreak settings
 
-### Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively) (Question 15) 
+  
+
+* Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively) (Question 15) 
 
 ```{r}
 
@@ -439,7 +541,9 @@ df %>%
  
 ## Laboratory tests available
 
-### Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes. (Question 17) 
+  
+
+* Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes. (Question 17) 
 ```{r} 
 # fig.height=8}
 
@@ -489,7 +593,9 @@ ggplot(df, aes(x=Testing, y=Total, fill=Testing)) +
 
 ## Surveillance and control plans available
 
-### Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country? (Question 6) 
+  
+
+* Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country? (Question 6) 
 
 ```{r}
 
@@ -513,11 +619,15 @@ regulartable( df ) %>%
 
 ## Clinical guidelines for healthcare workers 
 
-### question 21
+  
+
+* question 21
 
 ## Vector control method employed
 
-### Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply. (Question 35) 
+  
+
+* Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply. (Question 35) 
 
 ```{r}
 
@@ -549,7 +659,9 @@ df %>%
  
 ## Surveillance and response committee exists
 
-### Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose? (Question 47) 
+  
+
+* Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose? (Question 47) 
 
 ```{r}
 
@@ -572,7 +684,9 @@ regulartable( df ) %>%
 
 ## Contingency plan exists
 
-### Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)? (Question 48) 
+  
+
+* Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)? (Question 48) 
 
 ```{r}
 
@@ -594,25 +708,35 @@ regulartable( df ) %>%
 
 ## Most common vector control methods used
 
-### question 35
+  
+
+* question 35
 
 ## Indicators used for thresholds 
 
-### questions 37, 37b, 38
+  
+
+* questions 37, 37b, 38
 
 ## Insecticide resistance 
 
-### question 39
+  
+
+* question 39
 
 ## Criteria for declaring an outbreak
 
-### question 49
+  
+
+* question 49
 
 # Epidemiologic risk data
 
 ## Vectors present and level of risk 
 
-### Is there a record of _Aedes aegypti_ or _Aedes albopictus_ being found in your country in the past 5 years? Please choose only one of the following. (Question 34) 
+  
+
+* Is there a record of _Aedes aegypti_ or _Aedes albopictus_ being found in your country in the past 5 years? Please choose only one of the following. (Question 34) 
 
 ```{r}
 
@@ -634,7 +758,8 @@ regulartable( df ) %>%
 ```
 
   
-### Please describe the potential public health threat from Aedes aegypti in your country. (Question 34b) 
+  
+* Please describe the potential public health threat from Aedes aegypti in your country. (Question 34b) 
 
 ```{r}
 
@@ -663,7 +788,9 @@ regulartable( rbind(selection,other) ) %>%
 
 ```
 
-### Please describe the potential public health threat from Aedes albopictus in your country. (Question 34c) 
+  
+
+* Please describe the potential public health threat from Aedes albopictus in your country. (Question 34c) 
 
 ```{r}
 
@@ -694,19 +821,27 @@ regulartable( rbind(selection,other) ) %>%
 
 ## Entomological surveillance in the last 2 years
 
-### question 28
+  
+
+* question 28
 
 ## How often is conducted
 
-### question 28e
+  
+
+* question 28e
 
 ## Vectors recorded in the last 5 years and the public health threat
 
-### questions 34, 34b, 34c
+  
+
+* questions 34, 34b, 34c
 
 ## All arboviruses 2015-2020 (cases and deaths) 
 
-### Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) (Question 55) 
+  
+
+* Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) (Question 55) 
 
 ```{r, fig.height = 12} 
 # fig.width = 9.5}
@@ -787,8 +922,9 @@ ggplot( df %>%
        y = 'Deaths')
 ```
 
+  
 
-### Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020? (Question 55b) 
+* Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020? (Question 55b) 
 
 ```{r}
 
@@ -812,7 +948,9 @@ regulartable( df ) %>%
 
 ```
 
-### Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020. (Question 55c) 
+  
+
+* Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020. (Question 55c) 
 
 ```{r}
 
@@ -832,7 +970,9 @@ regulartable( df ) %>%
 
 ## Most recent year data 
 
-### Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019. (Question 56) 
+  
+
+* Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019. (Question 56) 
 
 ```{r, fig.height = 12} 
 # fig.width = 9.5}
