@@ -6,6 +6,7 @@ output:
   html_document:
     toc: yes
     toc_float: yes
+    toc_depth: 2
   pdf_document:
     toc: yes
 ---
@@ -25,9 +26,6 @@ opts_chunk$set(comment = NA,
 options(scipen = '999')
 ```
 
-\newpage
-
-# Data structure and quantity
 
 ```{r}
 
@@ -50,12 +48,12 @@ ggplot2::theme_set(theme_bw())
 # get the survey results: processed by WHO script (lightly edited),
 # then WHO regions added
 
-if( file.exists("data/data.RData" )){
+if( file.exists("data/data.RData") ){
   load("data/data.RData")
 } else{
   source("data/survey_375147_R_syntax_file.R")
   n_countries <- length( data$SI01 )
-  who_regions <- read_excel("data/Regions_Countries.xlsx")
+  who_regions <- read_csv("data/Regions_Countries.csv")
   region <- character( length=n_countries )
   for(i in 1:n_countries){
     idx <- which( who_regions$Country == data$SI01[i] )
@@ -95,17 +93,20 @@ get_responses <- function( question_number ){
 
 ```
 
-## Number of submissions
+<!-- # Data structure and quantity -->
 
-After excluding the entry for Iceland, there are `r nrow(data)` rows and 
-`r length(unique(na.omit(data$SI01)))` unique countries in the dataset.
-Repeated countries:
-```{r echo=FALSE, message=FALSE}
+<!-- ## Number of submissions -->
+
+<!-- After excluding the entry for Iceland, there are `r nrow(data)` rows and  -->
+<!-- `r length(unique(na.omit(data$SI01)))` unique countries in the dataset. -->
+<!-- Repeated countries: -->
+
+```{r echo=FALSE, message=FALSE, eval=FALSE}
 idx <- which( duplicated( data$SI01 ) )
 pander( as.vector(unique( data$SI01[idx] ) ) )
 ```
 
-```{r}
+```{r eval=FALSE}
 pd <- data %>%
   group_by(Country = SI01) %>%
   tally %>%
@@ -130,15 +131,12 @@ ggplot(data = pd,
        title = 'Survey entries per country')
 ```
 
-\newpage 
 
-# Data content
+# Surveillance capacity indicators
 
-## Surveillance capacity indicators
+## Reportable arboviral diseases
 
-### Reportable arboviral diseases
-
-#### Is reporting mandatory for any arboviral disease cases in your country? (Question 11) 
+### Is reporting mandatory for any arboviral disease cases in your country? (Question 11) 
 
 ```{r}
 
@@ -157,6 +155,9 @@ df %>%
   colformat_num( na_str = "0" ) %>%
   hline(i=4) %>%
   autofit 
+# tab
+# save_as_pptx(tab, path="q11.pptx")
+
 
 ggplot( df, 
         aes( x = Response,
@@ -178,7 +179,6 @@ ggplot( df,
 
 ```
 
-\newpage
 
 #### For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
 
@@ -237,11 +237,10 @@ ggplot(df, aes(x=Response, y=n, fill=Response)) +
 
 ```
 
-\newpage  
+   
+##  History of any arbovirus circulation since 2000 
 
-###  History of any arbovirus circulation since 2000 
-
-#### Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission. (Question 5) 
+### Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission. (Question 5) 
 
 ```{r}
 # fig.height=3.5}
@@ -279,11 +278,10 @@ ggplot(data = df %>% filter(Response == 'Yes'),
 
 ```
 
-\newpage
+ 
+##  Conducting surveillance on humans,  vectors, and animals
 
-###  Conducting surveillance on humans,  vectors, and animals
-
-#### In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? (Question 12) 
+### In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? (Question 12) 
 
 ```{r}
 
@@ -303,7 +301,7 @@ regulartable( df ) %>%
 
 ```
 
-#### For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? (Question 28)
+### For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? (Question 28)
 
 ```{r}
 # relevant question: q28 (surveillance on vectors)
@@ -322,7 +320,7 @@ regulartable( df ) %>%
 
 ```
 
-#### During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (eg, epizootic surveillance for yellow fever in endemic areas)? (Question 41) 
+### During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (eg, epizootic surveillance for yellow fever in endemic areas)? (Question 41) 
 
 ```{r}
 
@@ -342,11 +340,10 @@ regulartable( df ) %>%
 
 ```
 
-\newpage
+ 
+## Training of surveillance personnel and clinicians
 
-### Training of surveillance personnel and clinicians
-
-#### Which training has been provided to the staff working on arboviral disease surveillance data? (Question 10) 
+### Which training has been provided to the staff working on arboviral disease surveillance data? (Question 10) 
 
 ```{r}
 
@@ -373,9 +370,8 @@ df %>%
 
 ```
 
-\newpage 
-
-#### Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? (Question 24) 
+  
+### Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? (Question 24) 
 
 ```{r}
 # relevant question: q24
@@ -398,11 +394,23 @@ regulartable( df ) %>%
 
 ```
 
-## Laboratory diagnostic capacity indicators
+## Presence of written arbovirus surveillance and control plans
 
-### Testing in outbreak vs non-outbreak settings
+### question 6
 
-#### Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively) (Question 15) 
+## Arbovirus program independent or integrated
+
+### question 7
+
+## Tools for case reporting
+
+### question 9
+
+# Laboratory diagnostic capacity indicators
+
+## Testing in outbreak vs non-outbreak settings
+
+### Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively) (Question 15) 
 
 ```{r}
 
@@ -428,12 +436,10 @@ df %>%
 
 ```
 
-\newpage
+ 
+## Laboratory tests available
 
-### Laboratory tests available
-
-#### Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes. (Question 17) 
-
+### Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes. (Question 17) 
 ```{r} 
 # fig.height=8}
 
@@ -477,13 +483,13 @@ ggplot(df, aes(x=Testing, y=Total, fill=Testing)) +
 
 ```
 
-\newpage
+## Serotyping and sequencing capacity 
 
-## Response capacity indicators
+# Response capacity indicators
 
-### Surveillance and control plans available
+## Surveillance and control plans available
 
-#### Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country? (Question 6) 
+### Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country? (Question 6) 
 
 ```{r}
 
@@ -505,11 +511,13 @@ regulartable( df ) %>%
 
 ```
 
-\newpage  
+## Clinical guidelines for healthcare workers 
 
-### Vector control method employed
+### question 21
 
-#### Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply. (Question 35) 
+## Vector control method employed
+
+### Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply. (Question 35) 
 
 ```{r}
 
@@ -538,11 +546,10 @@ df %>%
 
 ```
 
-\newpage
+ 
+## Surveillance and response committee exists
 
-### Surveillance and response committee exists
-
-#### Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose? (Question 47) 
+### Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose? (Question 47) 
 
 ```{r}
 
@@ -563,9 +570,9 @@ regulartable( df ) %>%
 
 ```
 
-### Contingency plan exists
+## Contingency plan exists
 
-#### Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)? (Question 48) 
+### Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)? (Question 48) 
 
 ```{r}
 
@@ -585,13 +592,27 @@ regulartable( df ) %>%
 
 ```
 
-  
+## Most common vector control methods used
 
-## Epidemiologic risk data
+### question 35
 
-### Vectors present and level of risk 
+## Indicators used for thresholds 
 
-#### Is there a record of _Aedes aegypti_ or _Aedes albopictus_ being found in your country in the past 5 years? Please choose only one of the following. (Question 34) 
+### questions 37, 37b, 38
+
+## Insecticide resistance 
+
+### question 39
+
+## Criteria for declaring an outbreak
+
+### question 49
+
+# Epidemiologic risk data
+
+## Vectors present and level of risk 
+
+### Is there a record of _Aedes aegypti_ or _Aedes albopictus_ being found in your country in the past 5 years? Please choose only one of the following. (Question 34) 
 
 ```{r}
 
@@ -612,9 +633,8 @@ regulartable( df ) %>%
 
 ```
 
-\newpage 
-
-#### Please describe the potential public health threat from Aedes aegypti in your country. (Question 34b) 
+  
+### Please describe the potential public health threat from Aedes aegypti in your country. (Question 34b) 
 
 ```{r}
 
@@ -643,7 +663,7 @@ regulartable( rbind(selection,other) ) %>%
 
 ```
 
-#### Please describe the potential public health threat from Aedes albopictus in your country. (Question 34c) 
+### Please describe the potential public health threat from Aedes albopictus in your country. (Question 34c) 
 
 ```{r}
 
@@ -672,10 +692,21 @@ regulartable( rbind(selection,other) ) %>%
 
 ```
 
+## Entomological surveillance in the last 2 years
 
-### All arboviruses 2015-2020 (cases and deaths) 
+### question 28
 
-#### Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) (Question 55) 
+## How often is conducted
+
+### question 28e
+
+## Vectors recorded in the last 5 years and the public health threat
+
+### questions 34, 34b, 34c
+
+## All arboviruses 2015-2020 (cases and deaths) 
+
+### Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) (Question 55) 
 
 ```{r, fig.height = 12} 
 # fig.width = 9.5}
@@ -756,9 +787,8 @@ ggplot( df %>%
        y = 'Deaths')
 ```
 
-\newpage 
 
-#### Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020? (Question 55b) 
+### Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020? (Question 55b) 
 
 ```{r}
 
@@ -782,7 +812,7 @@ regulartable( df ) %>%
 
 ```
 
-#### Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020. (Question 55c) 
+### Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020. (Question 55c) 
 
 ```{r}
 
@@ -800,9 +830,9 @@ regulartable( df ) %>%
 
 ```
 
-### Most recent year data 
+## Most recent year data 
 
-#### Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019. (Question 56) 
+### Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019. (Question 56) 
 
 ```{r, fig.height = 12} 
 # fig.width = 9.5}
