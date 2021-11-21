@@ -9,6 +9,9 @@ output:
     toc_depth: 2
   pdf_document:
     toc: yes
+  word_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -1276,11 +1279,11 @@ Comments:
 
 - India is not shown, as India's case/death counts are an order of magnitude larger than other countries'.
 
-# Missingness analysis 
+<!-- # Missingness analysis  -->
 
-## Missing questions 
+<!-- ## Missing questions  -->
 
-```{r}
+```{r eval=FALSE}
 
 # Handling special questions tediously seems unavoidable, hence some of the ghastly code below! 
 

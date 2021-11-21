@@ -15,8 +15,8 @@ opts_chunk$set(comment = NA,
                error = TRUE, 
                cache = FALSE,
                fig.width = 9.64,
-               fig.height = 5.9,
-               fig.path = 'figures/')
+               fig.height = 5.9)
+               # fig.path = 'figures/')
 # options(scipen = '999')
 ```
 
