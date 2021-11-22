@@ -154,12 +154,16 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
+if( !file.exists("tables/q11.png")){
+  tab <- df %>% 
   pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
   mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
   adorn_totals() %>%
   regulartable() %>%
   hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q11.png")
+}
 
 # ggplot( df, 
 #         aes( x = Response,
@@ -180,28 +184,38 @@ df %>%
   
 ```
 
+<center>
+<img src="tables/q11.png" alt="question 11">
+</center>
+
 > For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
 
 ```{r}
 
 responses <- get_responses("11b")
+
 df <- cbind(Region = data$Region, responses) %>% 
   pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
   mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   group_by(Region, Arbovirus, Response) %>% 
   tally
 df$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", df$Response))
-df %>% 
-  pivot_wider(names_from=Response, values_from=n) %>% 
-  drop_na(Region) %>% 
-  relocate("Confirmed cases only", .after="All suspect cases") %>%
-  regulartable() %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=6*(1:4)) %>% 
-  colformat_num(na_str = "0") %>%
-  fix_border_issues() %>%
-  width( j=2, width=2 ) # %>% autofit() 
+
+if( !file.exists("tables/q11b.png") ){
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n) %>% 
+    drop_na(Region) %>% 
+    relocate("Confirmed cases only", .after="All suspect cases") %>%
+    regulartable() %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=6*(1:4)) %>% 
+    colformat_num(na_str = "0") %>%
+    fix_border_issues() %>%
+    width( j=2, width=2 ) %>% autofit() 
+    
+    path <- save_as_image(tab, zoom=1, "tables/q11b.png")
+}
 
 # ggplot(df, aes(x=Response, y=n, fill=Response)) + 
 #   geom_col() + 
@@ -218,6 +232,10 @@ df %>%
 #        y = 'Responses')
 
 ```
+
+<center>
+<img src="tables/q11b.png" alt="question 11b">
+</center>
 
 ##  History of any arbovirus circulation since 2000 
 
@@ -237,14 +255,18 @@ df <- cbind( Region = data$Region, responses) %>%
   group_by(Region, Arbovirus, Response) %>% 
   tally
 
-df %>% 
-  pivot_wider( names_from=Response, values_from=n, names_sort = TRUE) %>% 
-  regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=4*(1:4)) %>% 
-  colformat_num( na_str = "0" ) %>%
-  fix_border_issues %>% autofit 
+if( !file.exists("tables/q5.png") ){
+  tab <- df %>% 
+    pivot_wider( names_from=Response, values_from=n, names_sort = TRUE) %>% 
+    regulartable %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=4*(1:4)) %>% 
+    colformat_num( na_str = "0" ) %>%
+    fix_border_issues %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q5.png")
+}
 
 # ggplot(data = df %>% filter(Response == 'Yes'),
 #        aes(x = Arbovirus,
@@ -265,6 +287,10 @@ df %>%
 
 ```
 
+<center>
+<img src="tables/q5.png" alt="question 5">
+</center>
+
 ##  Conducting surveillance on humans,  vectors, and animals
 
 > In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? (Question 12) 
@@ -282,11 +308,20 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
   adorn_totals()
 
-regulartable(df) %>%
-  colformat_num( na_str="0" ) %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q12.png") ){
+
+  tab <- regulartable(df) %>%
+    colformat_num( na_str="0" ) %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q12.png")
+}
 
 ```
+
+<center>
+<img src="tables/q12.png" alt="question 12">
+</center>
 
 > For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? (Question 28)
 
@@ -303,11 +338,20 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
   adorn_totals()
 
-regulartable( df ) %>%
-  colformat_num( na_str="0" ) %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q28.png") ){
+
+  tab <- regulartable( df ) %>%
+    colformat_num( na_str="0" ) %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q28.png")
+}
 
 ```
+
+<center>
+<img src="tables/q28.png" alt="question 28">
+</center>
 
 > During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (e.g., epizootic surveillance for yellow fever in endemic areas)? (Question 41) 
 
@@ -324,11 +368,20 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
   adorn_totals()
 
-regulartable( df ) %>%
-  colformat_num( na_str="0" ) %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q41.png") ){
+
+  tab <- regulartable( df ) %>%
+    colformat_num( na_str="0" ) %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q41.png")
+}
 
 ```
+
+<center>
+<img src="tables/q41.png" alt="question 41">
+</center>
 
 ## Training of surveillance personnel and clinicians
 
@@ -347,18 +400,27 @@ df <- cbind( Region = data$Region, responses) %>%
   group_by(Region, Training, Response) %>% 
   tally
 
-df %>% 
-  pivot_wider( names_from=Response, values_from=n, names_sort = TRUE) %>% 
-  drop_na(Region) %>% 
-  regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=5*(1:4)) %>% 
-  colformat_num( na_str = "0" ) %>%
-  fix_border_issues %>%
-  width( j=2, width=3 ) %>% autofit 
+if( !file.exists("tables/q10.png") ){
+  
+  tab <- df %>% 
+    pivot_wider( names_from=Response, values_from=n, names_sort = TRUE) %>% 
+    drop_na(Region) %>% 
+    regulartable %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=5*(1:4)) %>% 
+    colformat_num( na_str = "0" ) %>%
+    fix_border_issues %>%
+    width( j=2, width=3 ) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q10.png")
+}
 
 ```
+
+<center>
+<img src="tables/q10.png" alt="question 10">
+</center>
 
 > Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? (Question 24) 
 
@@ -383,11 +445,20 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   adorn_totals() %>%
   rename( "Yes" = "Yes, specific training is provided. If so, please specify:")
 
-regulartable( df ) %>%
-  colformat_num( na_str="0" ) %>% 
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q24.png") ){
+
+  tab <- regulartable( df ) %>%
+    colformat_num( na_str="0" ) %>% 
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q24.png")
+}
 
 ```
+
+<center>
+<img src="tables/q24.png" alt="question 24">
+</center>
 
 ## Presence of written arbovirus surveillance and control plans
 
@@ -412,11 +483,20 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
   adorn_totals()
 
-regulartable( df ) %>%
-  hline(i=4) %>% autofit
-  # width( j=2:3, width=2 ) 
+if( !file.exists("tables/q6.png") ){
+
+  tab <- regulartable( df ) %>%
+    hline(i=4) %>% autofit
+    # width( j=2:3, width=2 ) 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q6.png")
+}
 
 ```
+
+<center>
+<img src="tables/q6.png" alt="question 6">
+</center>
 
 ## Arbovirus program: independent or integrated?
 
@@ -438,14 +518,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>%
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q7.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>%
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q7.png")
+}
 
 ```
+
+<center>
+<img src="tables/q7.png" alt="question 7">
+</center>
 
 ## Tools for case reporting
 
@@ -462,19 +551,27 @@ df <- cbind(Region = data$Region, responses) %>%
   group_by(Region, Level, Response) %>% 
   tally
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  drop_na(Region) %>% 
-  regulartable() %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=3*(1:4)) %>% 
-  fix_border_issues() %>%
-  width( j=2, width=2 ) %>% autofit() 
+if( !file.exists("tables/q9.png") ){
 
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    drop_na(Region) %>% 
+    regulartable() %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=3*(1:4)) %>% 
+    fix_border_issues() %>%
+    width( j=2, width=2 ) %>% autofit() 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q9.png")
+}
 
 ```
+
+<center>
+<img src="tables/q9.png" alt="question 9">
+</center>
 
 # Laboratory diagnostic capacity indicators
 
