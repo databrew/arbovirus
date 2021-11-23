@@ -4,7 +4,7 @@ author: "World Health Organization"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   html_document:
-    toc: no
+    toc: yes
     toc_float: yes
     toc_depth: 2
   pdf_document:
@@ -137,7 +137,7 @@ ggplot(data = pd,
        title = 'Survey entries per country')
 ```
 
-# Surveillance capacity indicators
+# **Surveillance capacity indicators**
 
 ## Reportable arboviral diseases
 
@@ -573,7 +573,7 @@ if( !file.exists("tables/q9.png") ){
 <img src="tables/q9.png" alt="question 9">
 </center><br>
 
-# Laboratory diagnostic capacity indicators
+# **Laboratory diagnostic capacity indicators**
 
 ## Testing in outbreak vs non-outbreak settings
 
@@ -711,7 +711,7 @@ if( !file.exists("tables/q19.png") ){
 <img src="tables/q19.png" alt="question 19">
 </center><br>
 
-# Response capacity indicators
+# **Response capacity indicators**
 
 ## Surveillance and control plans available
 
@@ -1114,7 +1114,7 @@ if( !file.exists("tables/q49.png") ){
 <img src="tables/q49.png" alt="question 49">
 </center><br>
 
-# Epidemiologic risk data
+# **Epidemiologic risk data**
 
 ## Vectors present and level of risk 
 
