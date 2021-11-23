@@ -186,7 +186,7 @@ if( !file.exists("tables/q11.png")){
 
 <center>
 <img src="tables/q11.png" alt="question 11">
-</center>
+</center><br>
 
 > For which of the following arboviral disease cases is reporting mandatory in your country? (Question 11b) 
 
@@ -235,7 +235,7 @@ if( !file.exists("tables/q11b.png") ){
 
 <center>
 <img src="tables/q11b.png" alt="question 11b">
-</center>
+</center><br>
 
 ##  History of any arbovirus circulation since 2000 
 
@@ -289,7 +289,7 @@ if( !file.exists("tables/q5.png") ){
 
 <center>
 <img src="tables/q5.png" alt="question 5">
-</center>
+</center><br>
 
 ##  Conducting surveillance on humans,  vectors, and animals
 
@@ -321,7 +321,7 @@ if( !file.exists("tables/q12.png") ){
 
 <center>
 <img src="tables/q12.png" alt="question 12">
-</center>
+</center><br>
 
 > For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors? (Question 28)
 
@@ -351,7 +351,7 @@ if( !file.exists("tables/q28.png") ){
 
 <center>
 <img src="tables/q28.png" alt="question 28">
-</center>
+</center><br>
 
 > During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (e.g., epizootic surveillance for yellow fever in endemic areas)? (Question 41) 
 
@@ -381,7 +381,7 @@ if( !file.exists("tables/q41.png") ){
 
 <center>
 <img src="tables/q41.png" alt="question 41">
-</center>
+</center><br>
 
 ## Training of surveillance personnel and clinicians
 
@@ -420,7 +420,7 @@ if( !file.exists("tables/q10.png") ){
 
 <center>
 <img src="tables/q10.png" alt="question 10">
-</center>
+</center><br>
 
 > Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases? (Question 24) 
 
@@ -458,7 +458,7 @@ if( !file.exists("tables/q24.png") ){
 
 <center>
 <img src="tables/q24.png" alt="question 24">
-</center>
+</center><br>
 
 ## Presence of written arbovirus surveillance and control plans
 
@@ -496,7 +496,7 @@ if( !file.exists("tables/q6.png") ){
 
 <center>
 <img src="tables/q6.png" alt="question 6">
-</center>
+</center><br>
 
 ## Arbovirus program: independent or integrated?
 
@@ -534,7 +534,7 @@ if( !file.exists("tables/q7.png") ){
 
 <center>
 <img src="tables/q7.png" alt="question 7">
-</center>
+</center><br>
 
 ## Tools for case reporting
 
@@ -571,7 +571,7 @@ if( !file.exists("tables/q9.png") ){
 
 <center>
 <img src="tables/q9.png" alt="question 9">
-</center>
+</center><br>
 
 # Laboratory diagnostic capacity indicators
 
@@ -587,18 +587,28 @@ df <- cbind( Region = data$Region, responses) %>%
   pivot_longer(!Region, names_to="Training", values_to="Response") %>% 
   group_by(Region, Training, Response) %>% 
   tally 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n) %>% 
-  drop_na(Region) %>% 
-  regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=2*(1:4)) %>% 
-  colformat_num( na_str = "0" ) %>%
-  fix_border_issues %>%
-  width( j=2, width=1) %>% autofit 
+
+if( !file.exists("tables/q15.png") ){
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n) %>% 
+    drop_na(Region) %>% 
+    regulartable %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=2*(1:4)) %>% 
+    colformat_num( na_str = "0" ) %>%
+    fix_border_issues %>%
+    width( j=2, width=1) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q15.png")
+  
+}
 
 ```
+
+<center>
+<img src="tables/q15.png" alt="question 15">
+</center><br>
 
 ## Laboratory tests available
 
@@ -621,14 +631,19 @@ df <- df %>%
 df$Arbovirus <- factor( df$Arbovirus )
 df$Testing <- factor( df$Testing )
 
-df %>% 
-  pivot_wider(names_from=Testing, values_from=Total) %>% 
-  regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=5*(1:4)) %>% 
-  colformat_num( na_str = "0" ) %>%
-  fix_border_issues %>% autofit 
+if( !file.exists("tables/q17.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Testing, values_from=Total) %>% 
+    regulartable %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=5*(1:4)) %>% 
+    colformat_num( na_str = "0" ) %>%
+    fix_border_issues %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q17.png")
+}
 
 # ggplot(df, aes(x=Testing, y=Total, fill=Testing)) + 
 #   geom_col() + 
@@ -643,6 +658,10 @@ df %>%
 #                     values = make_colors(length(unique(df$Testing))))
 
 ```
+
+<center>
+<img src="tables/q17.png" alt="question 17">
+</center><br>
 
 ## Serotyping and sequencing capacity 
 
@@ -668,21 +687,29 @@ df <- cbind( Region = data$Region, responses) %>%
   group_by(Region, Testing, Response) %>% 
   tally
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  drop_na(Region) %>% 
-  regulartable() %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=6*(1:4)) %>% 
-  fix_border_issues() %>% autofit
-  # width( j=2, width=2 ) %>%
+if( !file.exists("tables/q19.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    drop_na(Region) %>% 
+    regulartable() %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=6*(1:4)) %>% 
+    fix_border_issues() %>% autofit
+    # width( j=2, width=2 ) %>%
+  
+  path <- save_as_image(tab, zoom=1, "tables/q19.png")
+}
 
 # How should comments be reported? Comments specify testing methods.
 
 ```
 
+<center>
+<img src="tables/q19.png" alt="question 19">
+</center><br>
 
 # Response capacity indicators
 
@@ -708,12 +735,21 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
   adorn_totals()
 
-regulartable( df ) %>%
-  colformat_num( na_str="0" ) %>%
-  hline(i=4) %>% autofit
-  # width( j=2:3, width=1.5 ) %>%
+if( !file.exists("tables/q6.png") ){
+
+  tab <- regulartable( df ) %>%
+    colformat_num( na_str="0" ) %>%
+    hline(i=4) %>% autofit
+    # width( j=2:3, width=1.5 ) %>%
+  
+  path <- save_as_image(tab, zoom=1, "tables/q6.png")
+}
 
 ```
+
+<center>
+<img src="tables/q6.png" alt="question 6">
+</center><br>
 
 ## Clinical guidelines for healthcare workers 
 
@@ -730,14 +766,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q21.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q21.png")
+}
 
 ```
+
+<center>
+<img src="tables/q21.png" alt="question 21">
+</center><br>
 
 ## Vector control method employed
 
@@ -756,17 +801,26 @@ df <- cbind( Region = data$Region, responses) %>%
   group_by(Region, Method, Response) %>% 
   tally
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
-  drop_na(Region) %>% 
-  regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=6*(1:4)) %>% 
-  colformat_num( na_str = "0" ) %>%
-  fix_border_issues() %>% autofit()
+if( !file.exists("tables/q35.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
+    drop_na(Region) %>% 
+    regulartable %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=6*(1:4)) %>% 
+    colformat_num( na_str = "0" ) %>%
+    fix_border_issues() %>% autofit()
+  
+  path <- save_as_image(tab, zoom=1, "tables/q35.png")
+}
 
 ```
+
+<center>
+<img src="tables/q35.png" alt="question 35">
+</center><br>
 
 ## Surveillance and response committee exists
 
@@ -783,14 +837,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q47.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q47.png")
+}
 
 ```
+
+<center>
+<img src="tables/q47.png" alt="question 47">
+</center><br>
 
 ## Contingency plan exists
 
@@ -807,14 +870,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q48.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q48.png")
+}
 
 ```
+
+<center>
+<img src="tables/q48.png" alt="question 48">
+</center><br>
 
 ## Most common vector control methods used
 
@@ -826,22 +898,31 @@ responses <- get_responses("35")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other) 
 
-cbind( Region = data$Region, responses) %>% 
-  pivot_longer(!Region, names_to="Method", values_to="Response") %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  mutate( Response = fct_relevel(Response, "Yes", "Not selected", "Unanswered")) %>% 
-  group_by(Region, Method, Response) %>% 
-  tally %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
-  drop_na(Region) %>% 
-  regulartable %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=6*(1:4)) %>% 
-  colformat_num( na_str = "0" ) %>%
-  fix_border_issues() %>% autofit()
+if( !file.exists("tables/q35.png") ){
+
+  tab <- cbind( Region = data$Region, responses) %>% 
+    pivot_longer(!Region, names_to="Method", values_to="Response") %>% 
+    mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+    mutate( Response = fct_relevel(Response, "Yes", "Not selected", "Unanswered")) %>% 
+    group_by(Region, Method, Response) %>% 
+    tally %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
+    drop_na(Region) %>% 
+    regulartable %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=6*(1:4)) %>% 
+    colformat_num( na_str = "0" ) %>%
+    fix_border_issues() %>% autofit()
+  
+  path <- save_as_image(tab, zoom=1, "tables/q35.png")
+}
 
 ```
+
+<center>
+<img src="tables/q35.png" alt="question 35">
+</center><br>
 
 ## Indicators used for thresholds 
 
@@ -863,14 +944,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q37.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q37.png")
+}
 
 ```
+
+<center>
+<img src="tables/q37.png" alt="question 37">
+</center><br>
 
 > Which indicator(s) is(are) used as threshold(s)? (Question 37b) 
 
@@ -886,17 +976,26 @@ df <- cbind(Region = data$Region, responses) %>%
   group_by(Region, Indicator, Response) %>% 
   tally
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  drop_na(Region) %>% 
-  regulartable() %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=6*(1:4)) %>% 
-  fix_border_issues() %>% autofit() 
+if( !file.exists("tables/q37b.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    drop_na(Region) %>% 
+    regulartable() %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=6*(1:4)) %>% 
+    fix_border_issues() %>% autofit() 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q37b.png")
+}
 
 ```
+
+<center>
+<img src="tables/q37b.png" alt="question 37b">
+</center><br>
 
 > Overall, are data on any of the following arboviral outbreak risk factors routinely collected and analysed? (Select all that apply)  (Question 38) 
 
@@ -920,18 +1019,27 @@ df <- cbind(Region = data$Region, responses) %>%
   group_by(Region, Factor, Response) %>% 
   tally
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  drop_na(Region) %>% 
-  regulartable() %>% 
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=7*(1:4)) %>% 
-  fix_border_issues() %>% autofit
-  # width( j=2, width=2 ) %>% autofit() 
+if( !file.exists("tables/q38.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    drop_na(Region) %>% 
+    regulartable() %>% 
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=7*(1:4)) %>% 
+    fix_border_issues() %>% autofit
+    # width( j=2, width=2 ) %>% autofit() 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q38.png")
+}
 
 ```
+
+<center>
+<img src="tables/q38.png" alt="question 38">
+</center><br>
 
 ## Insecticide resistance 
 
@@ -948,14 +1056,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q39.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q39.png")
+}
 
 ```
+
+<center>
+<img src="tables/q39.png" alt="question 39">
+</center><br>
 
 ## Criteria for declaring an outbreak
 
@@ -977,16 +1094,25 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q49.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q49.png")
+}
 
 # How should free text comments be reported??
 
 ```
+
+<center>
+<img src="tables/q49.png" alt="question 49">
+</center><br>
 
 # Epidemiologic risk data
 
@@ -1011,14 +1137,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q34.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q34.png")
+}
 
 ```
+
+<center>
+<img src="tables/q34.png" alt="question 34">
+</center><br>
 
 > Please describe the potential public health threat from _Aedes aegypti_ in your country. (Question 34b) 
 
@@ -1033,14 +1168,23 @@ df <- data.frame(Region = data$Region, Response = responses$`Please choose only 
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q34b.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q34b.png")
+}
 
 ```
+
+<center>
+<img src="tables/q34b.png" alt="question 34b">
+</center><br>
 
 > Please describe the potential public health threat from _Aedes albopictus_ in your country. (Question 34c) 
 
@@ -1055,14 +1199,23 @@ df <- data.frame(Region = data$Region, Response = responses$`Please choose only 
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q34c.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q34c.png")
+}
 
 ```
+
+<center>
+<img src="tables/q34c.png" alt="question 34c">
+</center><br>
 
 ## Entomological surveillance in the last 2 years
 
@@ -1079,14 +1232,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q28.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q28.png")
+}
 
 ```
+
+<center>
+<img src="tables/q28.png" alt="question 28">
+</center><br>
 
 ## How often surveillance is conducted
 
@@ -1104,14 +1266,23 @@ df <- data.frame(Region = data$Region, Response = responses$`How often`) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q28e.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q28e.png")
+}
 
 ```
+
+<center>
+<img src="tables/q28e.png" alt="question 28e">
+</center><br>
 
 > How often was the surveillance conducted? Free responses: (Question 28e)
 
@@ -1124,17 +1295,26 @@ df <- data.frame(Region = data$Region, Other = other$Other) %>%
   tally %>%
   select(Region, Other)
 
-df %>% 
-  # pivot_wider(names_from=Other, values_from=n, names_sort = TRUE) %>%
-  # mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  # adorn_totals() %>%
-  regulartable() %>%
-  merge_v(j = ~Region) %>% 
-  valign(j = 1, valign = "top", part = "all") %>% 
-  hline(i=c(8,10,14)) %>% 
-  fix_border_issues() %>% autofit 
+if( !file.exists("tables/q28e_other.png") ){
+
+  tab <- df %>% 
+    # pivot_wider(names_from=Other, values_from=n, names_sort = TRUE) %>%
+    # mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    # adorn_totals() %>%
+    regulartable() %>%
+    merge_v(j = ~Region) %>% 
+    valign(j = 1, valign = "top", part = "all") %>% 
+    hline(i=c(8,10,14)) %>% 
+    fix_border_issues() %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q28e_other.png")
+}
 
 ```
+
+<center>
+<img src="tables/q28e_other.png" alt="question 28e_other">
+</center><br>
 
 ## Vectors recorded in the last 5 years and the public health threat
 
@@ -1156,14 +1336,23 @@ df <- data.frame(Region = data$Region, Response = responses) %>%
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q34.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q34.png")
+}
 
 ```
+
+<center>
+<img src="tables/q34.png" alt="question 34">
+</center><br>
 
 > Please describe the potential public health threat from _Aedes aegypti_ in your country. (Question 34b) 
 
@@ -1178,14 +1367,23 @@ df <- data.frame(Region = data$Region, Response = responses$`Please choose only 
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q34b.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q34b.png")
+}
 
 ```
+
+<center>
+<img src="tables/q34b.png" alt="question 34b">
+</center><br>
 
 > Please describe the potential public health threat from _Aedes albopictus_ in your country. (Question 34c) 
 
@@ -1200,20 +1398,30 @@ df <- data.frame(Region = data$Region, Response = responses$`Please choose only 
   group_by(Region, Response) %>%
   tally 
 
-df %>% 
-  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
-  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
-  adorn_totals() %>%
-  regulartable() %>%
-  hline(i=4) %>% autofit 
+if( !file.exists("tables/q34c.png") ){
+
+  tab <- df %>% 
+    pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+    mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+    adorn_totals() %>%
+    regulartable() %>%
+    hline(i=4) %>% autofit 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q34c.png")
+}
 
 ```
+
+<center>
+<img src="tables/q34c.png" alt="question 34c">
+</center><br>
 
 ## All arboviruses 2015-2020 (cases and deaths) 
   
 > Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) (Question 55) 
 
-```{r, fig.height = 12} 
+```{r}
+# fig.height = 12} 
 # fig.width = 9.5}
 
 responses <- get_responses("55")
@@ -1222,45 +1430,113 @@ col_names <- matrix( unlist( strsplit(col_names, "\\]\\[") ), ncol=2, byrow=T)
 col_names <- cbind( col_names[,1], matrix( unlist( strsplit(col_names[,2], " ") ), ncol=2, byrow=T))
 ncountries <- length(data$SI01)
 ncr <- ncol(responses)
-df <- data.frame( Country=character(), Virus=character(), Year=character(), Type=character(), Number=numeric() )
+df <- data.frame( Country=character(), Region=character(), Virus=character(), Year=character(), Type=character(), Number=numeric() )
 for( i in 1:ncountries ){
   country <- rep( data$SI01[i], ncr)
+  region <- rep( data$Region[i], ncr)
   df <- rbind( df, 
                data.frame(Country=country, 
+                          Region=region,
                           Virus=col_names[,1], 
                           Year=col_names[,2],
                           Type=col_names[,3],
                           Number=as.numeric( t( responses[i,] ))))
 }
 
-df <- df %>% drop_na(Number)
+df <- df %>% 
+  drop_na(Number) %>%
+  unite("Category", Year:Type, sep=" ") %>% 
+  group_by(Region, Virus, Category) %>%
+  summarize( Number = sum(Number)) %>%
+  pivot_wider( names_from=Virus, values_from=Number)
 
-ggplot( df %>% 
-          filter(Country!="India") %>% 
-          filter(Type=="Cases") %>%
-          mutate(Country = gsub(" People's Democratic Republic", 's', Country)) %>%
-          mutate(Country = gsub('Herzegovina', 'Herz.', Country)) %>%
-          mutate(grp = paste0(Country, Virus)),
-        aes(x = Year,
-            y = Number,
-            color = Virus,
-            group = grp)) +
-          geom_line() +
-  geom_point() +
-  facet_wrap(~Country,
-             scales = 'free') +
-  theme(legend.position = 'bottom',
-        strip.background = element_blank()) +
-  scale_color_manual(name = '',
-                     values = make_colors(length(unique(df$Virus)))) +
-  theme(axis.text.x = element_text(angle = 90,
-                                   hjust = 0,
-                                   vjust = 0.5)) +
-  labs(title = 'Cases by year',
-       y = 'Cases')
+if( !file.exists("tables/emro55.png") ){
+
+  tab <- df  %>% 
+    filter( Region == "EMRO") %>%
+    select(Category:Zika) %>% 
+    regulartable() %>%
+    merge_v(j = ~Region) %>%
+    fix_border_issues() %>%
+    autofit
+  
+  path <- save_as_image(tab, zoom=1, "tables/emro55.png")
+}
+
+if( !file.exists("tables/euro55.png") ){
+
+  tab <- df  %>% 
+    filter( Region == "EURO") %>%
+    select(Category:Zika) %>% 
+    regulartable() %>%
+    merge_v(j = ~Region) %>%
+    fix_border_issues() %>%
+    autofit
+  
+  path <- save_as_image(tab, zoom=1, "tables/euro55.png")
+}
+
+if( !file.exists("tables/searo55.png") ){
+
+  tab <- df  %>% 
+    filter( Region == "SEARO") %>%
+    select(Category:Zika) %>% 
+    regulartable() %>%
+    merge_v(j = ~Region) %>%
+    fix_border_issues() %>%
+    autofit
+  
+  path <- save_as_image(tab, zoom=1, "tables/searo55.png")
+}
+
+if( !file.exists("tables/wpro55.png") ){
+
+  tab <- df  %>% 
+    filter( Region == "WPRO") %>%
+    select(Category:Zika) %>% 
+    regulartable() %>%
+    merge_v(j = ~Region) %>%
+    fix_border_issues() %>%
+    autofit
+  
+  path <- save_as_image(tab, zoom=1, "tables/wpro55.png")
+}
+
+# ggplot( df %>% 
+#           filter(Country!="India") %>% 
+#           filter(Type=="Cases") %>%
+#           mutate(Country = gsub(" People's Democratic Republic", 's', Country)) %>%
+#           mutate(Country = gsub('Herzegovina', 'Herz.', Country)) %>%
+#           mutate(grp = paste0(Country, Virus)),
+#         aes(x = Year,
+#             y = Number,
+#             color = Virus,
+#             group = grp)) +
+#           geom_line() +
+#   geom_point() +
+#   facet_wrap(~Country,
+#              scales = 'free') +
+#   theme(legend.position = 'bottom',
+#         strip.background = element_blank()) +
+#   scale_color_manual(name = '',
+#                      values = make_colors(length(unique(df$Virus)))) +
+#   theme(axis.text.x = element_text(angle = 90,
+#                                    hjust = 0,
+#                                    vjust = 0.5)) +
+#   labs(title = 'Cases by year',
+#        y = 'Cases')
+
 ```
 
-```{r, fig.height = 12}
+<center>
+<img src="tables/emro55.png" alt="question 55: EMRO">
+<img src="tables/euro55.png" alt="question 55: EURO">
+<img src="tables/searo55.png" alt="question 55: SEARO">
+<img src="tables/wpro55.png" alt="question 55: WPRO">
+</center><br>
+
+```{r eval=FALSE}
+#fig.height = 12}
 #fig.width = 9.5}
 
 ggplot( df %>% 
@@ -1300,37 +1576,63 @@ responses <- get_responses("55b")
 
 df <- data.frame(Region = data$Region, Response = responses) %>% 
   drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Yes", "No", "I don't know", "Unanswered")) %>% 
   group_by(Region, Response) %>% 
   tally %>% 
-  pivot_wider(names_from=Response, values_from=n) %>%
+  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
   adorn_totals()
-regulartable( df ) %>%
-  colformat_num( na_str="0" ) %>%
-  hline(i=4) %>% autofit
+
+if( !file.exists("tables/q55b.png") ){
+
+  tab <- regulartable( df ) %>%
+    colformat_num( na_str="0" ) %>%
+    hline(i=4) %>% autofit
+  
+  path <- save_as_image(tab, zoom=1, "tables/q55b.png")
+}
 
 ```
 
-> Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020. (Question 55c) 
+<center>
+<img src="tables/q55b.png" alt="question 55b">
+</center><br>
+
+> Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020. (Question 55c)
 
 ```{r}
 
 responses <- get_responses("55c")
-df <- responses %>%
-  pivot_longer(cols=colnames(responses), names_to="Arbovirus", values_to="Response") %>%
+df <- cbind( Region = data$Region, responses )
+df <- df %>%
+  pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>%
   filter(Response=="Yes") %>%
   droplevels() %>% 
-  group_by( Arbovirus ) %>% 
+  group_by( Region, Arbovirus ) %>% 
   tally
-regulartable( df ) %>% 
-  autofit() 
+
+if( !file.exists("tables/q55c.png")){ 
+
+  tab <- regulartable( df ) %>% 
+    merge_v(j = ~Region) %>% 
+    hline( i = c(1,7)) %>%
+    autofit() 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q55c.png")
+}
 
 ```
+
+<center>
+<img src="tables/q55c.png" alt="question 55c">
+</center><br>
 
 ## Most recent year data 
 
 > Please provide the number of cases of locally acquired, mosquito-borne Aedes-borne arbovirus infections by case classification for 2020 and, if not available, for 2019. (Question 56) 
 
-```{r, fig.height = 12} 
+```{r}
+# fig.height = 12} 
 # fig.width = 9.5}
 
 responses <- get_responses("56")
@@ -1354,17 +1656,32 @@ for( i in 1:ncountries ){
                           Number=as.numeric( t( responses[i,] ))))
 }
 
-df <- df %>% drop_na(Number)
+df <- df %>% 
+  drop_na(Number) %>%
+  group_by(Region, Virus, Type) %>%
+  summarize( Number = sum(Number)) %>%
+  pivot_wider( names_from=Virus, values_from=Number)
 
-ggplot( df,
-        aes( x=reorder(Country, desc(Country)), y=Number, fill=Type)) +
-  geom_col( position="dodge" ) + 
-  coord_flip() + 
-  labs( title = "Cases by Virus") + 
-  facet_wrap(~Virus) +
-  labs(x = 'Country') +
-  scale_fill_manual(name = '',
-                    values = make_colors(length(unique(df$Type))))
+if( !file.exists("tables/q56.png")){ 
+
+  tab <- regulartable( df ) %>% 
+    merge_v(j = ~Region) %>% 
+    hline( i = 4*(1:4)) %>%
+    fix_border_issues() %>%
+    autofit() 
+  
+  path <- save_as_image(tab, zoom=1, "tables/q56.png")
+}
+
+# ggplot( df,
+#         aes( x=reorder(Country, desc(Country)), y=Number, fill=Type)) +
+#   geom_col( position="dodge" ) + 
+#   coord_flip() + 
+#   labs( title = "Cases by Virus") + 
+#   facet_wrap(~Virus) +
+#   labs(x = 'Country') +
+#   scale_fill_manual(name = '',
+#                     values = make_colors(length(unique(df$Type))))
 
 # To do:
 # - Clean up free text responses to questions 5 and 10
@@ -1372,9 +1689,13 @@ ggplot( df,
 
 ```
 
-Comments: 
+<center>
+<img src="tables/q56.png" alt="question 56">
+</center><br>
 
-- India is not shown, as India's case/death counts are an order of magnitude larger than other countries'.
+<!-- Comments:  -->
+
+<!-- - India is not shown, as India's case/death counts are an order of magnitude larger than other countries'. -->
 
 <!-- # Missingness analysis  -->
 
