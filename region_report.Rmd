@@ -1,5 +1,6 @@
 ---
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
+date: "Regional Summary"
 output: html_document
 params:
   region: "EURO"
@@ -62,272 +63,332 @@ get_responses <- function( question_number ){
 }
 ```
 
-#### WHO Region:
-
-> `r params$region` 
+#### WHO Region: `r params$region` 
 
 #### 1. Countries:
 
+`r length(data$SI01)` countries from the `r params$region` region responded:
+
 ```{r}
-
 pander( as.character(data$SI01) )
-
 ```
 
-#### 2. Respondent/person to be contacted for clarification, if needed  (last name, first name, e-mail address)
+#### 2. Respondent/person to be contacted for clarification, if needed (last name, first name, e-mail address)
 
 ```{r}
-
 regulartable( data.frame( Country=data$SI01, Contact=data$SI02) ) %>%
+  hline( i = 1:length(data$SI01)) %>% 
   autofit()
-
 ```
 
 
 #### 3. Professional title and affiliation
 
 ```{r}
-
 regulartable( data.frame( Country=data$SI01, Title=data$SI03) ) %>%
+  hline( i = 1:length(data$SI01)) %>%
   autofit()
-
 ```
 
 #### 4. Date (dd/mm/yyyy):
 
 ```{r}
+regulartable( data.frame( Country=data$SI01, 
+                          Date=paste( day(data$SI04), "/", 
+                                      month(data$SI04), "/",
+                                      year(data$SI04)) ) ) %>%
+  hline( i = 1:length(data$SI01)) %>%
+  autofit()
+```
 
-regulartable( data.frame( Country=data$SI01, Date=data$SI04) ) %>%
+#### 5. Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous, i.e., local mosquito-borne, transmission.
+
+```{r}
+responses <- get_responses("5") %>%
+  select(-Other)
+
+cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = recode_factor(.x = Response, 
+                                   "Yes"="Yes", 
+                                   "Not selected"="No", 
+                                   "Unanswered"="Unanswered")) %>%
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  regulartable() %>% 
+  hline( i = 1:length(data$SI01)) %>%
+  autofit()
+```
+
+#### 5. Which other arboviruses have circulated in your country at any time since the year 2000?  
+
+```{r}
+other <- get_responses("5") %>%
+  select(Other)
+
+cbind(Country = data$SI01, other) %>% 
+  drop_na(Other) %>%
+  rename("Other arbovirus(es)" = Other) %>% 
+  regulartable() %>% 
+  hline( part="body" ) %>%
+  autofit()
+```
+
+#### 6. Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country?
+
+```{r}
+responses <- get_responses("6")
+
+cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  regulartable() %>% 
+  hline( i = 1:length(data$SI01)) %>%
   autofit()
 
 ```
 
-#### 5. Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission
+#### 6b. For which of the following arboviruses do you have written surveillance and control plans for your country? Please choose all that apply.
 
 ```{r}
-responses <- get_responses("5")
+responses <- get_responses("6b")%>%
+  select(-Other)
 
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
+cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = recode_factor(.x = Response, 
+                                   "Yes"="Yes", 
+                                   "Not selected"="No", 
+                                   "Unanswered"="Unanswered")) %>%
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  regulartable() %>% 
+  hline( i = 1:length(data$SI01)) %>%
+  autofit()
+
+```
+
+#### 6b. For which other arboviruses do you have written surveillance and control plans for your country?
+
+```{r}
+other <- get_responses("6b") %>%
+  select(Other)
+
+cbind(Country = data$SI01, other) %>% 
+  drop_na(Other) %>%
+  rename("Other arbovirus(es)" = Other) %>% 
+  regulartable() %>% 
+  hline( part="body" ) %>%
+  autofit()
+```
+
+#### 6c. Please upload surveillance and control plan(s) or protocol(s), or guideline(s).
+
+File(s) submitted by:
+
+```{r}
+data.frame(Country = data$SI01, Number = data$SII06c__filecount) %>%
+  drop_na(Number) %>%
+  filter(Number > 0 ) %>%
+  rename("Number of files"=Number) %>%
+  regulartable() %>%
+  hline( part="all" ) %>%
+  autofit()
+
+```
+
+#### 7. Is there a specific national programme for arboviral diseases surveillance or is it integrated in another programme? Please select the appropriate answer:
+
+```{r}
+responses <- get_responses("7")
+
+cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  regulartable() %>% 
+  hline( i = 1:length(data$SI01)) %>%
+  autofit()
+
+```
+
+#### 7b. Please specify the programme into which arboviral diseases is integrated:
+
+```{r}
+responses <- get_responses("7b")
+colnames( responses) <- "Response"
+
+cbind(Country = data$SI01, responses) %>% 
+  drop_na(Response) %>%
+  regulartable() %>% 
+  hline( part="all" ) %>%
+  autofit()
+```
+
+#### 8. For which level of the health structure are individual and aggregated data available ? (Select all relevant levels)
+
+```{r}
+responses <- get_responses("8") 
+responses <- cbind( Country=data$SI01, responses) %>%
+	pivot_longer(!Country)
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
 responses <- responses %>% 
 	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
 	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) 
+
+responses %>% 
+  filter(Response == "Individual level") %>%
+  select(Country, Level, Response=value) %>%
+  regulartable() %>%
+  set_caption("Individual data") %>%
+  hline( i =4*(1:20)) %>%
+  merge_v(j = ~Country) %>% 
+  fix_border_issues() %>%
+  autofit()
+
+responses %>%
+  filter(Response == "Aggregated ") %>% 
+  select(Country, Level, Response=value) %>%
+  regulartable() %>%
+  set_caption("Aggregated data") %>%
+  hline( i =4*(1:20)) %>%
+  merge_v(j = ~Country) %>%
+  fix_border_issues() %>%
+  autofit()
+
 ```
-
-
-
-#### 6. Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country?
-
-> `r data$SII06` 
-
-
-
-#### 6b. For which of the following arboviruses do you have written surveillance and control plans for your country? Please choose all that apply
-
-```{r}
-responses <- get_responses("6b")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
-
-#### 6c. Please upload surveillance and control plan(s) or protocol(s), or guideline(s)
-
-> `r data$SII06c` 
-
-
-
-#### filecount - 6c. Please upload surveillance and control plan(s) or protocol(s), or guideline(s)
-
-> `r data$SII06c__filecount` 
-
-
-
-#### 7. Is there a specific national programme for arboviral diseases surveillance or is it integrated in another programme?  Please select the appropriate answer:
-
-> `r data$SII07` 
-
-
-
-#### 7b. Please specify the programme into which arboviral diseases is integrated
-
-> `r data$SII07b` 
-
-
-
-#### 8. For which level of the health structure are individual and aggregated  data available ?  (select all relevant levels)
-
-```{r}
-responses <- get_responses("8")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
-```
-
-
 
 #### 9. What are the tools used for recording case data for surveillance purposes? Select all that apply
 
 ```{r}
 responses <- get_responses("9")
+colnames( responses ) <- c("National", "State", "District")
 
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
+cbind( Country = data$SI01, responses ) %>% 
+  mutate( National = factor( replace_na( as.character(National), "Unanswered"))) %>%
+  mutate( State = factor( replace_na( as.character(State), "Unanswered"))) %>%
+  rename("State/provincial" = State) %>% 
+  mutate( District = factor( replace_na( as.character(District), "Unanswered"))) %>%
+  regulartable() %>% 
+  hline( i = 1:length(data$SI01)) %>%
+  autofit()
+
 ```
-
-
 
 #### 10. Which training has been provided to the staff working on arboviral disease surveillance data
 
 ```{r}
-responses <- get_responses("10")
+responses <- get_responses("10") %>%
+  select(-Other)
+training <- colnames( responses )
+colnames(responses) <- c("Basic","Repeat_basic","Advanced","Repeat_advanced","None")
+df <- cbind(Country = data$SI01, responses) %>% 
+  mutate( Basic = factor( replace_na( as.character(Basic), "Not selected")),
+          Repeat_basic = factor( replace_na( as.character(Repeat_basic), "Not selected")),
+          Advanced = factor( replace_na( as.character(Advanced), "Not selected")),
+          Repeat_advanced = factor( replace_na( as.character(Repeat_advanced), "Not selected")),
+          None = factor( replace_na( as.character(None), "Not selected"))) 
+colnames(df) <- c("Country", training)
 
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
+regulartable(df) %>% 
+  hline( i = 1:length(data$SI01)) %>%
+  autofit()
 ```
-
-
 
 #### 11. Is reporting mandatory for any arboviral disease cases in your country?
 
-> `r data$SII11` 
-
-
+```{r}
+responses <- get_responses("11") 
+cbind(Country = data$SI01, responses) %>% 
+  drop_na(Response) %>%
+  regulartable() %>% 
+  hline( part="all" ) %>%
+  autofit()
+```
 
 #### 11b. For which of the following arboviral disease cases is reporting mandatory in your country?
 
 ```{r}
 responses <- get_responses("11b")
 
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
+df <- cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) 
+df$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", df$Response))
+df %>% 
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  regulartable() %>% 
+  hline( part="all" ) %>%
+  autofit()
+
 ```
-
-
 
 #### 11c. For which other arboviral diseases is reporting mandatory?
 
 ```{r}
 responses <- get_responses("11c")
-
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
+idx <- which( grepl("Arbovirus",colnames(responses)))
+arboviruses <- cbind( Country=data$SI01, responses[,idx]) %>%
+  pivot_longer(!Country) %>%
+  select( Country, Arbovirus=value)
+reporting <- cbind( Country=data$SI01, responses[,-idx]) %>%
+  pivot_longer(!Country) %>%
+  select( Country, Reporting=value)
+cbind(arboviruses, Mandatory = reporting$Reporting) %>%
+  drop_na(Arbovirus) %>%
+  mutate( Mandatory = factor( replace_na( as.character(Mandatory), "Unanswered"))) %>%
+  rename("Reporting mandatory" = Mandatory) %>%
+  regulartable() %>%
+  merge_v(j = ~Country ) %>% 
+  hline( part="all") %>%
+  autofit()
+  
 ```
 
+#### 11d. Please upload document(s) containing surveillance case definitions used for reporting of arboviral diseases.
 
+File(s) submitted by:
 
-#### 11d. Please upload document(s) containing surveillance case definitions used for reporting of arboviral diseases
+```{r}
+data.frame(Country = data$SI01, Number = data$SII11d__filecount) %>%
+  drop_na(Number) %>%
+  filter(Number > 0 ) %>%
+  rename("Number of files"=Number) %>%
+  regulartable() %>%
+  hline( part="all" ) %>%
+  autofit()
 
-> `r data$SII11d` 
-
-
-
-#### filecount - 11d. Please upload document(s) containing surveillance case definitions used for reporting of arboviral diseases
-
-> `r data$SII11d__filecount` 
-
-
+```
 
 #### 12. In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease?
 
-> `r data$SII12` 
+```{r}
+responses <- get_responses("12") 
+cbind(Country = data$SI01, responses) %>% 
+  drop_na(Response) %>%
+  regulartable() %>% 
+  hline( part="all" ) %>%
+  autofit()
+```
 
-
-
-#### 12b. How frequently are surveillance data reported to the national level? Please choose one of the following:
+#### 12b. How frequently are surveillance data reported to the national level? 
 
 ```{r}
 responses <- get_responses("12b")
+colnames( responses ) <- c("Response", "Other")
+responses <- responses %>%
+  mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
+  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
+  unite( Response, Response:Other, sep="") 
+responses$Response[ responses$Response == "" ] <- "Unanswered"
 
-if( all( grepl("\\]\\[", colnames(responses)) ) ){
-responses <- responses %>% 
-	pivot_longer(everything())
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
-	pivot_wider(names_from=Response, values_from=value)
-} else{
-responses <- responses %>% pivot_longer( everything() )
-}
-knitr::kable(responses, col.names=NULL)
+cbind( Country = data$SI01, responses) %>% 
+  regulartable( ) %>%
+  hline( part = "all") %>% 
+  autofit()
+
 ```
 
 
