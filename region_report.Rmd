@@ -42,6 +42,18 @@ data <- data %>%
   mutate(SI01 = as.character(SI01)) %>%
   arrange( SI01 )
 
+n_countries <- length( data$SI01) 
+
+# rename duplicated countries to prevent barfing:
+idx <- which( duplicated( data$SI01 ))
+if( length(idx) > 0 ){
+  for(i in 1:length(idx)){
+    country <- data$SI01[ idx[i] ]
+    dup_idx <- which( data$SI01 == country )
+    data$SI01[ dup_idx ] <- paste0( country, 1:length(dup_idx)) 
+  }
+}
+
 if( file.exists("data/Data_dictionary_Survey375147.csv")){
   dict <- read_csv("data/Data_dictionary_Survey375147.csv")
 } else{
@@ -243,7 +255,7 @@ responses %>%
   select(Country, Level, Response=value) %>%
   regulartable() %>%
   set_caption("Individual data") %>%
-  hline( i =4*(1:20)) %>%
+  hline( i =4*(1:n_countries)) %>%
   merge_v(j = ~Country) %>% 
   fix_border_issues() %>%
   autofit()
@@ -253,7 +265,7 @@ responses %>%
   select(Country, Level, Response=value) %>%
   regulartable() %>%
   set_caption("Aggregated data") %>%
-  hline( i =4*(1:20)) %>%
+  hline( i =4*(1:n_countries)) %>%
   merge_v(j = ~Country) %>%
   fix_border_issues() %>%
   autofit()
