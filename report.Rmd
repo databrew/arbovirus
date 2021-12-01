@@ -1,0 +1,1256 @@
+---
+title: "Arboviral Surveillance and Response Capacity Survey 2021"
+output:
+  pdf_document:
+    keep_tex: yes
+    latex_engine: xelatex
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{xcolor}
+fontsize: 12pt
+params:
+  country: Germany
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+# options(scipen = '999')
+```
+
+```{r}
+
+library(tidyverse)
+library(stringr)
+library(pander)
+library(knitr)
+library(kableExtra)
+library(flextable)
+library(lubridate)
+
+if( file.exists("data/data.RData")){
+  load("data/data.RData")
+} else{
+  message("You need the data!")
+}
+
+data <- data %>% filter( SI01 == params$country )
+
+if( file.exists("data/Data_dictionary_Survey375147.csv")){
+  dict <- read_csv("data/Data_dictionary_Survey375147.csv")
+} else{
+  message("You need the data dictionary!")
+}
+
+# utility function 
+get_responses <- function( question_number ){
+  idx <- which( dict$`Question number` == question_number )
+  var_names <- dict$`Variable name`[idx]
+  responses <- data %>% select( all_of(var_names) )
+  if( !is.na(dict$Subquestion[ idx[1] ]) ){
+    # remove square brackets at beginning and end, then rename columns:
+    colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
+  } else{
+    colnames( responses ) <- "Response"
+  }
+  return( responses )
+}
+```
+
+# Section I: Respondent details
+
+#### 1. Country
+
+> `r data$SI01` 
+
+
+
+#### 2. Respondent/person to be contacted for clarification, if needed (last name, first name, e-mail address)
+
+> `r data$SI02` 
+
+
+
+#### 3. Professional title and affiliation
+
+> `r data$SI03` 
+
+
+
+#### 4. Date (dd/mm/yyyy)
+
+> `r paste0(day(data$SI04),"/",month(data$SI04),"/",year(data$SI04))` 
+
+
+# Section II: Arboviral disease surveillance system
+
+
+#### 5. Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous i.e., local mosquito-borne transmission.
+
+\quad \smallskip
+
+\begin{center}
+
+```{r}
+
+responses <- get_responses("5") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
+}
+
+```
+
+\end{center} 
+
+
+#### 6. Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country?
+
+> `r if(!is.na(data$SII06) & (data$SII06 != "NA")){ data$SII06 }`
+
+
+#### 6b. For which of the following arboviruses do you have written surveillance and control plans for your country? Please choose all that apply.
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("6b") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+
+#### 6c. Please upload surveillance and control plan(s) or protocol(s), or guideline(s)
+
+
+> `r if(!is.na(data$SII06c__filecount)){ paste0(data$SII06c__filecount, " file(s) submitted")} `
+
+
+
+#### 7. Is there a specific national programme for arboviral diseases surveillance or is it integrated in another programme?  Please select the appropriate answer:
+
+> `r if(!is.na(data$SII07) & (data$SII07 != "NA")){ data$SII07 }`
+
+
+
+#### 7b. Please specify the programme into which arboviral diseases is integrated
+
+> `r if(!is.na(data$SII07b) & (data$SII07b != "NA")){ data$SII07b }`
+
+
+#### 8. For which level of the health structure are individual and aggregated data available? (Select all relevant levels)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("8") %>%
+	pivot_longer(everything())
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+	  select(-name) %>%
+	  mutate( value = case_when( value == 1 ~ "Yes", value == 0 ~ "No", is.na(value) ~ "Not selected")) %>%
+	  pivot_wider(names_from=Response, values_from=value) %>%
+    rename(" " = Level) %>% 
+    kable(format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 9. What are the tools used for recording case data for surveillance purposes? Select all that apply
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("9") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 10. Which training has been provided to the staff working on arboviral disease surveillance data?
+
+\quad \smallskip
+
+\begin{center}
+
+```{r}
+
+responses <- get_responses("10") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE)  %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+
+\end{center}
+
+
+#### 11. Is reporting mandatory for any arboviral disease cases in your country?
+
+> `r if(!is.na(data$SII11) & (data$SII11 != "NA")){ data$SII11 }`
+
+
+
+#### 11b. For which of the following arboviral disease cases is reporting mandatory in your country?
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("11b") %>%  
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 11c. For which other arboviral diseases is reporting mandatory?
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("11c") %>%
+	pivot_longer(everything())
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+    drop_na() %>% 
+	  select(-name) %>%
+	  pivot_wider(names_from=Response, values_from=value) %>%
+    kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(1, width=".5in") %>% 
+    column_spec(3, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 11d. Please upload document(s) containing surveillance case definitions used for reporting of arboviral diseases
+
+
+> `r if(!is.na(data$SII11d__filecount)){ paste0(data$SII11d__filecount, " file(s) submitted") } `
+
+
+
+#### 12. In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease?
+
+> `r if(!is.na(data$SII12) & (data$SII12 != "NA")){ data$SII12 }`
+
+
+
+#### 12b. How frequently are surveillance data reported to the national level?
+
+> `r if( !is.na( data$SII12b ) & (data$SII12b != "NA") ){ data$SII12b } else{ if( !is.na( data$SII12b_other ) & (data$SII12b_other != "NA") ){ data$SII12b_other} }`
+
+
+#### 12c. What type of national epidemiological surveillance was conducted?
+
+> `r if(!is.na(data$SII12c) & (data$SII12c != "NA")){ data$SII12c }`
+
+> For reference, here are the relevant definitions:
+
+**Active surveillance** is defined as having dedicated systems and staff that routinely and with effort survey for cases of disease or detection of vectors and associated pathogens by the public health department.
+
+**Passive surveillance** is defined as having a reporting system where physicians, laboratories, mosquito control districts, academic institutions or others routinely report cases of disease or detection of vectors and associated pathogens to the public health department.
+
+
+#### 12d. If available, please upload the most recent report(s) on arboviral surveillance in humans
+
+> `r if(!is.na(data$SII12d__filecount)){ paste0(data$SII12d__filecount, " file(s) submitted") } `
+
+
+#### 13. Does your country provide regular training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases?
+
+> `r if(grepl("Yes", data$SII13)){ paste0("Yes : ",data$SII13_comment) } else{ data$SII13 }`
+
+
+
+#### 14. What do the arboviral disease surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges to arboviral disease surveillance in humans?
+
+> `r if(!is.na(data$SII14) & (data$SII14 != "NA")){ data$SII14 }`
+
+
+# Section III: Arbovirus laboratory capacity
+
+
+#### 15. Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and  during non-outbreak periods, respectively)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("15") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 15b. On average, for what percentage of suspected arboviral disease cases your country is laboratory confirmatory testing performed? Please indicate for outbreak and non-outbreak periods, respectively
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("15b") %>% 
+  pivot_longer(everything()) 
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+    drop_na() %>% 
+	  select(-name) %>%
+	  pivot_wider(names_from=Response, values_from=value) %>%
+    kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), align=c('l','l'), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 16. In the last two years, were the positive cases of arboviruses confirmed by a national reference laboratory?
+
+> `r if(grepl("Yes", data$SIII16)){ paste0(data$SIII16,"\n\n",data$SIII16_comment) } else{ data$SII16 }`
+
+
+#### 16b. If your country does not have capacity to type and serotype arboviruses, do you send samples for typing to other countries?
+
+> `r if(grepl("Yes", data$SIII16b)){ paste0(data$SIII16b,"\n\n",data$SIII16b_comment) } else{ data$SIII16b }`
+
+
+#### 17. Overall, what arboviral testing capacity(ies) is(are) available in your country? Please check all applicable boxes
+
+\quad \smallskip
+
+\begin{center}
+
+```{r}
+
+responses <- get_responses("17") %>%
+	pivot_longer(everything()) 
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Testing = new_cols[,2]) %>%
+	  select(-name) %>%
+	  mutate( value = case_when( value == 1 ~ "Yes", value == 0 ~ "No", is.na(value) ~ " ")) %>%
+    pivot_wider(names_from=Testing, values_from=value) %>% 
+    rename( " " = Level) %>%
+    kable(responses, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE, font_size=10 ) %>% 
+    column_spec(1, width=".85in")
+}
+
+```
+
+\end{center}
+
+
+#### 18. Which additional resources are most needed for your country to perform adequate testing for arboviral diseases? Please describe what would be needed for each checked resource in the adjacent comment field
+
+\quad \smallskip
+
+`r if( !is.na(data$SIII18_SQ001) & data$SIII18_SQ001 == "Yes" ){ paste0("Additional personnel: Yes\n\nEstimate of number of full-time staff: ", data$SIII18_SQ001comment) }`
+
+`r if(!is.na(data$SIII18_SQ002comment)){ paste0("\nAdditional training of personnel: ", data$SIII18_SQ002comment) } `
+
+`r if(!is.na(data$SIII18_SQ003comment)){ paste0("\nAdditional laboratory equipment, reagents, etc.: ", data$SIII18_SQ003comment) } `
+
+`r if(!is.na(data$SIII18_SQ004comment)){ paste0("\nOther capacity needs: ", data$SIII18_SQ004comment) } `
+
+
+#### 19. Do you perform virological surveillance on humans, ie, tracking of prevailing genotypes/serotypes? Please select all that apply
+
+\quad \smallskip
+
+`r if( !is.na(data$SIII19_SQ001) & data$SIII19_SQ001 == "Yes" ){ paste0("Yes, using virus isolation: ", data$SIII19_SQ001comment) }`
+
+`r if( !is.na(data$SIII19_SQ002) & data$SIII19_SQ002 == "Yes" ){ paste0("Yes, using RT-PCR: ", data$SIII19_SQ002comment) }`
+
+`r if( !is.na(data$SIII19_SQ003) & data$SIII19_SQ003 == "Yes" ){ paste0("Yes, using other acid nucleic tests. Please specify: ", data$SIII19_SQ003comment) }`
+
+`r if( !is.na(data$SIII19_SQ004) & data$SIII19_SQ004 == "Yes" ){ paste0("Yes, using serological testing. Please specify: ", data$SIII19_SQ004comment) }`
+
+`r if( !is.na(data$SIII19_SQ005) & data$SIII19_SQ005 == "Yes" ){ paste0("No: ", data$SIII19_SQ005comment) }`
+
+`r if( !is.na(data$SIII19_SQ006) & data$SIII19_SQ006 == "Yes" ){ paste0("I don't know: ", data$SIII19_SQ006comment) }`
+
+
+#### 19b. Which samples do you use for virological surveillance?
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("19b") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 19c. For which viruses do you perform virological surveillance? (check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("19c") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 19d. Does your country provide regular training sessions for healthcare workers on arboviruses virological surveillance?
+
+> `r if(!is.na(data$SIII19d) & (data$SIII19d != "NA")){ data$SIII19d }`
+
+
+#### 20. What do the arboviral diagnostic laboratory staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections?
+
+> `r if(!is.na(data$SIII20) & (data$SIII20 != "NA")){ data$SIII20 }`
+
+
+# Section IV: Management of arboviral disease cases
+
+
+#### 21. Does your country have clinical guidelines for healthcare workers on diagnosis and clinical management of cases and severe cases of _Aedes_-borne arboviral diseases?
+
+> `r if(!is.na(data$SIV21) & (data$SIV21 != "NA")){ data$SIV21 }`
+
+
+#### 21b. Please upload the clinical guideline(s) for arboviral disease management
+
+> `r if(!is.na(data$SIV21b__filecount)){ paste0(data$SIV21b__filecount, " file(s) submitted") } `
+
+
+#### 22. Are severe cases of arboviral diseases managed in a special area  (part of the hospital, isolation beds)?
+
+> `r if(grepl("No", data$SIV22)){ if(!is.na(data$SIV22_comment)){ paste0(data$SIV22,"\n\n",data$SIV22_comment) } else{data$SIV22} } else{ data$SIV22 }`
+
+
+#### 23. How many hospital beds are available per 100,000 population?
+
+> `r if(!is.na(data$SIV23) & (data$SIV23 != "NA")){ data$SIV23 } `
+
+
+#### 24. Does your country provide regular training sessions for healthcare workers on clinical diagnosis and management of _Aedes_-borne arboviral diseases?
+
+> `r if(grepl("Yes", data$SIV24)){ paste0(data$SIV24,"\n\n",data$SIV24_comment) } else{ data$SIV24 }`
+
+
+#### 25. What do the arboviral disease surveillance/clinical staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to case management?
+
+> `r if(!is.na(data$SIV25) & (data$SIV25 != "NA")){ data$SIV25 }`
+
+
+# Section V: Routine vector surveillance and control
+
+
+#### 26. Is there a disease programme, agency, or service in charge of arbovirus vector surveillance in your country?
+
+> `r if(grepl("Yes", data$SV26)){ paste0(data$SV26,"\n\n",data$SV26_comment) } else{ data$SV26 }`
+
+
+#### 27. Which institution/department is in charge of reporting entomologic surveillance data to the national ministry of health/health department? (Check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("27") %>%  
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 28. For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors?
+
+> `r if(!is.na(data$SV28) & (data$SV28 != "NA")){ data$SV28 }`
+
+
+#### 28b. Please upload the most recent national vector surveillance report
+
+> `r if(!is.na(data$SV28b__filecount)){ paste0(data$SV28b__filecount, " file(s) submitted") } `
+
+
+#### 28c. Did the entomologic surveillance entail country wide programmes or was it restricted to specific locations?
+
+> `r if(grepl("Restricted", data$SV28c)){ paste0(data$SV28c,"\n\n",data$SV28c_comment) } else{ if(!is.na(data$SV28c)){ data$SV28c } }`
+
+
+#### 28d. How many sentinel surveillance sites do you have?
+
+> `r if(!is.na(data$SV28d) & (data$SV28d != "NA")){ data$SV28d }`
+
+
+#### 28e. How often was the surveillance conducted? Please choose one of the following:
+
+> `r if(!is.na(data$SV28e) & (data$SV28e != "NA")){ data$SV28e } else{ if(!is.na(data$SV28e_other)){ data$SV28e_other } }`
+
+
+#### 29. Do you conduct adult mosquito surveillance?
+
+> `r if(!is.na(data$SV29) & (data$SV29 != "NA")){ data$SV29 }`
+
+
+#### 30. Do you conduct larval/pupal mosquito surveillance?
+
+> `r if(!is.na(data$SV30) & (data$SV30 != "NA")){ data$SV30 }`
+
+
+#### 31. Are trapped mosquitoes identified to species?
+
+> `r if(!is.na(data$SV31) & (data$SV31 != "NA")){ data$SV31 }`
+
+
+#### 32. Does your country either calculate minimum infection rates (MIR) for any _Aedes_-borne arboviruses with your mosquito data or receive such data from other agencies?  Please choose only one of the following:
+
+> `r if(grepl("another", data$SV32)){ paste0(data$SV32,"\n\n",data$SV32_comment) } else{ data$SV32 }`
+
+
+#### 33. Which laboratories performed testing for arboviruses on mosquito pools collected in your country in the last two years? (check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("33") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 34. Is there a record of _Aedes aegypti_ or _Aedes albopictus_ being found in your country in the past 5 years? Please choose only one of the following
+
+> `r if(!is.na(data$SV34)){ out <- sub("Aedes aegypti", "_Aedes aegypti_", data$SV34); out <- sub("Aedes albopictus", "_Aedes albopictus_", out) ; out }`
+
+
+#### 34b. Please describe the potential public health threat from _Aedes aegypti_ in your country
+
+> `r if(!is.na(data$SV34b)){ { out <- sub("Aedes aegypti", "_Aedes aegypti_", data$SV34b); out <- sub("Aedes albopictus", "_Aedes albopictus_", out) ; out } } else{ if(!is.na(data$SV34b_other)){ { out <- sub("Aedes aegypti", "_Aedes aegypti_", data$SV34b_other); out <- sub("Aedes albopictus", "_Aedes albopictus_", out) ; out } } }`
+
+
+#### 34c. Please describe the potential public health threat from _Aedes albopictus_ in your country
+
+> `r if(!is.na(data$SV34c)){ { out <- sub("Aedes aegypti", "_Aedes aegypti_", data$SV34c); out <- sub("Aedes albopictus", "_Aedes albopictus_", out) ; out } } else{ if(!is.na(data$SV34c_other)){ { out <- sub("Aedes aegypti", "_Aedes aegypti_", data$SV34c_other); out <- sub("Aedes albopictus", "_Aedes albopictus_", out) ; out } } }`
+
+#### 35. Over the past two years, did your country use any of the following vector control methods in local jurisdictions (either using government staff and resources, or subcontracting to a different entity to do so)? Please select all that apply
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("35") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 35b. Would your country have conducted or financially supported adulticiding/larviciding or source reduction activities in the last two years if sufficient funding were available?
+
+> `r if(!is.na(data$SV35b) & (data$SV35b != "NA")){ data$SV35b }`
+
+
+#### 35c. Which adulticides and/or larvicides (brand and product name) were used?
+
+> `r if(!is.na(data$SV35c) & (data$SV35c != "NA")){ data$SV35c }`
+
+
+#### 36. Does your country provide regular training sessions for staff in charge of vector control and vector surveillance?
+
+> `r if(!is.na(data$SV36) & (data$SV36 != "NA")){ data$SV36 }`
+
+
+#### 37. For the last two years, did your country have a plan for mosquito-borne disease control that includes a threshold (eg,  level of vector mosquito abundance or minimum infection rate) that would result in a recommendation for mosquito adulticiding/other mosquito reduction measures?)
+
+> `r if(!is.na(data$SV37) & (data$SV37 != "NA")){ data$SV37 }`
+
+
+#### 37b. Which indicator(s) is(are) used as threshold(s)?
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("37b") %>%  
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="3in")
+}
+
+```
+\end{center}
+
+
+#### 38. Overall, are data on any of the following arboviral outbreak risk factors routinely collected and analysed? (Select all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("38") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="3in")
+}
+
+```
+\end{center}
+
+
+#### 39. Is there a surveillance system in place for monitoring _Aedes_ resistance to the insecticide(s) used?
+
+> `r if(!is.na(data$SV39) & (data$SV39 != "NA")){ data$SV39 }`
+
+
+
+#### 40. What do the vector surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control in the country?
+
+> `r if(!is.na(data$SV40) & (data$SV40 != "NA")){ data$SV40 }`
+
+
+# Section VI: Animal surveillance
+
+
+#### 41. During the last 2 years, did your country conduct national epidemiological surveillance for arboviral disease in animals (eg, epizootic surveillance for yellow fever in endemic areas)?
+
+> `r if(!is.na(data$SVI41) & (data$SVI41 != "NA")){ data$SVI41 }`
+
+
+#### 41b. How often was the animal surveillance conducted?
+
+> `r if(!is.na(data$SVI41b)){ data$SVI41b } else{ if(!is.na(data$SVI41b_other)){ data$SVI41b_other } }`
+
+
+#### 41c. What type of surveillance was conducted in animals?
+
+> `r if(!is.na(data$SVI41c) & (data$SVI41c != "NA")){ data$SVI41c }`
+
+
+#### 41d. Please upload a report on the animal surveillance
+
+> `r if(!is.na(data$SVI41d__filecount)){ paste0(data$SVI41d__filecount, " file(s) submitted") } `
+
+
+#### 42. Does your country (or local jurisdictions within the country) perform sentinel animal surveillance or epizootic surveillance, eg, for yellow fever in nonhuman primates in endemic regions?
+
+> `r if(!is.na(data$SVI42) & (data$SVI42 != "NA")){ data$SVI42 }`
+
+
+#### 42b. For which viruses is sentinel surveillance conducted and in which animal species?
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("42b") %>%
+	pivot_longer(everything())
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+	  select(-name) %>%
+    drop_na() %>%
+	  pivot_wider(names_from=Response, values_from=value) %>% 
+    select(-Level) %>% 
+    kable(format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(2, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 42c. Please upload the most recent report(s) on sentinel animal surveillance
+
+> `r if(!is.na(data$SVI42c__filecount)){ paste0(data$SVI42c__filecount, " file(s) submitted") } `
+
+
+# Section VII: Community sensitization and participation
+
+
+#### 43. Does your country have a community outreach program that also covers arboviral diseases?
+
+> `r if(!is.na(data$SVII43) & (data$SVII43 != "NA")){ data$SVII43 }`
+
+
+#### 43b. What entity(ies) is(are) in charge of the outreach program in your country?
+
+> `r if(!is.na(data$SVII43b) & (data$SVII43b != "NA")){ data$SVII43b }`
+
+
+#### 43c. What is the geographical coverage of the outreach program in your country?
+
+> `r if(grepl("selected", data$SVII43c)){ paste0(data$SVII43c,"\n\n",data$SVII43c_comment) } else{ if(!is.na(data$SVII43c)){ data$SVII43c } }`
+
+
+#### 43d. Is the community outreach/social mobilization program sufficiently funded to cover staff time, prevention and outreach activities as needed?
+
+> `r if(!is.na(data$SVII43d) & (data$SVII43d != "NA")){ data$SVII43d }`
+
+
+#### 43e. Which resources would help ensure adequate capacity?
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("43e") %>% 
+  pivot_longer( everything() ) 
+if( !all(is.na( responses$value))){
+  responses %>% 
+    drop_na() %>% 
+    kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 44. Did your national arboviral disease program issue notifications to the public about local transmission risk and/or possible vector-control activities (eg larviciding, adulticiding, community mobilization and participation, etc) as a prevention message for arboviral diseases within last 2 years? (Check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+
+```{r}
+
+responses <- get_responses("44") %>%
+	pivot_longer(everything())
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+	  select(-name) %>%
+	  mutate( value = case_when( value == 1 ~ "Yes", value == 0 ~ "No", is.na(value) ~ "Not selected")) %>%
+	  pivot_wider(names_from=Level, values_from=value) %>%
+    rename( " " = Response ) %>% 
+    kable(format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(1, width="3in")
+}
+
+```
+
+\end{center}
+
+
+#### 44b. Which means does your program use for community sensitization, mobilisation and acceptance of interventions in your country? (Check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("44b") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 45. Does your country provide regular training sessions for staff in charge of community sensitization, mobilisation and acceptance of interventions dedicated to control arboviral diseases?
+
+> `r if(grepl("Yes", data$SVII45)){ paste0(data$SVII45,"\n\n",data$SVII45_comment) } else{ if(!is.na(data$SVII45)){ data$SVII45 } }`
+
+
+#### 46. What do the community outreach staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to community participation
+
+> `r if(!is.na(data$SVII46) & (data$SVII46 != "NA")){ data$SVII46 }`
+
+
+# Section VIII: Preparedness for arboviral outbreaks/epidemics
+
+
+#### 47. Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose?
+
+> `r if(!is.na(data$SVIII47) & (data$SVIII47 != "NA")){ data$SVIII47 }`
+
+
+#### 48. Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)?
+
+> `r if(!is.na(data$SVIII48) & (data$SVIII48 != "NA")){ data$SVIII48 }`
+
+
+#### 48b. Please upload the contingency plan
+
+> `r if(!is.na(data$SVIII48b__filecount)){ paste0(data$SVIII48b__filecount, " file(s) submitted") } `
+
+
+#### 49. Are there defined or established criteria for declaring an outbreak of arboviral disease outbreak in your country?
+
+> `r if(grepl("Yes", data$SVIII49)){ paste0(data$SVIII49,"\n\n",data$SVIII49_comment) } else{ if(!is.na(data$SVIII49)){ data$SVIII49 } }`
+
+
+#### 50. Do you have established collaborations with national/regional research institutions / international agencies that are planned to be activated in case of arboviral outbreak?
+
+> `r if(grepl("Yes", data$SVIII50)){ paste0(data$SVIII50,"\n\n",data$SVIII50_comment) } else{ if(!is.na(data$SVIII50)){ data$SVIII50 } }`
+
+
+#### 51. What vector control interventions are deployed in case of an emergency?
+
+> `r if(!is.na(data$SVIII51) & (data$SVIII51 != "NA")){ data$SVIII51 }`
+
+
+#### 52. For the last 2 years, which of the following government levels had an emergency fund or a specified emergency funding mechanism for arbovirus outbreak response?
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("52") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 53. Does your country provide regular training sessions for staff/committee in charge of preparedness for arboviral outbreaks/epidemics?
+
+> `r if(!is.na(data$SVIII53) & (data$SVIII53 != "NA")){ data$SVIII53 }`
+
+
+#### 54. What do the arboviral disease surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics in your country?
+
+> `r if(!is.na(data$SVIII54) & (data$SVIII54 != "NA")){ data$SVIII54 }`
+
+
+# Section IX: Arboviral disease surveillance data
+
+
+#### 55. Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available). 
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("55") %>%
+	pivot_longer(everything())
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+	  select(-name) %>%
+	  pivot_wider(names_from=Level, values_from=value) %>%
+    rename( " " = Response ) %>% 
+    kable(format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(1, width="1in")
+}
+
+```
+\end{center}
+
+(NA = Not Available)
+
+#### 55b. Were cases of other mosquito-borne arboviruses, not listed in the previous question, reported in your country from 2015-2020?
+
+> `r if(!is.na(data$SIX55b) & (data$SIX55b != "NA")){ data$SIX55b }`
+
+
+#### 55c. Please select any of the following other mosquito-borne viruses that have been reported in your country from 2015-2020
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+responses <- get_responses("55c") %>% 
+  pivot_longer( everything() )
+if( !all(is.na(responses$value))){ 
+  other_reported <- responses %>%
+    filter( value == "Yes")
+
+  kable(other_reported, col.names = NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 55d. Please provide total number of cases and deaths due to each of the following other arboviruses that you selected from 2015-2020
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+responses <- get_responses("55d") %>%
+	pivot_longer(everything())
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+	  select(-name) %>%
+	  pivot_wider(names_from=Level, values_from=value) %>%
+    select( Response, other_reported$name ) %>%
+    rename(" " = Response) %>%
+    kable(format="latex", linesep=c("\\addlinespace"), align=c('l','l'), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE )%>% 
+    column_spec(1, width="2in")
+}
+
+```
+\end{center}
+
+
+#### 56. Please provide the number of cases of locally acquired, mosquito-borne _Aedes_-borne arbovirus infections by case classification for 2020 and, if not available, for 2019
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+responses <- get_responses("56") %>%
+	pivot_longer(everything()) 
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+	  select(-name) %>%
+	  pivot_wider(names_from=Response, values_from=value) %>%
+    rename( " " = Level ) %>% 
+    kable(format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE ) %>% 
+    column_spec(1, width="1.5in")
+}
+
+```
+\end{center}
+
+
+#### 57. Do arbovirus surveillance staff have any perceived reasons for increasing trends in arboviral disease incidence? Check all answers that apply.
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("57") %>%  
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>% 
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+# Section X: Surveillance staffing
+
+#### 58. During 2019 (prior to the Covid-19 pandemic), indicate below the number of arbovirus surveillance staff at the national level.
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("58") %>%
+	pivot_longer(everything())
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+	  select(-name) %>%
+    drop_na() %>% 
+	  pivot_wider(names_from=Level, values_from=value) %>%
+    rename(" " = Response) %>%
+    kable(format="latex", linesep=c("\\addlinespace"), align=c('l','l'), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE )%>% 
+    column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 59. Indicate below how many total staff persons are needed at the national level in your country to achieve full epidemiology and laboratory capacity* to conduct arbovirus surveillance.
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("59") %>%
+	pivot_longer(everything())
+if( !all(is.na(responses$value))){ 
+  new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+  responses %>%
+	  mutate(Level = new_cols[,1], Response = new_cols[,2]) %>%
+	  select(-name) %>%
+    drop_na() %>% 
+	  pivot_wider(names_from=Level, values_from=value) %>%
+    rename(" " = Response) %>%
+    kable(format="latex", linesep=c("\\addlinespace"), align=c('l','l'), booktabs=TRUE) %>%
+    kable_styling( full_width=TRUE )%>% 
+    column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 60. Optional comments to explain responses to questions 58 and 59 above
+
+> `r if(!is.na(data$SX60) & (data$SX60 != "NA")){ data$SX60 }`
+
+
+#### 61. The national health authority/ministry of health has access to expertise in clinical management of arboviruses (Check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("61") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>%
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 62. The national health authority/ministry of health has access to expertise in arbovirus epidemiology (Check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("62") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>%
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 63. The national health authority/ministry of health has access to expertise in arbovirus laboratory diagnosis (Check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("63") %>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>%
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 64. The national health authority/ministry of health has access to expertise in entomology (Check all that apply)
+
+\quad \smallskip
+
+\begin{center}
+```{r}
+
+responses <- get_responses("64")%>% 
+  pivot_longer( everything() )
+if( !all(is.na( responses$value))){
+  responses %>%
+  drop_na() %>%
+  kable(col.names=NULL, format="latex", linesep=c("\\addlinespace"), booktabs=TRUE) %>%
+  kable_styling( full_width=TRUE ) %>% 
+  column_spec(1, width="4in")
+}
+
+```
+\end{center}
+
+
+#### 65. Optional comments to explain responses to any of Questions 61-64
+
+> `r if(!is.na(data$SX65) & (data$SX65 != "NA")){ data$SX65 }`
+
+
+# Section XI: Survey conclusion
+
+#### 66. If you have any further comments to add regarding arbovirus surveillance and control in your country, including whether arboviruses other than _Aedes_-borne arboviruses are of higher priority, please do so in the text field below
+
+> `r if(!is.na(data$SC1) & (data$SC1 != "NA")){ data$SC1 }`
+
