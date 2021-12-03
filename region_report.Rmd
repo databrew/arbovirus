@@ -1,7 +1,11 @@
 ---
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
 date: "Regional Summary"
-output: html_document
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+    toc_depth: 2
 params:
   region: "EURO"
 ---
@@ -77,6 +81,8 @@ get_responses <- function( question_number ){
 
 #### WHO Region: `r params$region` 
 
+# Section I: Respondent details
+
 #### 1. Countries:
 
 `r length(data$SI01)` countries from the `r params$region` region responded:
@@ -113,6 +119,8 @@ regulartable( data.frame( Country=data$SI01,
   autofit()
 ```
 
+# Section II: Arboviral disease surveillance system
+
 #### 5. Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous, i.e., local mosquito-borne, transmission.
 
 ```{r}
@@ -121,14 +129,15 @@ responses <- get_responses("5") %>%
 
 cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response, 
-                                   "Yes"="Yes", 
-                                   "Not selected"="No", 
-                                   "Unanswered"="Unanswered")) %>%
+                                   "Yes"="X", 
+                                   "Not selected"=" ")) %>%
+                                   # "Unanswered"="Unanswered")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
   hline( i = 1:length(data$SI01)) %>%
+  align( j = 2:5, align="center") %>%
   autofit()
 ```
 
@@ -153,7 +162,7 @@ responses <- get_responses("6")
 
 cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
   hline( i = 1:length(data$SI01)) %>%
@@ -169,14 +178,15 @@ responses <- get_responses("6b")%>%
 
 cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response, 
-                                   "Yes"="Yes", 
-                                   "Not selected"="No", 
-                                   "Unanswered"="Unanswered")) %>%
+                                   "Yes"="X", 
+                                   "Not selected"=" ")) %>% 
+                                   # "Unanswered"="Unanswered")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
   hline( i = 1:length(data$SI01)) %>%
+  align( j = 2:5, align="center") %>%
   autofit()
 
 ```
@@ -217,7 +227,7 @@ responses <- get_responses("7")
 
 cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
   hline( i = 1:length(data$SI01)) %>%
@@ -276,20 +286,20 @@ responses %>%
 
 ```{r}
 responses <- get_responses("9")
-colnames( responses ) <- c("National", "State", "District")
+# colnames( responses ) <- c("National", "State", "District")
 
 cbind( Country = data$SI01, responses ) %>% 
-  mutate( National = factor( replace_na( as.character(National), "Unanswered"))) %>%
-  mutate( State = factor( replace_na( as.character(State), "Unanswered"))) %>%
-  rename("State/provincial" = State) %>% 
-  mutate( District = factor( replace_na( as.character(District), "Unanswered"))) %>%
+  # mutate( National = factor( replace_na( as.character(National), "Unanswered"))) %>%
+  # mutate( State = factor( replace_na( as.character(State), "Unanswered"))) %>%
+  # rename("State/provincial" = State) %>% 
+  # mutate( District = factor( replace_na( as.character(District), "Unanswered"))) %>%
   regulartable() %>% 
   hline( i = 1:length(data$SI01)) %>%
   autofit()
 
 ```
 
-#### 10. Which training has been provided to the staff working on arboviral disease surveillance data
+#### 10. Which training has been provided to the staff working on arboviral disease surveillance data?
 
 ```{r}
 responses <- get_responses("10") %>%
@@ -297,15 +307,16 @@ responses <- get_responses("10") %>%
 training <- colnames( responses )
 colnames(responses) <- c("Basic","Repeat_basic","Advanced","Repeat_advanced","None")
 df <- cbind(Country = data$SI01, responses) %>% 
-  mutate( Basic = factor( replace_na( as.character(Basic), "Not selected")),
-          Repeat_basic = factor( replace_na( as.character(Repeat_basic), "Not selected")),
-          Advanced = factor( replace_na( as.character(Advanced), "Not selected")),
-          Repeat_advanced = factor( replace_na( as.character(Repeat_advanced), "Not selected")),
-          None = factor( replace_na( as.character(None), "Not selected"))) 
+  mutate( Basic = if_else(Basic == "Yes", "X", " "),
+          Repeat_basic = if_else(Repeat_basic == "Yes", "X", " "),
+          Advanced = if_else(Advanced == "Yes", "X", " "),
+          Repeat_advanced = if_else(Repeat_advanced == "Yes", "X", " "),
+          None = if_else(None == "Yes", "X", " ")) 
 colnames(df) <- c("Country", training)
 
 regulartable(df) %>% 
   hline( i = 1:length(data$SI01)) %>%
+  align( j=2:6, align="center") %>%
   autofit()
 ```
 
@@ -326,9 +337,11 @@ cbind(Country = data$SI01, responses) %>%
 responses <- get_responses("11b")
 
 df <- cbind(Country = data$SI01, responses) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") # %>% 
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) 
+
 df$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", df$Response))
+
 df %>% 
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
@@ -350,7 +363,7 @@ reporting <- cbind( Country=data$SI01, responses[,-idx]) %>%
   select( Country, Reporting=value)
 cbind(arboviruses, Mandatory = reporting$Reporting) %>%
   drop_na(Arbovirus) %>%
-  mutate( Mandatory = factor( replace_na( as.character(Mandatory), "Unanswered"))) %>%
+  # mutate( Mandatory = factor( replace_na( as.character(Mandatory), "Unanswered"))) %>%
   rename("Mandatory reporting" = Mandatory) %>%
   regulartable() %>%
   merge_v(j = ~Country ) %>% 
@@ -394,7 +407,7 @@ responses <- responses %>%
   mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
   mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
   unite( Frequency, Response:Other, sep="") 
-responses$Frequency[ responses$Frequency == "" ] <- "Unanswered"
+# responses$Frequency[ responses$Frequency == "" ] <- "Unanswered"
 
 cbind( Country = data$SI01, responses) %>% 
   regulartable( ) %>%
@@ -441,7 +454,7 @@ responses <- responses %>%
                                   "No"="No",
                                   "I don't know" ="I don't know"))
 cbind(Country = data$SI01, responses) %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>% 
   hline( part="all" ) %>%
   autofit()
@@ -452,11 +465,13 @@ cbind(Country = data$SI01, responses) %>%
 ```{r}
 responses <- get_responses("14") 
 cbind(Country = data$SI01, responses) %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>% 
   hline( part="all" ) %>%
   autofit()
 ```
+
+# Section III: Arbovirus laboratory capacity
 
 #### 15. Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and during non-outbreak periods, respectively.)
 
@@ -464,9 +479,9 @@ cbind(Country = data$SI01, responses) %>%
 responses <- get_responses("15")
 periods <- colnames(responses)
 colnames(responses)=c("Outbreak","Non")
-responses <- cbind(Country = data$SI01, responses) %>% 
-  mutate( Outbreak = factor( replace_na( as.character(Outbreak), "Unanswered"))) %>%
-  mutate( Non = factor( replace_na( as.character(Non), "Unanswered")))
+responses <- cbind(Country = data$SI01, responses) # %>% 
+  # mutate( Outbreak = factor( replace_na( as.character(Outbreak), "Unanswered"))) %>%
+  # mutate( Non = factor( replace_na( as.character(Non), "Unanswered")))
 colnames(responses) <- c("Country",periods)
 responses %>%
   regulartable() %>% 
@@ -479,9 +494,9 @@ responses %>%
 ```{r}
 responses <- get_responses("15b")
 colnames(responses)=c("Non","Outbreak")
-responses <- cbind(Country = data$SI01, responses) %>% 
-  mutate( Outbreak = factor( replace_na( as.character(Outbreak), "Unanswered"))) %>%
-  mutate( Non = factor( replace_na( as.character(Non), "Unanswered")))
+responses <- cbind(Country = data$SI01, responses) # %>% 
+  # mutate( Outbreak = factor( replace_na( as.character(Outbreak), "Unanswered"))) %>%
+  # mutate( Non = factor( replace_na( as.character(Non), "Unanswered")))
 colnames(responses) <- c("Country",
                          "Non-outbreak (routine) annual percentage", 
                          "During outbreaks percentage per identifed cluster")
@@ -502,7 +517,7 @@ responses <- responses %>%
                                   "Yes, but only for some arboviral infections. Please specify them:"="Yes, but only for some arboviral infections.",
                                   "No"="No"))
 cbind(Country = data$SI01, responses) %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>% 
   hline( part="all" ) %>%
   autofit()
@@ -519,7 +534,7 @@ responses <- responses %>%
                                   "Yes. Please specify where:"="Yes",
                                   "No"="No"))
 cbind(Country = data$SI01, responses) %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>% 
   hline( part="all" ) %>%
   autofit()
@@ -529,14 +544,13 @@ cbind(Country = data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("17")
-
 responses <- cbind( Country=data$SI01, responses) %>% 
 	pivot_longer(!Country)
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
 responses %>% 
 	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
 	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	mutate( value = case_when( value == 1 ~ "X", value == 0 ~ " ", is.na(value) ~ " ")) %>%
 	pivot_wider(names_from=Response, values_from=value) %>%
   regulartable() %>%
   merge_v(j = ~Country) %>%
@@ -606,11 +620,11 @@ responses <- get_responses("19c")
 
 cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response,
-                                   "Yes"="Yes",
-                                   "Not selected"="No",
-                                   "Unanswered"="Unanswered")) %>%
+                                   "Yes"="X",
+                                   "Not selected"=" ")) %>% 
+                                   # "Unanswered"="Unanswered")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
   hline( i = 1:length(data$SI01)) %>%
@@ -622,7 +636,7 @@ cbind(Country = data$SI01, responses) %>%
 ```{r}
 responses <- get_responses("19d")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -633,18 +647,20 @@ cbind(Country=data$SI01, responses) %>%
 ```{r}
 responses <- get_responses("20")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
 ```
+
+# Section IV: Management of arboviral disease cases
 
 #### 21. Does your country have clinical guidelines for healthcare workers on diagnosis and clinical management of cases and severe cases of Aedes-borne arboviral diseases?
 
 ```{r}
 responses <- get_responses("21")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -670,7 +686,7 @@ data.frame(Country = data$SI01, Number = data$SIV21b__filecount) %>%
 responses <- get_responses("22")
 colnames(responses) <- c("Response","Where")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -681,7 +697,7 @@ cbind(Country=data$SI01, responses) %>%
 ```{r}
 responses <- get_responses("23")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -693,11 +709,11 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("24")
 colnames(responses) <- c("Response","Training")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response,
-                                   "Yes, specific training is provided. If so, please specify:"="Yes, specific training is provided",
-                                   "No"="No",
-                                   "Unanswered"="Unanswered")) %>%
+                                   "Yes, specific training is provided. If so, please specify:"="X",
+                                   "No"=" ")) %>%
+                                   # "Unanswered"="Unanswered")) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -708,11 +724,13 @@ cbind(Country=data$SI01, responses) %>%
 ```{r}
 responses <- get_responses("25")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
 ```
+
+# Section V: Routine vector surveillance and control
 
 #### 26. Is there a disease programme, agency, or service in charge of arbovirus vector surveillance in your country?
 
@@ -720,11 +738,11 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("26")
 colnames(responses) <- c("Response","Comments")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response,
-                                   "Yes. If so, please specify in the comment field."="Yes",
-                                   "No"="No",
-                                   "Unanswered"="Unanswered")) %>%
+                                   "Yes. If so, please specify in the comment field."="X",
+                                   "No"=" ")) %>%
+                                   # "Unanswered"="Unanswered")) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -747,7 +765,7 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("28")
 
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -774,12 +792,12 @@ data.frame(Country = data$SI01, Number = data$SV28b__filecount) %>%
 responses <- get_responses("28c")
 colnames( responses ) <- c("Response", "Comments")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response,
                                    "Country wide"="Country wide",
                                    "Restricted to specific locations . Please specify where:"="Restricted to specific locations",
-                                   "Don’t know"="Don’t know",
-                                   "Unanswered"="Unanswered")) %>%
+                                   "Don’t know"="I don’t know")) %>%
+                                   # "Unanswered"="Unanswered")) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -791,7 +809,7 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("28d")
 
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -806,7 +824,7 @@ responses <- responses %>%
   mutate( How_often = factor( replace_na( as.character(How_often), ""))) %>%
   mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
   unite( Response, How_often:Other, sep="") 
-responses$Response[ responses$Response == "" ] <- "Unanswered"
+# responses$Response[ responses$Response == "" ] <- "Unanswered"
 
 cbind( Country = data$SI01, responses) %>% 
   regulartable( ) %>%
@@ -821,7 +839,7 @@ cbind( Country = data$SI01, responses) %>%
 responses <- get_responses("29")
 
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -833,7 +851,7 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("30")
 
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -845,7 +863,7 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("31")
 
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -857,7 +875,7 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("32")
 colnames( responses ) <- c("Response", "Comments")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -878,7 +896,7 @@ cbind(Country=data$SI01, responses) %>%
 ```{r}
 responses <- get_responses("34") 
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -893,7 +911,7 @@ responses <- responses %>%
   mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
   mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
   unite( Response, Response:Other, sep="") 
-responses$Response[ responses$Response == "" ] <- "Unanswered"
+# responses$Response[ responses$Response == "" ] <- "Unanswered"
 
 cbind( Country = data$SI01, responses) %>% 
   regulartable( ) %>%
@@ -910,7 +928,7 @@ responses <- responses %>%
   mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
   mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
   unite( Response, Response:Other, sep="") 
-responses$Response[ responses$Response == "" ] <- "Unanswered"
+# responses$Response[ responses$Response == "" ] <- "Unanswered"
 
 cbind( Country = data$SI01, responses) %>% 
   regulartable( ) %>%
@@ -1019,6 +1037,8 @@ cbind(Country=data$SI01, responses) %>%
   autofit()
 ```
 
+# Section VI: Animal surveillance
+
 #### 41b. How often was the animal surveillance conducted?
 
 ```{r}
@@ -1028,7 +1048,7 @@ responses <- responses %>%
   mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
   mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
   unite( Response, Response:Other, sep="") 
-responses$Response[ responses$Response == "" ] <- "Unanswered"
+# responses$Response[ responses$Response == "" ] <- "Unanswered"
 
 cbind( Country = data$SI01, responses) %>% 
   regulartable( ) %>%
@@ -1107,6 +1127,8 @@ data.frame(Country = data$SI01, Number = data$SVI42c__filecount) %>%
 
 ```
 
+# Section VII: Community sensitization and participation
+
 #### 43. Does your country have a community outreach program that also covers arboviral diseases?
 
 ```{r}
@@ -1132,8 +1154,8 @@ cbind(Country=data$SI01, responses) %>%
 ```{r}
 responses <- get_responses("43c")
 colnames( responses ) <- c("Response","Areas")
-responses <- responses %>%
-    mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) 
+# responses <- responses %>%
+#     mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) 
 
 cbind( Country = data$SI01, responses) %>% 
   regulartable( ) %>%
@@ -1213,12 +1235,12 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("45")
 colnames( responses ) <- c("Response", "Comments")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response,
                                    "Yes. If yes, please describe in comments field:"="Yes",
                                    "No"="No",
-                                   "I don’t know"="I don’t know",
-                                   "Unanswered"="Unanswered")) %>%
+                                   "I don’t know"="I don’t know")) %>%
+                                   # "Unanswered"="Unanswered")) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1233,6 +1255,8 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="all") %>%
   autofit()
 ```
+
+# Section VIII: Preparedness for arboviral outbreaks/epidemics
 
 #### 47. Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose?
 
@@ -1275,12 +1299,12 @@ data.frame(Country = data$SI01, Number = data$SVIII48b__filecount) %>%
 responses <- get_responses("49")
 colnames( responses ) <- c("Response", "Comments")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response,
                                    "Yes. If so, in the comments field, please briefly describe the criteria or reference the document in which those are sta"="Yes",
                                    "No"="No",
-                                   "I don’t know"="I don’t know",
-                                   "Unanswered"="Unanswered")) %>%
+                                   "I don’t know"="I don’t know")) %>%
+                                   # "Unanswered"="Unanswered")) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1292,11 +1316,11 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("50")
 colnames( responses ) <- c("Response", "Comments")
 cbind(Country=data$SI01, responses) %>%
-  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   mutate( Response = recode_factor(.x = Response,
-                                   "Yes. If so, please specify institutions/agencies in the comments field:"="Yes",
-                                   "No"="No",
-                                   "Unanswered"="Unanswered")) %>%
+                                   "Yes. If so, please specify institutions/agencies in the comments field:"="X",
+                                   "No"=" ")) %>%
+                                   # "Unanswered"="Unanswered")) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1342,6 +1366,8 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="all") %>%
   autofit()
 ```
+
+# Section IX: Arboviral disease surveillance data
 
 #### 55. Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available)
 
@@ -1479,6 +1505,8 @@ cbind(Country=data$SI01, responses) %>%
   autofit()
 ```
 
+# Section X: Surveillance staffing
+
 #### 58. During 2019 (prior to the Covid-19 pandemic), indicate below the number of arbovirus surveillance staff at the national level.
 
 ```{r}
@@ -1568,6 +1596,8 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="all") %>%
   autofit()
 ```
+
+# Section XI: Survey conclusion
 
 #### 66. If you have any further comments to add regarding arbovirus surveillance and control in your country, including whether arboviruses other than Aedes-borne arboviruses are of higher priority, please do so in the text field below
 
