@@ -91,37 +91,9 @@ get_responses <- function( question_number ){
 pander( as.character(data$SI01) )
 ```
 
-#### 2. Respondent/person to be contacted for clarification, if needed (last name, first name, e-mail address)
-
-```{r}
-regulartable( data.frame( Country=data$SI01, Contact=data$SI02) ) %>%
-  hline( i = 1:length(data$SI01)) %>% 
-  autofit()
-```
-
-
-#### 3. Professional title and affiliation
-
-```{r}
-regulartable( data.frame( Country=data$SI01, Title=data$SI03) ) %>%
-  hline( i = 1:length(data$SI01)) %>%
-  autofit()
-```
-
-#### 4. Date (dd/mm/yyyy):
-
-```{r}
-regulartable( data.frame( Country=data$SI01, 
-                          Date=paste( day(data$SI04), "/", 
-                                      month(data$SI04), "/",
-                                      year(data$SI04)) ) ) %>%
-  hline( i = 1:length(data$SI01)) %>%
-  autofit()
-```
-
 # Section II: Arboviral disease surveillance system
 
-#### 5. Which arboviruses have circulated in your country at any time since the year 2000?  This refers only to arboviruses with autochthonous, i.e., local mosquito-borne, transmission.
+#### 5. Identify the arboviruses that have circulated in your country at any time since the year 2000. This refers only to arboviruses with autochthonous, i.e., local mosquito-borne, transmission.
 
 ```{r}
 responses <- get_responses("5") %>%
@@ -141,7 +113,7 @@ cbind(Country = data$SI01, responses) %>%
   autofit()
 ```
 
-#### 5. Which other arboviruses have circulated in your country at any time since the year 2000?  
+#### 5. Identify any other arboviruses that have circulated in your country at any time since the year 2000.
 
 ```{r}
 other <- get_responses("5") %>%
@@ -170,7 +142,7 @@ cbind(Country = data$SI01, responses) %>%
 
 ```
 
-#### 6b. For which of the following arboviruses do you have written surveillance and control plans for your country? Please choose all that apply.
+#### 6b. Arboviruses addressed in written surveillance plans:
 
 ```{r}
 responses <- get_responses("6b")%>%
@@ -191,7 +163,7 @@ cbind(Country = data$SI01, responses) %>%
 
 ```
 
-#### 6b. For which other arboviruses do you have written surveillance and control plans for your country?
+#### 6b. Other arboviruses addressed in written surveillance plans:
 
 ```{r}
 other <- get_responses("6b") %>%
@@ -205,34 +177,20 @@ cbind(Country = data$SI01, other) %>%
   autofit()
 ```
 
-#### 6c. Please upload surveillance and control plan(s) or protocol(s), or guideline(s).
-
-File(s) submitted by:
-
-```{r}
-data.frame(Country = data$SI01, Number = data$SII06c__filecount) %>%
-  drop_na(Number) %>%
-  filter(Number > 0 ) %>%
-  rename("Number of files"=Number) %>%
-  regulartable() %>%
-  hline( part="all" ) %>%
-  autofit()
-
-```
-
 #### 7. Is there a specific national programme for arboviral diseases surveillance or is it integrated in another programme? Please select the appropriate answer:
 
 ```{r}
 responses <- get_responses("7")
 
-cbind(Country = data$SI01, responses) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
-  regulartable() %>% 
-  hline( i = 1:length(data$SI01)) %>%
-  autofit()
+df <- cbind(Country = data$SI01, responses) 
+responses <- levels( df$Response )
+results <- character()
+for( i in 1:length(responses) ){
+  countries <- paste( df$Country[ which( df$Response == responses[i] )], collapse=", ")
+  results[i] <- paste(responses[i], ":", countries, "\n")
+}
 
+regulartable( data.frame(results) ) %>% autofit()
 ```
 
 #### 7b. Please specify the programme into which arboviral diseases is integrated:
@@ -1607,5 +1565,15 @@ colnames(responses) <- "Response"
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   hline( part="all") %>%
+  autofit()
+```
+
+# Appendix
+
+#### Respondent/person to be contacted for clarification, if needed, with professional title and affiliation
+
+```{r}
+regulartable( data.frame( Country=data$SI01, Contact=data$SI02, Title=data$SI03) ) %>%
+  hline( i = 1:length(data$SI01)) %>% 
   autofit()
 ```
