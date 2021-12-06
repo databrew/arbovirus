@@ -244,6 +244,7 @@ for(j in 1:length(disease_names)){
   vals <- ifelse(is.na(vals), 'No', vals)
   joined@data[,this_disease_name] <- vals
 }
+library(sp)
 coords <- coordinates(joined)
 joined <- joined@data
 joined$lng <- coords[,1]; joined$lat <- coords[,2]
@@ -411,6 +412,61 @@ l
 htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb3/index.html')
 ```
 
+```{r, eval = FALSE}
+# Please could you generate a separate global map for each of the viruses in the question – I’m planning to do a slide on each.  
+library(ggthemes)
+viruses <- c('Chikungunya', 'Dengue', 'Yellow fever', 'Zika')
+for(i in 1:length(viruses)){
+  this_virus <- viruses[i]
+  this_vector <- unlist(pd[,this_virus])
+  pdx <- pd %>%
+    mutate(value = this_vector)
+  l <- make_map(df = pdx,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = this_virus) + 
+    theme_map() +
+    scale_fill_manual(name = '', values = c('red', 'black')) +
+    theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '')
+  l
+  ggsave(filename = paste0('~/Desktop/who/global_', this_virus, '.png'),
+         height = 5,
+         width = 9)
+}
+```
+
+```{r}
+# This will then ideally be followed by a map like your heatmap below with numbers of viruses on a global scale – lightest shade no viruses, next lightest – one, mid shade – two, darkest – three (I don’t think we have any countries with four among our regions).
+pdx <- pd 
+l <- make_map(df = pdx,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = 'Number of reported viruses') + 
+    theme_map() +
+    scale_fill_gradient2(name = 'Number of virus',
+                        low = 'black', high = 'red') +    
+  theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+  guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches')))
+
+l
+ggsave(filename = paste0('~/Desktop/who/global_', 'all_viruses', '.png'),
+         height = 5,
+         width = 9)
+```
 
 # Surveillance capacity indicators
 
