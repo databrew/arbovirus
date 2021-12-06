@@ -3,15 +3,15 @@ title: "Arboviral Surveillance and Response Capacity Survey 2021"
 author: "World Health Organization"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
-  pdf_document:
-    toc: yes
   html_document:
     toc: yes
     toc_float: yes
     toc_depth: 2
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}

@@ -127,7 +127,7 @@ cbind(Country = data$SI01, other) %>%
   autofit()
 ```
 
-#### 6. Do you have any written arbovirus surveillance and control plan(s) and/or guideline(s) for your country?
+#### 6. Nature of written arbovirus surveillance plans by country
 
 ```{r}
 responses <- get_responses("6")
@@ -193,71 +193,7 @@ for( i in 1:length(responses) ){
 regulartable( data.frame(results) ) %>% autofit()
 ```
 
-#### 7b. Please specify the programme into which arboviral diseases is integrated:
-
-```{r}
-responses <- get_responses("7b")
-colnames( responses) <- "Response"
-
-cbind(Country = data$SI01, responses) %>% 
-  drop_na(Response) %>%
-  regulartable() %>% 
-  hline( part="all" ) %>%
-  autofit()
-```
-
-#### 8. For which level of the health structure are individual and aggregated data available ? (Select all relevant levels)
-
-```{r}
-responses <- get_responses("8") 
-responses <- cbind( Country=data$SI01, responses) %>%
-	pivot_longer(!Country)
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) 
-
-responses %>% 
-  filter(Response == "Individual level") %>%
-  select(Country, Level, Response=value) %>%
-  regulartable() %>%
-  set_caption("Individual data") %>%
-  hline( i =4*(1:n_countries)) %>%
-  merge_v(j = ~Country) %>% 
-  fix_border_issues() %>%
-  autofit()
-
-responses %>%
-  filter(Response == "Aggregated ") %>% 
-  select(Country, Level, Response=value) %>%
-  regulartable() %>%
-  set_caption("Aggregated data") %>%
-  hline( i =4*(1:n_countries)) %>%
-  merge_v(j = ~Country) %>%
-  fix_border_issues() %>%
-  autofit()
-
-```
-
-#### 9. What are the tools used for recording case data for surveillance purposes? Select all that apply
-
-```{r}
-responses <- get_responses("9")
-# colnames( responses ) <- c("National", "State", "District")
-
-cbind( Country = data$SI01, responses ) %>% 
-  # mutate( National = factor( replace_na( as.character(National), "Unanswered"))) %>%
-  # mutate( State = factor( replace_na( as.character(State), "Unanswered"))) %>%
-  # rename("State/provincial" = State) %>% 
-  # mutate( District = factor( replace_na( as.character(District), "Unanswered"))) %>%
-  regulartable() %>% 
-  hline( i = 1:length(data$SI01)) %>%
-  autofit()
-
-```
-
-#### 10. Which training has been provided to the staff working on arboviral disease surveillance data?
+#### 10. Training provided to arboviral surveillance staff
 
 ```{r}
 responses <- get_responses("10") %>%
@@ -289,7 +225,7 @@ cbind(Country = data$SI01, responses) %>%
   autofit()
 ```
 
-#### 11b. For which of the following arboviral disease cases is reporting mandatory in your country?
+#### 11b. Reportable diseases by case classification status
 
 ```{r}
 responses <- get_responses("11b")
@@ -308,7 +244,7 @@ df %>%
 
 ```
 
-#### 11c. For which other arboviral diseases is reporting mandatory?
+#### 11c. Other reportable diseases by case classification status
 
 ```{r}
 responses <- get_responses("11c")
@@ -330,72 +266,25 @@ cbind(arboviruses, Mandatory = reporting$Reporting) %>%
   
 ```
 
-#### 11d. Please upload document(s) containing surveillance case definitions used for reporting of arboviral diseases.
-
-File(s) submitted by:
+#### 12. In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease? If so, how frequently were surveillance data reported to the national level, and what type of surveillance was conducted?
 
 ```{r}
-data.frame(Country = data$SI01, Number = data$SII11d__filecount) %>%
-  drop_na(Number) %>%
-  filter(Number > 0 ) %>%
-  rename("Number of files"=Number) %>%
-  regulartable() %>%
-  hline( part="all" ) %>%
-  autofit()
 
-```
+responses_12 <- get_responses("12") 
 
-#### 12. In the last 2 years, did your country conduct national epidemiological surveillance for human cases of arboviral disease?
-
-```{r}
-responses <- get_responses("12") 
-cbind(Country = data$SI01, responses) %>% 
-  drop_na(Response) %>%
-  regulartable() %>% 
-  hline( part="all" ) %>%
-  autofit()
-```
-
-#### 12b. How frequently are surveillance data reported to the national level? 
-
-```{r}
-responses <- get_responses("12b")
-colnames( responses ) <- c("Response", "Other")
-responses <- responses %>%
+responses_12b <- get_responses("12b")
+colnames( responses_12b ) <- c("Response", "Other")
+responses_12b <- responses_12b %>%
   mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
   mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
   unite( Frequency, Response:Other, sep="") 
 # responses$Frequency[ responses$Frequency == "" ] <- "Unanswered"
 
-cbind( Country = data$SI01, responses) %>% 
-  regulartable( ) %>%
-  hline( part = "all") %>% 
-  autofit()
+responses_12c <- get_responses("12c")
+colnames(responses_12c) <- "Type"
 
-```
-
-#### 12c. What type of national epidemiological surveillance was conducted? Please choose one the following:     Definitions:  Active surveillance is defined as having dedicated systems and staff that routinely and with effort survey for cases of disease or detection of vectors and associated pathogens by the public health department
-
-```{r}
-responses <- get_responses("12c") 
-cbind(Country = data$SI01, responses) %>% 
-  drop_na(Response) %>%
+cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>% 
   regulartable() %>% 
-  hline( part="all" ) %>%
-  autofit()
-```
-
-
-#### 12d. If available, please upload the most recent report(s) on arboviral surveillance in humans
-
-File(s) submitted by:
-
-```{r}
-data.frame(Country = data$SI01, Number = data$SII12d__filecount) %>%
-  drop_na(Number) %>%
-  filter(Number > 0 ) %>%
-  rename("Number of files"=Number) %>%
-  regulartable() %>%
   hline( part="all" ) %>%
   autofit()
 
@@ -431,7 +320,7 @@ cbind(Country = data$SI01, responses) %>%
 
 # Section III: Arbovirus laboratory capacity
 
-#### 15. Is arbovirus diagnostic laboratory testing performed for confirmation of suspected cases in your country? (Please select the applicable option during outbreak periods and during non-outbreak periods, respectively.)
+#### 15. Cases for which arbovirus laboratory testing is performed
 
 ```{r}
 responses <- get_responses("15")
@@ -447,24 +336,7 @@ responses %>%
   autofit()
 ```
 
-#### 15b. On average, for what percentage of suspected arboviral disease cases your country is laboratory confirmatory testing performed? Please indicate for outbreak and non-outbreak periods, respectively
-
-```{r}
-responses <- get_responses("15b")
-colnames(responses)=c("Non","Outbreak")
-responses <- cbind(Country = data$SI01, responses) # %>% 
-  # mutate( Outbreak = factor( replace_na( as.character(Outbreak), "Unanswered"))) %>%
-  # mutate( Non = factor( replace_na( as.character(Non), "Unanswered")))
-colnames(responses) <- c("Country",
-                         "Non-outbreak (routine) annual percentage", 
-                         "During outbreaks percentage per identifed cluster")
-responses %>%
-  regulartable() %>% 
-  hline( part="all" ) %>%
-  autofit()
-```
-
-#### 16. In the last two years, were the positive cases of arboviruses confirmed by a national reference laboratory?
+#### 16. Viruses for which the national laboratory confirmed cases
 
 ```{r}
 responses <- get_responses("16")
@@ -473,23 +345,6 @@ responses <- responses %>%
   mutate(Response = recode_factor(.x=Response,
                                   "Yes, for all arboviral infections. Please specify them:"="Yes, for all arboviral infections.",
                                   "Yes, but only for some arboviral infections. Please specify them:"="Yes, but only for some arboviral infections.",
-                                  "No"="No"))
-cbind(Country = data$SI01, responses) %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  regulartable() %>% 
-  hline( part="all" ) %>%
-  autofit()
-```
-
-
-#### 16b. If your country does not have capacity to type and serotype arboviruses, do you send samples for typing to other countries?
-
-```{r}
-responses <- get_responses("16b")
-colnames(responses) <- c("Response","Where")
-responses <- responses %>%
-  mutate(Response = recode_factor(.x=Response,
-                                  "Yes. Please specify where:"="Yes",
                                   "No"="No"))
 cbind(Country = data$SI01, responses) %>% 
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
@@ -520,6 +375,13 @@ responses %>%
 
 ```{r}
 responses <- get_responses("18")
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "Yes" = "Yes",
+             " "= "Not selected")
+
 colnames(responses) <- c("Additional personnel needed",
                          "Number needed",
                          "Additional training needed",
@@ -536,65 +398,26 @@ cbind(Country=data$SI01, responses) %>%
   
 ```
 
-#### 19. Do you perform virological surveillance on humans, ie, tracking of prevailing genotypes/serotypes? Please select all that apply.
+#### 19. Do you perform virological surveillance on humans, i.e., tracking of prevailing genotypes/serotypes? 
 
 ```{r}
 responses <- get_responses("19")
-colnames(responses) <- c("Yes, using virus isolation",
-                         "Virus isolation comments",
-                         "Yes, using RT-PCR",
-                         "RT-PCR comments",
-                         "Yes, using other nucleic acid tests",
-                         "Nucleic acid tests comments",
-                         "Yes, using serological testing",
-                         "Serological testing comments",
-                         "No",
-                         "Comments",
-                         "I don't know",
-                         "IDKC")
+idx <- grep("Comment", colnames(responses))
+responses <- responses[,-idx]
 responses <- responses %>%
-  select(-IDKC)
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X"="Yes",
+             " "="Not selected") 
+
+colnames(responses) <- c("Yes, using virus isolation",
+                         "Yes, using RT-PCR",
+                         "Yes, using other nucleic acid tests",
+                         "Yes, using serological testing",
+                         "No",
+                         "I don't know") 
 
 cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  hline( part="all") %>%
-  autofit()
-```
-
-#### 19b. Which samples do you use for virological surveillance? 
-
-```{r}
-responses <- get_responses("19b")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  hline( part="all") %>%
-  autofit()
-```
-
-#### 19c. For which viruses do you perform virological surveillance? (check all that apply)  
-
-```{r}
-responses <- get_responses("19c")
-
-cbind(Country = data$SI01, responses) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  mutate( Response = recode_factor(.x = Response,
-                                   "Yes"="X",
-                                   "Not selected"=" ")) %>% 
-                                   # "Unanswered"="Unanswered")) %>%
-  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
-  regulartable() %>% 
-  hline( i = 1:length(data$SI01)) %>%
-  autofit()
-```
-
-#### 19d. Does your country provide regular training sessions for healthcare workers on arboviruses virological surveillance?
-
-```{r}
-responses <- get_responses("19d")
-cbind(Country=data$SI01, responses) %>%
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -617,43 +440,6 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("21")
-cbind(Country=data$SI01, responses) %>%
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  regulartable() %>%
-  hline( part="all") %>%
-  autofit()
-```
-
-#### 21b. Please upload the clinical guideline(s) for arboviral disease management
-
-File(s) submitted by:
-
-```{r}
-data.frame(Country = data$SI01, Number = data$SIV21b__filecount) %>%
-  drop_na(Number) %>%
-  filter(Number > 0 ) %>%
-  rename("Number of files"=Number) %>%
-  regulartable() %>%
-  hline( part="all" ) %>%
-  autofit()
-```
-
-#### 22. Are severe cases of arboviral diseases managed in a special area (part of the hospital, isolation beds)?
-
-```{r}
-responses <- get_responses("22")
-colnames(responses) <- c("Response","Where")
-cbind(Country=data$SI01, responses) %>%
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  regulartable() %>%
-  hline( part="all") %>%
-  autofit()
-```
-
-#### 23. How many hospital beds are available per 100,000 population?
-
-```{r}
-responses <- get_responses("23")
 cbind(Country=data$SI01, responses) %>%
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
@@ -694,13 +480,11 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("26")
-colnames(responses) <- c("Response","Comments")
+colnames(responses) <- c("Response","Programme")
+responses <- responses %>% select( "Programme")
 cbind(Country=data$SI01, responses) %>%
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  mutate( Response = recode_factor(.x = Response,
-                                   "Yes. If so, please specify in the comment field."="X",
-                                   "No"=" ")) %>%
-                                   # "Unanswered"="Unanswered")) %>%
+  mutate( Programme = factor( replace_na( as.character(Programme), "None"))) %>%
+  rename( "Programme/Agency" = Programme) %>% 
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -710,8 +494,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("27")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
 
-cbind(Country=data$SI01, responses) %>%
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -843,7 +635,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("33") 
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -898,7 +699,16 @@ cbind( Country = data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("35")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -949,7 +759,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("37b")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -959,7 +778,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("38")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1024,21 +852,6 @@ cbind(Country=data$SI01, responses) %>%
   autofit()
 ```
 
-#### 41d. Please upload a report on the animal surveillance
-
-File(s) submitted by:
-
-```{r}
-data.frame(Country = data$SI01, Number = data$SVI41d__filecount) %>%
-  drop_na(Number) %>%
-  filter(Number > 0 ) %>%
-  rename("Number of files"=Number) %>%
-  regulartable() %>%
-  hline( part="all" ) %>%
-  autofit()
-
-```
-
 #### 42. Does your country (or local jurisdictions within the country) perform sentinel animal surveillance or epizootic surveillance, eg, for yellow fever in nonhuman primates in endemic regions?
 
 ```{r}
@@ -1068,21 +881,6 @@ cbind(arboviruses, Species = species$Species) %>%
   merge_v(j = ~Country ) %>% 
   hline( part="all") %>%
   autofit()
-```
-
-#### 42c. Please upload the most recent report(s) on sentinel animal surveillance
-
-File(s) submitted by:
-
-```{r}
-data.frame(Country = data$SI01, Number = data$SVI42c__filecount) %>%
-  drop_na(Number) %>%
-  filter(Number > 0 ) %>%
-  rename("Number of files"=Number) %>%
-  regulartable() %>%
-  hline( part="all" ) %>%
-  autofit()
-
 ```
 
 # Section VII: Community sensitization and participation
@@ -1135,7 +933,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("43e")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1181,7 +988,16 @@ non_outbreaks %>%
 
 ```{r}
 responses <- get_responses("44b")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1236,21 +1052,6 @@ cbind(Country=data$SI01, responses) %>%
   autofit()
 ```
 
-#### 48b. Please upload the contingency plan
-
-File(s) submitted by:
-
-```{r}
-data.frame(Country = data$SI01, Number = data$SVIII48b__filecount) %>%
-  drop_na(Number) %>%
-  filter(Number > 0 ) %>%
-  rename("Number of files"=Number) %>%
-  regulartable() %>%
-  hline( part="all" ) %>%
-  autofit()
-
-```
-
 #### 49. Are there defined or established criteria for declaring an outbreak of arboviral disease outbreak in your country?
 
 ```{r}
@@ -1298,6 +1099,13 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("52")
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   hline( part="all") %>%
@@ -1457,7 +1265,16 @@ df %>%
 
 ```{r}
 responses <- get_responses("57")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1509,7 +1326,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("61")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1519,7 +1345,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("62")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1529,7 +1364,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("63")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1539,7 +1383,16 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("64")
-cbind(Country=data$SI01, responses) %>%
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
   hline( part="all") %>%
   autofit()
@@ -1575,5 +1428,161 @@ cbind(Country=data$SI01, responses) %>%
 ```{r}
 regulartable( data.frame( Country=data$SI01, Contact=data$SI02, Title=data$SI03) ) %>%
   hline( i = 1:length(data$SI01)) %>% 
+  autofit()
+```
+
+#### 7b. Please specify the programme into which arboviral diseases is integrated:
+
+```{r}
+responses <- get_responses("7b")
+colnames( responses) <- "Response"
+
+cbind(Country = data$SI01, responses) %>% 
+  drop_na(Response) %>%
+  regulartable() %>% 
+  hline( part="all" ) %>%
+  autofit()
+```
+
+#### 8. For which level of the health structure are individual and aggregated data available ? (Select all relevant levels)
+
+```{r}
+responses <- get_responses("8") 
+responses <- cbind( Country=data$SI01, responses) %>%
+	pivot_longer(!Country)
+new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) 
+
+responses %>% 
+  filter(Response == "Individual level") %>%
+  select(Country, Level, Response=value) %>%
+  regulartable() %>%
+  set_caption("Individual data") %>%
+  hline( i =4*(1:n_countries)) %>%
+  merge_v(j = ~Country) %>% 
+  fix_border_issues() %>%
+  autofit()
+
+responses %>%
+  filter(Response == "Aggregated ") %>% 
+  select(Country, Level, Response=value) %>%
+  regulartable() %>%
+  set_caption("Aggregated data") %>%
+  hline( i =4*(1:n_countries)) %>%
+  merge_v(j = ~Country) %>%
+  fix_border_issues() %>%
+  autofit()
+
+```
+
+#### Reporting tool format used (electronic, paper-based, or mixed methods)
+
+```{r}
+responses <- get_responses("9")
+# colnames( responses ) <- c("National", "State", "District")
+
+cbind( Country = data$SI01, responses ) %>% 
+  # mutate( National = factor( replace_na( as.character(National), "Unanswered"))) %>%
+  # mutate( State = factor( replace_na( as.character(State), "Unanswered"))) %>%
+  # rename("State/provincial" = State) %>% 
+  # mutate( District = factor( replace_na( as.character(District), "Unanswered"))) %>%
+  regulartable() %>% 
+  hline( i = 1:length(data$SI01)) %>%
+  autofit()
+
+```
+
+#### 16b. If your country does not have capacity to type and serotype arboviruses, do you send samples for typing to other countries?
+
+```{r}
+responses <- get_responses("16b")
+colnames(responses) <- c("Response","Where")
+responses <- responses %>%
+  mutate(Response = recode_factor(.x=Response,
+                                  "Yes. Please specify where:"="Yes",
+                                  "No"="No"))
+cbind(Country = data$SI01, responses) %>% 
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  regulartable() %>% 
+  hline( part="all" ) %>%
+  autofit()
+```
+
+#### 19. Do you perform virological surveillance on humans, ie, tracking of prevailing genotypes/serotypes? Please select all that apply.
+
+```{r}
+responses <- get_responses("19")
+colnames(responses) <- c("Yes, using virus isolation",
+                         "Virus isolation comments",
+                         "Yes, using RT-PCR",
+                         "RT-PCR comments",
+                         "Yes, using other nucleic acid tests",
+                         "Nucleic acid tests comments",
+                         "Yes, using serological testing",
+                         "Serological testing comments",
+                         "No",
+                         "Comments",
+                         "I don't know",
+                         "IDKC")
+responses <- responses %>%
+  select(-IDKC)
+
+cbind(Country=data$SI01, responses) %>%
+  regulartable() %>%
+  hline( part="all") %>%
+  autofit()
+```
+
+#### 19b. Which samples do you use for virological surveillance? 
+
+```{r}
+responses <- get_responses("19b")
+cbind(Country=data$SI01, responses) %>%
+  regulartable() %>%
+  hline( part="all") %>%
+  autofit()
+```
+
+#### 19c. For which viruses do you perform virological surveillance? (check all that apply)  
+
+```{r}
+responses <- get_responses("19c")
+
+cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = recode_factor(.x = Response,
+                                   "Yes"="X",
+                                   "Not selected"=" ")) %>% 
+                                   # "Unanswered"="Unanswered")) %>%
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  regulartable() %>% 
+  hline( i = 1:length(data$SI01)) %>%
+  autofit()
+```
+
+#### 22. Are severe cases of arboviral diseases managed in a special area (part of the hospital, isolation beds)?
+
+```{r}
+responses <- get_responses("22")
+colnames(responses) <- c("Response","Where")
+cbind(Country=data$SI01, responses) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  regulartable() %>%
+  hline( part="all") %>%
+  autofit()
+```
+
+#### 23. How many hospital beds are available per 100,000 population?
+
+```{r}
+responses <- get_responses("23")
+cbind(Country=data$SI01, responses) %>%
+  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  regulartable() %>%
+  hline( part="all") %>%
   autofit()
 ```
