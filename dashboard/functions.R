@@ -174,6 +174,7 @@ get_responses <- function( question_number ){
 #' @import sp
 make_map <- function(df,
                      pal = 'YlGnBu',
+                     line_color = 'white',
                      qualitative = FALSE,
                      opacity = 0.8,
                      provider = providers$OpenStreetMap,
@@ -284,8 +285,8 @@ make_map <- function(df,
                 aes(x = long,
                     y = lat,
                     group = group)) +
-      geom_polygon(fill = 'black', color = 'white', size = 0.4) +
-      geom_polygon(color = 'white', size = 0.2,
+      geom_polygon(fill = 'black', color = line_color, size = 0.4) +
+      geom_polygon(color = line_color, size = 0.2,
                    aes(fill = value))
     g
   } else {
