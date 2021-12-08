@@ -25,6 +25,7 @@ if('who_shp.RData' %in% dir()){
   save(who_shp, file = 'who_shp.RData')
 }
 source('who_map_disp.R')
+library(ggthemes)
 ```
 
 ```{js}
@@ -392,24 +393,24 @@ for(i in 1:length(regions)){
 
 
 ```{r, eval = FALSE}
-# Responses by country with Africa filled in
-pd <- df[grepl('1. State', names(df))]
-names(pd) <- c('country')
-pd <- pd %>% filter(!duplicated(country))
-pd$value <- 'Responded'
-pd2 <- world_shp@data %>%
-  filter(REGION == 2) %>%
-  dplyr::select(country) %>%
-  mutate(value = 'Responded')
-pd <- bind_rows(pd, pd2)
-
-l <- make_map(df = pd,
-        pal = 'Dark2',
-         qualitative = TRUE,
-         provider = providers$OpenStreetMap, 
-        use_who_shp = TRUE)
-l
-htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb3/index.html')
+# # Responses by country with Africa filled in
+# pd <- df[grepl('1. State', names(df))]
+# names(pd) <- c('country')
+# pd <- pd %>% filter(!duplicated(country))
+# pd$value <- 'Responded'
+# pd2 <- world_shp@data %>%
+#   filter(REGION == 2) %>%
+#   dplyr::select(country) %>%
+#   mutate(value = 'Responded')
+# pd <- bind_rows(pd, pd2)
+# 
+# l <- make_map(df = pd,
+#         pal = 'Dark2',
+#          qualitative = TRUE,
+#          provider = providers$OpenStreetMap, 
+#         use_who_shp = TRUE)
+# l
+# htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb3/index.html')
 ```
 
 ```{r, eval = FALSE}
@@ -431,7 +432,7 @@ for(i in 1:length(viruses)){
          line_color = 'black') +
      labs(title = this_virus) + 
     theme_map() +
-    scale_fill_manual(name = '', values = c('red', 'black')) +
+    scale_fill_manual(name = '', values = rev(c('red', 'black'))) +
     theme(legend.position = 'bottom',
           plot.title = element_text(size = 8)) +
     labs(x = '', y = '')
@@ -455,8 +456,9 @@ l <- make_map(df = pdx,
          line_color = 'black') +
      labs(title = 'Number of reported viruses') + 
     theme_map() +
+  # scale_fill_manual(name = '', values = c('red', 'black'))
     scale_fill_gradient2(name = 'Number of virus',
-                        low = 'black', high = 'red') +    
+                        low = 'black', high = 'red') +
   theme(legend.position = 'bottom',
           plot.title = element_text(size = 8)) +
     labs(x = '', y = '') +
@@ -466,6 +468,88 @@ l
 ggsave(filename = paste0('~/Desktop/who/global_', 'all_viruses', '.png'),
          height = 5,
          width = 9)
+```
+
+```{r, eval = FALSE}
+pz <- load_data(modify_variable_names = FALSE)
+# Another map request: it looks like these questions would lend themselves well to a global map (or two maps – one for aegypti and one for albopictus) since these are mutually exclusive categories. Let me know if that’ll work.
+
+# 34b.   Please describe the potential public health threat from Aedes aegypti in your country Please choose only one of the following:
+
+# 34c.   Please describe the potential public health threat from Aedes albopictus in your country Please choose only one of the following:
+
+# df$`34b.   Please describe the potential public health threat from Aedes aegypti in your country Please choose only one of the following:`
+
+pz$value <- pz$SV34
+pz$country <- pz$SI01
+cols <- c('red', 'blue', 'purple', 'black', 'grey')
+l <- make_map(df = pz,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+  scale_fill_manual(name = '', 
+                    values = cols) +
+  ggthemes::theme_map() +
+  theme(legend.position = 'bottom') +
+  labs(x = 'Longitude', y = 'Latitude',
+       title = 'Aedes aegypti and albopictus by country')
+l
+ggsave(filename = paste0('~/Desktop/who/global_', 'aedes_both', '.png'),
+         height = 5,
+         width = 9)
+
+
+pz$value <- pz$SV34b
+pz$country <- pz$SI01
+cols <- c('darkorange', 'red', 'lightblue', 'yellow', 'grey')
+l <- make_map(df = pz,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+  scale_fill_manual(name = '', 
+                    values = cols) +
+  ggthemes::theme_map() +
+  theme(legend.position = 'bottom') +
+  labs(x = 'Longitude', y = 'Latitude',
+       title = 'Aedes aegypti by country') +
+  guides(fill=guide_legend(nrow=3,byrow=TRUE))
+l
+ggsave(filename = paste0('~/Desktop/who/global_', 'aedes_aegypti', '.png'),
+         height = 6,
+         width = 9)
+
+
+
+pz$value <- pz$SV34c
+pz$country <- pz$SI01
+cols <- c('darkorange', 'red', 'lightblue', 'yellow', 'grey')
+l <- make_map(df = pz,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+  scale_fill_manual(name = '', 
+                    values = cols) +
+  ggthemes::theme_map() +
+  theme(legend.position = 'bottom') +
+  labs(x = 'Longitude', y = 'Latitude',
+       title = 'Aedes albopictus by country') +
+  guides(fill=guide_legend(nrow=3,byrow=TRUE))
+l
+ggsave(filename = paste0('~/Desktop/who/global_', 'aedes_albopictus', '.png'),
+         height = 6.7,
+         width = 10)
 ```
 
 # Surveillance capacity indicators
