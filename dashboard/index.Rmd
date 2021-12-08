@@ -136,6 +136,224 @@ who_regions <- who_shp$adm0
 ```
 
 
+```{r}
+# Read in PAHO data # https://trello.com/c/LgyKpQfk/2696-who-new-dataset-combination
+library(readxl)
+paho <- read_excel('../data/Copia_de_PAHO_key_indicator_spreadsheet_19_Nov_2021-Completo.xlsx', skip = 1)
+# Transform
+ph <- tidyr::gather(paho %>% dplyr::rename(variable = Country),
+                    key = country, 
+                    value,
+                    Canada:`Virgin Islands (US)`)
+ph <- tidyr::spread(data = ph,
+                    key = variable,
+                    value = value)
+# Standardize country names to match WHO shapefiles
+# ph$country <- toupper(ph$country)
+ph$country[!ph$country %in% who_regions$adm0_viz_n]
+# ph$country[!ph$country %in% who_regions$adm0_name]
+# # These ones require modification:
+# [1] "BOLIVIA"                           "BONAIRE, SAINT EUSTATIUS AND SABA"
+# [3] "CURAÇAO"                           "VENEZUELA"                        
+# [5] "VIRGIN ISLANDS (UK)"               "VIRGIN ISLANDS (US)"  
+ph$country <- dplyr::recode(ph$country,
+                                        'Bolivia' = 'Bolivia (Plurinational State of)',
+                                        'Bonaire, Saint Eustatius and Saba' = 'Bonaire',
+                            'Saint Barthelemy' = 'Saint Barthélemy',
+                            
+                                        'Venezuela' = 'Venezuela (Bolivarian Republic of)',
+                                        'Virgin Islands (UK)' = 'British Virgin Islands',
+                                        'Virgin Islands (US)' = 'United States Virgin Islands')
+ph$adm0_name <- toupper(ph$country)
+# ph$country[!ph$country %in% who_regions$adm0_viz_n] # length = 0; all good
+paho <- ph
+```
+
+# Responses by country (including PAHO)
+
+```{r}
+# Request A global map of countries participating. 
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd$value <- 'Responded'
+# Add paho
+pd <- bind_rows(
+  pd,
+  paho %>% dplyr::select(country) %>% mutate(value = 'Responded')
+) 
+pd <- pd %>% filter(!duplicated(country))
+
+
+
+l <- make_map(df = pd,
+         pal = 'Dark2',
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap,
+         use_who_shp = TRUE) %>%
+  addFullscreenControl()
+htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html')
+
+if(!dir.exists('~/Desktop/who')){
+  dir.create('~/Desktop/who')
+}
+
+# Make a static version
+l <- make_map(df = pd,
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = 'Survey participation') + 
+    theme_map() +
+  scale_fill_manual(name = '', values = c('lightblue', 'black')) +
+  theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+  guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches')))
+l
+ggsave('~/Desktop/who/participation_map_with_paho.png',
+       height = 6,
+       width = 9)
+```
+
+
+# A global map of countries with circulation of each of the viruses since 2000
+
+```{r}
+# Request A global map of countries with circulation of each of the viruses since 2000
+# Get data for each disease
+pd <- df[,c('1. State', names(df)[grepl('Which arboviruses have circulated in your country at any', names(df), fixed = TRUE)])]
+names(pd) <- c('country', 'Chikungunya', 'Dengue', 'Yellow fever', 'Zika', 'Other')
+pd$Other <- NULL
+# Simplify values
+for(j in 2:ncol(pd)){
+  vals <- pd[,j]
+  vals <- as.character(vals)
+  out_vals <- ifelse(is.na(vals), 'No', ifelse(vals == 'Yes', 'Yes', 'No'))
+  pd[,j] <- out_vals
+}
+# Get total number of viruses
+pd$total <- apply(pd[,2:5], 1, function(x){sum(ifelse(x == 'Yes', 1, 0))})
+# Clean up a bit
+pd <- pd %>%
+  filter(!is.na(country)) %>%
+  filter(country != 'Iceland') %>%
+  filter(!duplicated(country)) %>%
+  mutate(value = total)
+
+# Add paho data
+viruses <- c('Chikungunya', 'Dengue', 'Yellow fever', 'Zika')
+ph <- paho[,1:5]
+names(ph)[2:5] <- viruses
+ph$total <- ph$value <- apply(ph[,2:5], 1, function(x){sum(ifelse(grepl('Y', toupper(x)), 1, 0))})
+for(j in 2:5){
+  vals <- unlist(ph[,j])
+  vals <- ifelse(grepl('Y', toupper(vals)), 'Yes', 'No')
+  ph[,j] <- vals
+}
+pd <- bind_rows(
+  pd,
+  ph
+) 
+pd <- pd %>% dplyr::distinct(country, .keep_all = TRUE)
+
+library(ggthemes)
+for(i in 1:length(viruses)){
+  message(i)
+  this_virus <- viruses[i]
+  this_vector <- unlist(pd[,this_virus])
+  pdx <- pd %>%
+    mutate(value = this_vector)
+  l <- make_map(df = pdx,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = this_virus) + 
+    theme_map() +
+    scale_fill_manual(name = '', values = rev(c('red', 'black'))) +
+    theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '')
+  l
+  ggsave(filename = paste0('~/Desktop/who/global_with_paho_', this_virus, '.png'),
+         height = 5,
+         width = 9)
+}
+```
+
+## Q55 
+
+```{r}
+# A heat/graduated shading map of case numbers for q55 (using total cases for each virus 2015-2020)
+pz <- load_data(modify_variable_names = TRUE)
+pzx <- pz[,grepl('55.', names(pz), fixed = TRUE)]
+pzx <- pzx[,!grepl('Deaths', names(pzx))]
+pzx$country <-  as.character(pz$`1. State`)
+
+pahox <- paho[,grepl('Cases', names(paho))]
+for(j in 1:ncol(pahox)){
+  pahox[,j] <- as.numeric(unlist(pahox[,j]))
+}
+pahox$country <- paho$country
+
+viruses <- c('Chikungunya', 'Dengue', 'Yellow fever', 'Zika')
+vrs <- c('CHIKV', 'DENV', 'YFV', 'ZIKV')
+out_list <- list()
+for(i in 1:length(viruses)){
+  this_virus <- viruses[i]
+  this_vr <- vrs[i]
+  # Get the data from original dataframe
+  this_df <- pzx[,grepl(this_virus, names(pzx))]
+  # Get the data from the paho dataframe
+  other_df <- pahox[,grepl(this_vr, names(pahox))]
+  # aggregate
+  agg1 <- apply(this_df, 1, function(x){sum(x, na.rm = TRUE)})
+  agg2 <- apply(other_df, 1, function(x){sum(x, na.rm = TRUE)})
+  out <- tibble(country = c(pzx$country,
+                            pahox$country),
+                value = c(agg1, agg2),
+                virus = this_virus)
+  out_list[[i]] <- out
+}
+out <- bind_rows(out_list)
+options(scipen = '999')
+for(i in 1:length(viruses)){
+  message(i)
+  this_virus <- viruses[i]
+  pdx <- out %>% filter(virus == this_virus)
+  l <- make_map(df = pdx,
+         pal = 'Spectral',
+         qualitative = FALSE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = paste0(this_virus, ' cases (2015-2020)')) + 
+    theme_map() +
+    scale_fill_gradient(name = '',
+                         low = 'yellow',
+                         high = 'darkred') +
+    theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+    guides(fill = guide_colorbar(barwidth = grid::unit(6, units = 'inches')))
+
+  l
+  ggsave(filename = paste0('~/Desktop/who/global_heat_with_paho_', this_virus, '.png'),
+         height = 5,
+         width = 9)
+}
+```
+
+
+
 # Responses by country
 
 ```{r}
