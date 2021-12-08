@@ -185,7 +185,8 @@ make_map <- function(df,
                      use_who_shp = FALSE,
                      filter_region = NULL,
                      static = FALSE,
-                     remove_some = FALSE){
+                     remove_some = FALSE,
+                     add_legend = TRUE){
   
   # load('../data/world_shp.rda')
   # df <- tibble(country = c('France', 'Germany', 'Spain'),
@@ -333,8 +334,12 @@ make_map <- function(df,
           direction = "auto"
         )
       ) %>%
-      addLegend( pal=pal_fun, values=~value, opacity=0.9, title = legend_title, position = "bottomleft" ) %>%
       setView( lat=10, lng=0 , zoom=2) 
+    
+    if(add_legend){
+    m <- m %>%  addLegend( pal=pal_fun, values=~value, opacity=0.9, title = legend_title, position = "bottomleft" )
+    }
+      
     m
   }
   

@@ -135,6 +135,55 @@ who_regions <- who_shp$adm0
 # df$adm0_name[!df$adm0_name %in% who_regions$adm0_name]
 ```
 
+```{r}
+# Quick diana request
+diana_countries <- c('South Africa', 'Sudan', 'Iran', 'Netherlands', 'Malaysia', 'Ghana', 'Cuba', 'France', 'Australia', 'USA', 'Portugal', 'Singapore', 'India', 'Venezuela', 'Sri Lanka', 'Brazil')
+
+diana_countries[!diana_countries %in% who_regions$adm0_viz_n]
+diana_countries <- 
+  ifelse(diana_countries == 'Iran', 'Iran (Islamic Republic of)',
+         ifelse(diana_countries == 'USA', 'United States of America',
+                ifelse(diana_countries == 'Venezuela', 'Venezuela (Bolivarian Republic of)', diana_countries)))
+
+di <- tibble(country = diana_countries, value = 'Yes')
+
+l <- make_map(df = di,
+         pal = 'blue',
+         rev = TRUE,
+         add_legend = FALSE,
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap,
+         use_who_shp = TRUE) %>%
+  addFullscreenControl()
+l
+htmltools::save_html(l, file = '~/Documents/databrew.github.io/rojas/index.html')
+
+
+# Make a static version
+l <- make_map(df = di,
+         pal = 'blue',
+         rev = TRUE,
+         add_legend = FALSE,
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = '') + 
+    theme_map() +
+  scale_fill_manual(name = '', values = c('lightblue', 'black')) +
+  theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+  guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches')))
+l
+ggsave('~/Desktop/who/diana.png',
+       height = 6,
+       width = 9)
+
+```
+
 
 ```{r}
 # Read in PAHO data # https://trello.com/c/LgyKpQfk/2696-who-new-dataset-combination
