@@ -639,7 +639,7 @@ df <- cbind( Region = data$Region, responses) %>%
 new_cols <- matrix( unlist( strsplit(df$Testing, "\\]\\[") ), ncol=2, byrow=T)
 df <- df %>% 
   mutate(Arbovirus = new_cols[,1], Testing = new_cols[,2])
-df$Response <- as.numeric( df$Response)
+df$Response <- as.numeric( as.character( df$Response ) )
 df <- df %>% 
   group_by(Region, Arbovirus, Testing) %>% 
   drop_na( Region ) %>% 
