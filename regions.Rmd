@@ -83,20 +83,20 @@ if( file.exists("data/data.RData") ){
   for(i in 1:ncol(q17)){
     q17[,i] <- as.logical( as.numeric( as.character( q17[,i] )))
   }
-  serology <- cbind( q17[,2] | q17[,3] | q17[,4],     # Chikungunya 
+  indirect <- cbind( q17[,2] | q17[,3] | q17[,4],     # Chikungunya 
                      q17[,9] | q17[,10] | q17[,11],   # Dengue 
                      q17[,16] | q17[,17] | q17[,18],  # Yellow fever 
                      q17[,23] | q17[,24] | q17[,25],  # Zika
                      q17[,30] | q17[,31] | q17[,32] ) # other 
-  for(i in 1:ncol(serology)){
-    serology[,i] = ifelse( serology[,i], "Yes", "No")
+  for(i in 1:ncol(indirect)){
+    indirect[,i] = ifelse( indirect[,i], "Yes", "No")
   }
-  colnames( serology ) <- c( "Chikungunya][Serology",
-                             "Dengue][Serology",
-                             "Yellow fever][Serology",
-                             "Zika][Serology",
-                             "Other][Serology")
-  data <- cbind( data, serology )
+  colnames( indirect ) <- c( "Chikungunya][Indirect",
+                             "Dengue][Indirect",
+                             "Yellow fever][Indirect",
+                             "Zika][Indirect",
+                             "Other][Indirect")
+  data <- cbind( data, indirect )
   
   direct <- cbind( q17[,1] | q17[,5] | q17[,6] | q17[,7], # Chikungunya
                    q17[,8] | q17[,12] | q17[,13] | q17[,14], # Dengue
@@ -672,15 +672,42 @@ if( !file.exists("tables/q15.png") ){
 ```{r} 
 # fig.height=8}
 
-var_names <- c( "Chikungunya][Serology",
-                "Dengue][Serology",
-                "Yellow fever][Serology",
-                "Zika][Serology",
-                "Other][Serology")
-serology <- data %>% select( all_of(var_names) )
-colnames(serology) <- gsub("][Serology","",colnames(serology), fixed=TRUE)
+responses <- get_responses("17")
+df <- cbind( Region = data$Region, responses) %>%
+  pivot_longer(!Region, names_to="Testing", values_to="Response")
+new_cols <- matrix( unlist( strsplit(df$Testing, "\\]\\[") ), ncol=2, byrow=T)
+df <- df %>%
+  mutate(Arbovirus = as.factor(new_cols[,1]), Testing = as.factor(new_cols[,2])) %>%
+  mutate( Arbovirus = fct_relevel(Arbovirus, "Chikungunya", "Dengue", "Yellow fever", "Zika", "Other")) %>%
+  mutate( Response = as.numeric( as.character( Response ))) %>%
+  group_by(Region, Arbovirus, Testing) %>%
+  drop_na( Region ) %>%
+  summarize(Total = sum(Response, na.rm=T))
 
-df <- cbind(Region = data$Region, serology) %>% 
+tab <- df %>%
+    pivot_wider(names_from=Testing, values_from=Total, names_sort = TRUE) %>%
+    regulartable %>%
+    merge_v(j = ~Region) %>%
+    valign(j = 1, valign = "top", part = "all") %>%
+    hline(i=5*(1:4)) %>%
+    colformat_num( na_str = "0" ) %>%
+    fix_border_issues # %>% autofit
+
+tab
+
+if( !file.exists("tables/q17.png") ){
+  path <- save_as_image(tab, zoom=1, "tables/q17.png")
+}
+
+var_names <- c( "Chikungunya][Indirect",
+                "Dengue][Indirect",
+                "Yellow fever][Indirect",
+                "Zika][Indirect",
+                "Other][Indirect")
+indirect <- data %>% select( all_of(var_names) )
+colnames(indirect) <- gsub("][Indirect","",colnames(indirect), fixed=TRUE)
+
+df <- cbind(Region = data$Region, indirect) %>% 
   pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
   mutate( Response = factor( replace_na( as.character(Response), "No"))) %>%
   mutate( Response = fct_relevel(Response, "Yes", "No")) %>% 
@@ -691,6 +718,7 @@ tab <- df %>%
     pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
     drop_na(Region) %>% 
     regulartable() %>% 
+    set_caption("Indirect detection") %>%
     merge_v(j = ~Region) %>% 
     # valign(j = 1, valign = "top", part = "all") %>% 
     hline(i=5*(1:4)) %>% 
@@ -705,7 +733,7 @@ var_names <- c( "Chikungunya][Direct",
                 "Zika][Direct",
                 "Other][Direct")
 direct <- data %>% select( all_of(var_names) )
-colnames(direct) <- gsub("][Direct","",colnames(serology), fixed=TRUE)
+colnames(direct) <- gsub("][Direct","",colnames(direct), fixed=TRUE)
 
 df <- cbind(Region = data$Region, direct) %>% 
   pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
@@ -718,6 +746,7 @@ tab <- df %>%
     pivot_wider(names_from=Response, values_from=n, names_sort = TRUE) %>% 
     drop_na(Region) %>% 
     regulartable() %>% 
+    set_caption("Direct detection") %>%
     merge_v(j = ~Region) %>% 
     # valign(j = 1, valign = "top", part = "all") %>% 
     hline(i=5*(1:4)) %>% 
@@ -725,37 +754,6 @@ tab <- df %>%
     width( j=2, width=2 ) # %>% autofit() 
 
 tab
-
-# responses <- get_responses("17")
-# df <- cbind( Region = data$Region, responses) %>%
-#   pivot_longer(!Region, names_to="Testing", values_to="Response")
-# new_cols <- matrix( unlist( strsplit(df$Testing, "\\]\\[") ), ncol=2, byrow=T)
-# df <- df %>%
-#   mutate(Arbovirus = as.factor(new_cols[,1]), Testing = as.factor(new_cols[,2])) %>%
-#   mutate( Response = as.factor(Response))
-# df$Response <- as.numeric( as.character( df$Response ) )
-# df <- df %>%
-#   group_by(Region, Arbovirus, Testing) %>%
-#   drop_na( Region ) %>%
-#   tally
-#   # summarize(Total = sum(Response, na.rm=T))
-# df$Arbovirus <- factor( df$Arbovirus )
-# df$Testing <- factor( df$Testing )
-# 
-# tab <- df %>%
-#     pivot_wider(names_from=Testing, values_from=Total) %>%
-#     regulartable %>%
-#     merge_v(j = ~Region) %>%
-#     valign(j = 1, valign = "top", part = "all") %>%
-#     hline(i=5*(1:4)) %>%
-#     colformat_num( na_str = "0" ) %>%
-#     fix_border_issues # %>% autofit
-# 
-# tab
-# 
-# if( !file.exists("tables/q17.png") ){
-#   path <- save_as_image(tab, zoom=1, "tables/q17.png")
-# }
 
 # ggplot(df, aes(x=Testing, y=Total, fill=Testing)) + 
 #   geom_col() + 
