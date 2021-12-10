@@ -75,7 +75,7 @@ if( file.exists("data/data.RData") ){
   # Region needs to be the last column to maintain consistency between data and dictionary!
   data <- data %>% mutate( Region = factor(region) )
   
-  # add _serology_ and _direct detection_ variables to simplify summary of question 17:
+  # add _indirect detection_ and _direct detection_ variables to simplify summary of question 17:
   idx <- which( dict$`Question number` == "17" )
   var_names <- dict$`Variable name`[idx]
   q17 <- data %>% select( all_of(var_names) )
@@ -88,30 +88,75 @@ if( file.exists("data/data.RData") ){
                      q17[,16] | q17[,17] | q17[,18],  # Yellow fever 
                      q17[,23] | q17[,24] | q17[,25],  # Zika
                      q17[,30] | q17[,31] | q17[,32] ) # other 
-  for(i in 1:ncol(indirect)){
-    indirect[,i] = ifelse( indirect[,i], "Yes", "No")
-  }
+  
   colnames( indirect ) <- c( "Chikungunya][Indirect",
                              "Dengue][Indirect",
                              "Yellow fever][Indirect",
                              "Zika][Indirect",
                              "Other][Indirect")
-  data <- cbind( data, indirect )
   
   direct <- cbind( q17[,1] | q17[,5] | q17[,6] | q17[,7], # Chikungunya
                    q17[,8] | q17[,12] | q17[,13] | q17[,14], # Dengue
                    q17[,15] | q17[,19] | q17[,20] | q17[,21], # Yellow fever
                    q17[,22] | q17[,26] | q17[,27] | q17[,28], # Zika
                    q17[,29] | q17[,33] | q17[,34] | q17[,35] ) # other
-  for(i in 1:ncol(direct)){
-    direct[,i] = ifelse( direct[,i], "Yes", "No")
-  }
+  
   colnames( direct ) <- c( "Chikungunya][Direct",
                              "Dengue][Direct",
                              "Yellow fever][Direct",
                              "Zika][Direct",
                              "Other][Direct")
-  data <- cbind( data, direct )
+  
+  both_methods <- cbind( indirect[,1] & direct[,1],
+                         indirect[,2] & direct[,2],
+                         indirect[,3] & direct[,3],
+                         indirect[,4] & direct[,4],
+                         indirect[,5] & direct[,5])
+  colnames( both_methods ) <- c("Chikungunya][Both",
+                                "Dengue][Both",
+                                "Yellow fever][Both", 
+                                "Zika][Both",
+                                "Other][Both")
+  
+  one_method <- cbind( indirect[,1] != direct[,1],
+                       indirect[,2] != direct[,2],
+                       indirect[,3] != direct[,3],
+                       indirect[,4] != direct[,4],
+                       indirect[,5] != direct[,5])
+  colnames( one_method ) <- c( "Chikungunya][One",
+                               "Dengue][One",
+                               "Yellow fever][One",
+                               "Zika][One",
+                               "Other][One")
+  
+  neither_method <- cbind( !indirect[,1] & !direct[,1],
+                           !indirect[,2] & !direct[,2],
+                           !indirect[,3] & !direct[,3],
+                           !indirect[,4] & !direct[,4],
+                           !indirect[,5] & !direct[,5])
+  
+  colnames( neither_method ) <- c( "Chikungunya][Neither",
+                                   "Dengue][Neither",
+                                   "Yellow fever][Neither",
+                                   "Zika][Neither",
+                                   "Other][Neither")
+  
+  for(i in 1:ncol(indirect)){
+    indirect[,i] = ifelse( indirect[,i], "Yes", "No")
+  }
+  for(i in 1:ncol(direct)){
+    direct[,i] = ifelse( direct[,i], "Yes", "No")
+  }
+  for(i in 1:ncol(both_methods)){
+    both_methods[,i] = ifelse( both_methods[,i], "X", NA)
+  }
+  for(i in 1:ncol(one_method)){
+    one_method[,i] = ifelse( one_method[,i], "X", NA)
+  }
+  for(i in 1:ncol(neither_method)){
+    neither_method[,i] = ifelse( neither_method[,i], "X", NA)
+  }
+  data <- cbind( data, indirect, direct, both_methods, one_method, neither_method )
 
   save(data, file="data/data.RData")
 }
@@ -754,6 +799,39 @@ tab <- df %>%
     width( j=2, width=2 ) # %>% autofit() 
 
 tab
+
+var_names <- c( "Chikungunya][Both",
+                "Dengue][Both",
+                "Yellow fever][Both",
+                "Zika][Both",
+                "Other][Both")
+both <- data %>% select( all_of(var_names) )
+colnames(both) <- gsub("][Both","",colnames(both), fixed=TRUE)
+df <- cbind( Country = data$SI01, both ) %>% 
+  arrange( Country ) 
+df %>% regulartable() %>% set_caption("Both direct and indirect detection")
+
+var_names <- c( "Chikungunya][One",
+                "Dengue][One",
+                "Yellow fever][One",
+                "Zika][One",
+                "Other][One")
+one_method <- data %>% select( all_of(var_names) )
+colnames(one_method) <- gsub("][One","",colnames(one_method), fixed=TRUE)
+df <- cbind( Country = data$SI01, one_method ) %>% 
+  arrange( Country ) 
+df %>% regulartable() %>% set_caption("Either direct or indirect detection (not both)")
+
+var_names <- c( "Chikungunya][Neither",
+                "Dengue][Neither",
+                "Yellow fever][Neither",
+                "Zika][Neither",
+                "Other][Neither")
+neither_method <- data %>% select( all_of(var_names) )
+colnames(neither_method) <- gsub("][Neither","",colnames(neither_method), fixed=TRUE)
+df <- cbind( Country = data$SI01, neither_method ) %>% 
+  arrange( Country ) 
+df %>% regulartable() %>% set_caption("Neither direct nor indirect detection")
 
 # ggplot(df, aes(x=Testing, y=Total, fill=Testing)) + 
 #   geom_col() + 
