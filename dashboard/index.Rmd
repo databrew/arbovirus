@@ -256,15 +256,17 @@ l <- make_map(df = pd,
          line_color = 'black') +
      labs(title = 'Survey participation') + 
     theme_map() +
-  scale_fill_manual(name = '', values = c('lightblue', 'black')) +
+  scale_fill_manual(name = '', values = c('darkgreen', 'white'), na.value = 'white') +
   theme(legend.position = 'bottom',
           plot.title = element_text(size = 8)) +
     labs(x = '', y = '') +
-  guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches')))
+  guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches'))) +
+  theme(panel.background = element_rect(fill = "lightblue", colour = "lightblue"))
 l
 ggsave('~/Desktop/who/participation_map_with_paho.png',
        height = 6,
        width = 9)
+
 ```
 
 
@@ -420,35 +422,87 @@ htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html
 ```
 
 ```{r, eval = FALSE}
+
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd$value <- 'Responded'
+# Add paho
+pd <- bind_rows(
+  pd,
+  paho %>% dplyr::select(country) %>% mutate(value = 'Responded')
+) 
+pd <- pd %>% filter(!duplicated(country))
+
+
+
 # Region level maps
 # For each region, make a map
 library(ggthemes)
+library(sp)
 regions <- sort(unique(who_shp$adm0$who_region))
 for(i in 1:length(regions)){
+  pda <- pd
   r <- regions[i]
-  l <- make_map(df = pd,
-         pal = 'Dark2',
+  sub_shp <- who_shp$adm0[who_shp$adm0$who_region == r,]
+  keep_countries <- sub_shp$adm0_viz_n
+  pda <- pda %>% filter(country %in% keep_countries)
+  sub_shp <- sf::as_Spatial(sub_shp)
+  coords <- coordinates(sub_shp)
+  xl <- range(coords[,1])
+  yl <- range(coords[,2])
+  xl[1] <- xl[1] -5
+  xl[2] <- xl[2] + 8
+  yl[1] <- yl[1] - 1
+  yl[2] <- yl[1] + 1
+  keep_countries <- who_shp$adm0$adm0_viz_n[who_shp$adm0$who_region == r]
+  l <- make_map(df = pda,
+         pal = 'darkgreen',
          qualitative = TRUE,
          provider = providers$OpenStreetMap,
          use_who_shp = TRUE,
-         filter_region = r,
+         line_color = 'black',
+         # filter_region = r,
          static = TRUE) +
     labs(title = r,
          subtitle = 'Countries which responded to survey') + 
     theme_map() +
-    scale_fill_manual(name = '',
-                      values = c('darkred', 'black')) +
-    theme(legend.position = 'none')
-  if(r == 'EURO')
-    l <- l + xlim(-25, 44)
-  l
-  if(r == 'WPRO')
-    l <- l + xlim(70, 180)
-  l
+  scale_fill_manual(name = '', values = c('darkgreen', 'white'), na.value = 'white') +
+  theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+  theme(panel.background = element_rect(fill = "lightblue", colour = "lightblue")) +    theme(legend.position = 'none')
+  h <- 9
+  w <- 8
+  if(r == 'AFRO'){
+   h <- 9 
+   l <- l + coord_sf(xlim = c(-25,60), expand = FALSE) 
+  }
+  if(r == 'AMRO'){
+   h <- 9 
+   l <- l + coord_sf(xlim = c(-165, -10), expand = TRUE) 
+  }
+    if(r == 'EMRO'){
+   h <- 9 
+   l <- l + coord_sf(xlim = c(-10, 83), expand = FALSE) 
+  }
+  if(r == 'EURO'){
+    l <- l + coord_sf(xlim = c(-24, 50), expand = FALSE) 
+}
+if(r == 'SEARO'){
+   h <- 9 
+   l <- l + coord_sf(xlim = c(60, 160), expand = FALSE) 
+
+  }
+  if(r == 'WPRO'){
+    l <- l + coord_sf(xlim = c(70, 180), expand = FALSE) 
+  }
+   
+
+
   l
   ggsave(paste0('~/Desktop/who/', r, '.png'),
-         width = 8,
-         height = 6)
+         width = w,
+         height = h)
 }
 ```
 
