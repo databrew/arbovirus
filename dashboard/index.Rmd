@@ -135,7 +135,7 @@ who_regions <- who_shp$adm0
 # df$adm0_name[!df$adm0_name %in% who_regions$adm0_name]
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Quick diana request
 diana_countries <- c('South Africa', 'Sudan', 'Iran', 'Netherlands', 'Malaysia', 'Ghana', 'Cuba', 'France', 'Australia', 'USA', 'Portugal', 'Singapore', 'India', 'Venezuela', 'Sri Lanka', 'Brazil')
 

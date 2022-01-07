@@ -141,8 +141,8 @@ load_data <- function(modify_variable_names = FALSE){
   
   return(df)
 }
-simple <- load_data(modify_variable_names = TRUE)
-write_excel_csv(simple, '~/Desktop/simplified_dataset.csv')
+# simple <- load_data(modify_variable_names = TRUE)
+# write_excel_csv(simple, '~/Desktop/simplified_dataset.csv')
 
 # get_responses assumes that load_dict() and load_data() have been called!
 
