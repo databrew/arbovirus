@@ -223,11 +223,7 @@ ph$adm0_name <- toupper(ph$country)
 paho <- ph
 ```
 
-```{r}
-df <- data
-```
-
-# Responses by country (including PAHO)
+# Responses by country 
 
 ```{r}
 # Request A global map of countries participating. 
@@ -244,6 +240,7 @@ l <- make_map(df = pd,
          provider = providers$OpenStreetMap,
          use_who_shp = TRUE) %>%
   addFullscreenControl()
+l
 # htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html')
 
 # if(!dir.exists('~/Desktop/who')){
@@ -266,7 +263,7 @@ l <- make_map(df = pd,
     labs(x = '', y = '') +
   guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches'))) +
   theme(panel.background = element_rect(fill = "lightblue", colour = "lightblue"))
-l
+# l
 # ggsave('~/Desktop/who/participation_map_with_paho.png',
 #        height = 6,
 #        width = 9)
@@ -411,9 +408,11 @@ for(i in 1:length(viruses)){
 
 
 
+
+```{r, eval = FALSE}
+
 # Responses by country
 
-```{r}
 pd <- df[grepl('1. State', names(df))]
 names(pd) <- c('country')
 pd <- pd %>% filter(!duplicated(country))
@@ -514,9 +513,10 @@ if(r == 'SEARO'){
 
 
 
+
+```{r, eval = FALSE}
 # Virus map
 
-```{r}
 # Get data for each disease
 pd <- df[,c('1. State', names(df)[grepl('Which arboviruses have circulated in your country at any', names(df), fixed = TRUE)])]
 names(pd) <- c('country', 'Chikungunya', 'Dengue', 'Yellow fever', 'Zika', 'Other')
@@ -770,7 +770,7 @@ for(i in 1:length(viruses)){
 }
 ```
 
-```{r}
+```{r, eval = FALSE}
 # This will then ideally be followed by a map like your heatmap below with numbers of viruses on a global scale – lightest shade no viruses, next lightest – one, mid shade – two, darkest – three (I don’t think we have any countries with four among our regions).
 pdx <- pd 
 l <- make_map(df = pdx,
@@ -792,9 +792,6 @@ l <- make_map(df = pdx,
   guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches')))
 
 l
-ggsave(filename = paste0('~/Desktop/who/global_', 'all_viruses', '.png'),
-         height = 5,
-         width = 9)
 ```
 
 ```{r, eval = FALSE}
