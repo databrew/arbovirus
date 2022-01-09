@@ -9,8 +9,6 @@ library(leaflet.extras)
 library(readr)
 library(readxl)
 
-
-
 #############################################
 # WHO profided shapefiles
 #############################################
@@ -620,6 +618,9 @@ if('combined_data.RData' %in% dir()){
   
   # Get rid of paho names
   paho <- paho[,!names(paho) %in% original_paho_names]
+  
+  # Add region
+  paho$Region <- 'PAHO'
   
   # Combine 
   data <- bind_rows(

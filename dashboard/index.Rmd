@@ -16,15 +16,15 @@ opts_chunk$set(comment = NA,
                fig.height = 5.9,
                fig.path = 'figures/')
 ggplot2::theme_set(ggplot2::theme_bw())
-if('who_shp.RData' %in% dir()){
-  load('who_shp.RData')
-} else {
-  library(whomapper) # https://github.com/whocov/whomapper
-  # options(scipen = '999')
-  who_shp <- whomapper::pull_who_adm0()
-  save(who_shp, file = 'who_shp.RData')
-}
-source('who_map_disp.R')
+# if('who_shp.RData' %in% dir()){
+#   load('who_shp.RData')
+# } else {
+#   library(whomapper) # https://github.com/whocov/whomapper
+#   # options(scipen = '999')
+#   who_shp <- whomapper::pull_who_adm0()
+#   save(who_shp, file = 'who_shp.RData')
+# }
+# source('who_map_disp.R')
 library(ggthemes)
 ```
 
@@ -112,7 +112,21 @@ $(document).on('click', function (e){
 ```{r, child="_sessioninfo.Rmd"}
 ```
 
-```{r, echo = FALSE}
+```{r}
+# Read in the combined paho / original dataset
+owd <- getwd()
+setwd('..')
+source('prepare_data.R')
+setwd(owd)
+
+# Simplify data
+df <- simplify_data(data = data,
+                    dict = dict)
+```
+
+```{r, echo = FALSE, eval = FALSE}
+
+##################### THIS ENTIRE CHUNK IS DEPRECATED. DO NOT RUN
 source('functions.R')
 library(RColorBrewer)
 library(scales)
@@ -123,19 +137,14 @@ load('../data/region_shp.rda') # load region shape file
 df <- load_data(modify_variable_names = TRUE)
 df$country <- as.character(df$`1. State`)
 df$adm0_name <- toupper(df$country)
-```
 
-
-```{r}
 # Where to put new maps # https://trello.com/c/tgd50iIm/2693-who-arb-regional-maps
 who_regions <- who_shp$adm0
 
 # Reconcile the names of WHO countries with the arbovirus countries
 # woh, they're already the same! woohoo!
 # df$adm0_name[!df$adm0_name %in% who_regions$adm0_name]
-```
 
-```{r, eval = FALSE}
 # Quick diana request
 diana_countries <- c('South Africa', 'Sudan', 'Iran', 'Netherlands', 'Malaysia', 'Ghana', 'Cuba', 'France', 'Australia', 'USA', 'Portugal', 'Singapore', 'India', 'Venezuela', 'Sri Lanka', 'Brazil')
 
@@ -182,10 +191,6 @@ ggsave('~/Desktop/who/diana.png',
        height = 6,
        width = 9)
 
-```
-
-
-```{r}
 # Read in PAHO data # https://trello.com/c/LgyKpQfk/2696-who-new-dataset-combination
 library(readxl)
 paho <- read_excel('../data/Copia_de_PAHO_key_indicator_spreadsheet_19_Nov_2021-Completo.xlsx', skip = 1)
@@ -218,6 +223,10 @@ ph$adm0_name <- toupper(ph$country)
 paho <- ph
 ```
 
+```{r}
+df <- data
+```
+
 # Responses by country (including PAHO)
 
 ```{r}
@@ -225,11 +234,6 @@ paho <- ph
 pd <- df[grepl('1. State', names(df))]
 names(pd) <- c('country')
 pd$value <- 'Responded'
-# Add paho
-pd <- bind_rows(
-  pd,
-  paho %>% dplyr::select(country) %>% mutate(value = 'Responded')
-) 
 pd <- pd %>% filter(!duplicated(country))
 
 
@@ -240,11 +244,11 @@ l <- make_map(df = pd,
          provider = providers$OpenStreetMap,
          use_who_shp = TRUE) %>%
   addFullscreenControl()
-htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html')
+# htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html')
 
-if(!dir.exists('~/Desktop/who')){
-  dir.create('~/Desktop/who')
-}
+# if(!dir.exists('~/Desktop/who')){
+#   dir.create('~/Desktop/who')
+# }
 
 # Make a static version
 l <- make_map(df = pd,
@@ -263,16 +267,17 @@ l <- make_map(df = pd,
   guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches'))) +
   theme(panel.background = element_rect(fill = "lightblue", colour = "lightblue"))
 l
-ggsave('~/Desktop/who/participation_map_with_paho.png',
-       height = 6,
-       width = 9)
+# ggsave('~/Desktop/who/participation_map_with_paho.png',
+#        height = 6,
+#        width = 9)
 
 ```
 
 
-# A global map of countries with circulation of each of the viruses since 2000
 
-```{r}
+```{r, eval = FALSE}
+# # A global map of countries with circulation of each of the viruses since 2000
+
 # Request A global map of countries with circulation of each of the viruses since 2000
 # Get data for each disease
 pd <- df[,c('1. State', names(df)[grepl('Which arboviruses have circulated in your country at any', names(df), fixed = TRUE)])]
@@ -294,20 +299,20 @@ pd <- pd %>%
   filter(!duplicated(country)) %>%
   mutate(value = total)
 
-# Add paho data
+# # Add paho data
 viruses <- c('Chikungunya', 'Dengue', 'Yellow fever', 'Zika')
-ph <- paho[,1:5]
-names(ph)[2:5] <- viruses
-ph$total <- ph$value <- apply(ph[,2:5], 1, function(x){sum(ifelse(grepl('Y', toupper(x)), 1, 0))})
-for(j in 2:5){
-  vals <- unlist(ph[,j])
-  vals <- ifelse(grepl('Y', toupper(vals)), 'Yes', 'No')
-  ph[,j] <- vals
-}
-pd <- bind_rows(
-  pd,
-  ph
-) 
+# ph <- paho[,1:5]
+# names(ph)[2:5] <- viruses
+# ph$total <- ph$value <- apply(ph[,2:5], 1, function(x){sum(ifelse(grepl('Y', toupper(x)), 1, 0))})
+# for(j in 2:5){
+#   vals <- unlist(ph[,j])
+#   vals <- ifelse(grepl('Y', toupper(vals)), 'Yes', 'No')
+#   ph[,j] <- vals
+# }
+# pd <- bind_rows(
+#   pd,
+#   ph
+# ) 
 pd <- pd %>% dplyr::distinct(country, .keep_all = TRUE)
 
 library(ggthemes)
@@ -332,15 +337,16 @@ for(i in 1:length(viruses)){
           plot.title = element_text(size = 8)) +
     labs(x = '', y = '')
   l
-  ggsave(filename = paste0('~/Desktop/who/global_with_paho_', this_virus, '.png'),
-         height = 5,
-         width = 9)
+  # ggsave(filename = paste0('~/Desktop/who/global_with_paho_', this_virus, '.png'),
+  #        height = 5,
+  #        width = 9)
 }
 ```
 
+
+```{r, eval = FALSE}
 ## Q55 
 
-```{r}
 # A heat/graduated shading map of case numbers for q55 (using total cases for each virus 2015-2020)
 pz <- load_data(modify_variable_names = TRUE)
 pzx <- pz[,grepl('55.', names(pz), fixed = TRUE)]
@@ -418,7 +424,7 @@ l <- make_map(df = pd,
          provider = providers$OpenStreetMap,
          use_who_shp = TRUE) %>%
   addFullscreenControl()
-htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html')
+# htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html')
 ```
 
 ```{r, eval = FALSE}

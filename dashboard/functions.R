@@ -29,22 +29,9 @@ load_dict <- function(){
   return( dict )
 }
 
-#' @param modify_variable_names If TRUE, then variable names will be overwritten / modified to be more meaningful
-load_data <- function(modify_variable_names = FALSE){
-  # Read in data
-  owd <- getwd()
-  setwd('../')
-  if( file.exists("data/data.RData")){
-    load("data/data.RData")
-  } else{
-    message("You need the data!")
-  }
-
-  setwd(owd)
-  
-  # Read in data dictionary
-  dict <- load_dict()
-  
+# Function to simplify variable names
+simplify_data <- function(data,
+                          dict){
   # # Having retrieved the data, extract only those variables of relevance
   # 1. Surveillance capacity indicators:
   # • Reportable arboviral diseases (q11, q11b)
@@ -101,42 +88,65 @@ load_data <- function(modify_variable_names = FALSE){
     '55', '55b', '55c',
     '56')
   df <- data[,c(dict$`Variable name`[dict$`Question number` %in% keep_questions], 'Region')]
+  sub_dict <- dict %>%
+    filter(`Question number` %in% keep_questions)
+  
+  # Go variable by variable and get a new field name
+  show_it <- function(x, condition = NULL){
+    if(is.null(condition)){
+      ifelse(!is.na(x), 
+             x, 
+             '')
+    } else {
+      ifelse(!is.na(condition),
+             x,
+             '')
+    }
+  }
+  sub_dict <- sub_dict %>%
+    mutate(field_name = paste0(show_it(`Question number`),
+                               show_it('. ', condition = `Question number`),
+                               show_it(' ', condition = Description),
+                               show_it(`Description`),
+                               show_it(' ', condition = `Subquestion`),
+                               show_it(`Subquestion`)))
+  for(i in 1:nrow(sub_dict)){
+    this_variable_name <- sub_dict$`Variable name`[i]
+    this_column_index <- which(names(df) == this_variable_name)
+    this_new_name <- sub_dict$field_name[i]
+    names(df)[this_column_index] <- this_new_name
+  }
+  names(df)[1] <- '1. State'
+  names(df) <- gsub("\\[|\\]", "", names(df))
+  names(df) <- trimws(names(df))
+  names(df)[names(df) == 'Region'] <- 'region'
+  df$region <- as.character(df$region)
+  return(df)
+}
+
+#' @param modify_variable_names If TRUE, then variable names will be overwritten / modified to be more meaningful
+load_data <- function(modify_variable_names = FALSE){
+  # Read in data
+  owd <- getwd()
+  setwd('../')
+  if( file.exists("data/data.RData")){
+    load("data/data.RData")
+  } else{
+    message("You need the data!")
+  }
+
+  setwd(owd)
+  
+  # Read in data dictionary
+  dict <- load_dict()
+  
   
   # Modify variable names
   if(modify_variable_names){
-    sub_dict <- dict %>%
-      filter(`Question number` %in% keep_questions)
-    
-    # Go variable by variable and get a new field name
-    show_it <- function(x, condition = NULL){
-      if(is.null(condition)){
-        ifelse(!is.na(x), 
-               x, 
-               '')
-      } else {
-        ifelse(!is.na(condition),
-               x,
-               '')
-      }
-    }
-    sub_dict <- sub_dict %>%
-      mutate(field_name = paste0(show_it(`Question number`),
-                                 show_it('. ', condition = `Question number`),
-                                 show_it(' ', condition = Description),
-                                 show_it(`Description`),
-                                 show_it(' ', condition = `Subquestion`),
-                                 show_it(`Subquestion`)))
-    for(i in 1:nrow(sub_dict)){
-      this_variable_name <- sub_dict$`Variable name`[i]
-      this_column_index <- which(names(df) == this_variable_name)
-      this_new_name <- sub_dict$field_name[i]
-      names(df)[this_column_index] <- this_new_name
-    }
-    names(df)[1] <- '1. State'
-    names(df) <- gsub("\\[|\\]", "", names(df))
-    names(df) <- trimws(names(df))
-    names(df)[names(df) == 'Region'] <- 'region'
-    df$region <- as.character(df$region)
+   df <- simplify_data(data = data,
+                       dict = dict)
+  } else {
+    df <- data
   }
   
   return(df)
