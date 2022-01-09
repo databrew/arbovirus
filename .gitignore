@@ -11,3 +11,5 @@ missingness/*.html
 missingness/.Rhistory
 .Rproj.user
 .Rhistory
+*.RData
+
