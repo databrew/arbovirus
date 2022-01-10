@@ -9,7 +9,7 @@ output:
     toc: yes
     toc_depth: '2'
 params:
-  region: WPRO
+  region: EMRO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -39,6 +39,7 @@ library(english)
 
 if( file.exists("data/data.RData")){
   load("data/data.RData")
+  # load("data/combined_data.RData")
 } else{
   message("You need the data!")
 }
