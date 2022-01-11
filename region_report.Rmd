@@ -2,14 +2,14 @@
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
 output:
   html_document:
-    toc: yes
-    toc_float: yes
+    toc: no
+    toc_float: no
     toc_depth: 2
   word_document:
     toc: yes
     toc_depth: '2'
 params:
-  region: EMRO
+  region: PAHO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -38,8 +38,8 @@ library(lubridate)
 library(english)
 
 if( file.exists("data/data.RData")){
-  load("data/data.RData")
-  # load("data/combined_data.RData")
+  # load("data/data.RData")
+  load("data/combined_data.RData")
 } else{
   message("You need the data!")
 }
@@ -572,7 +572,7 @@ cbind(Country=data$SI01, responses) %>%
 
 # Section V: Routine vector surveillance and control
 
-#### 26. Is there a disease programme, agency, or service in charge of arbovirus vector surveillance in your country?
+#### Disease programme, agency, or service in charge of arbovirus vector surveillance
 
 ```{r}
 responses <- get_responses("26")
@@ -582,7 +582,9 @@ cbind(Country=data$SI01, responses) %>%
   mutate( Programme = factor( replace_na( as.character(Programme), "None"))) %>%
   rename( "Programme/Agency" = Programme) %>% 
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  theme_zebra() %>% 
+  # hline( part="all") %>% 
+  autofit()
 ```
 
 #### 27. Which institution/department is in charge of reporting entomologic surveillance data to the national ministry of health/health department? (Check all that apply)
@@ -603,30 +605,20 @@ cbind(Country=data$SI01, responses, other) %>%
   hline( part="all") # %>% autofit()
 ```
 
-#### 28. For the last 2 years, did your country conduct entomologic surveillance for arboviral infections in mosquito vectors?
+#### Entomologic surveillance conducted for arboviral infections in mosquito vectors in the past two years
 
 ```{r}
 responses <- get_responses("28")
 
-cbind(Country=data$SI01, responses) %>%
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
-  regulartable() %>%
-  hline( part="all") # %>% autofit()
-```
-
-#### 28b. Please upload the most recent national vector surveillance report
-
-File(s) submitted by:
-
-```{r}
-data.frame(Country = data$SI01, Number = data$SV28b__filecount) %>%
-  drop_na(Number) %>%
-  filter(Number > 0 ) %>%
-  rename("Number of files"=Number) %>%
-  regulartable() %>%
-  hline( part="all" ) # %>% autofit()
+responses <- cbind(Country = data$SI01, responses)
+conducted <- responses$Country[which(responses$Response == "Yes")]
+not_conducted <- responses$Country[which(responses$Response == "No")]
+no_response <- responses$Country[which(is.na(responses$Response))]
 
 ```
+
+Countries that conducted entomologic surveillance included `r conducted`. Countries that did not included
+`r not_conducted`. `r no_response` did not respond. 
 
 #### 28c. Did the entomologic surveillance entail country wide programmes or was it restricted to specific locations?
 
