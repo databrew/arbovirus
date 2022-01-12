@@ -6,10 +6,10 @@ output:
     toc_float: no
     toc_depth: 2
   word_document:
-    toc: yes
+    toc: no
     toc_depth: '2'
 params:
-  region: WPRO
+  region: EURO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -38,8 +38,8 @@ library(lubridate)
 library(english)
 
 if( file.exists("data/data.RData")){
-  # load("data/data.RData")
-  load("data/combined_data.RData")
+  load("data/data.RData")
+  # load("data/combined_data.RData")
 } else{
   message("You need the data!")
 }
