@@ -465,7 +465,13 @@ if('combined_data.RData' %in% dir()){
   paho$SIII17_SQ004_SQ004 <- convert_y(paho$`Is ZIKV virus isolation available? [Y/N]`)
   
   # Is genome sequencing available? [Y/N]
-  paho$SIII17_SQ002_SQ006 <- convert_y_numeric(paho$`Is genome sequencing available? [Y/N]`)
+  paho$SIII17_SQ002_SQ006 <-
+    paho$SIII17_SQ001_SQ006 <-
+    paho$SIII17_SQ002_SQ006 <-
+    paho$SIII17_SQ003_SQ006 <-
+    paho$SIII17_SQ004_SQ006 <-
+    paho$SIII17_SQ005_SQ006 <-
+    convert_y_numeric(paho$`Is genome sequencing available? [Y/N]`)
   
   # Is house index used as threshold(s)? [Y/N]
   paho$SV37b_SQ005 <- convert_y(paho$`Is house index used as threshold(s)? [Y/N]`)
