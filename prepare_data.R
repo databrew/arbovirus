@@ -635,3 +635,9 @@ if('combined_data.RData' %in% dir("data")){
   )
   save(data, file = 'data/combined_data.RData')
 }
+
+# Simplify data
+simplified_data <- 
+  simplify_data(data = data,
+                dict = dict)
+write_csv(simplified_data, 'simplified_data.csv')
