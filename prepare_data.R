@@ -13,13 +13,13 @@ library(readxl)
 # WHO profided shapefiles
 #############################################
 # Read in WHO shapefiles
-if('who_shp.RData' %in% dir()){
-  load('who_shp.RData')
+if('who_shp.RData' %in% dir("data")){
+  load('data/who_shp.RData')
 } else {
   library(whomapper) # https://github.com/whocov/whomapper
   # options(scipen = '999')
   who_shp <- whomapper::pull_who_adm0()
-  save(who_shp, file = 'who_shp.RData')
+  save(who_shp, file = 'data/who_shp.RData')
 }
 # Source WHO provided function for mapping
 source('dashboard/who_map_disp.R')
@@ -171,8 +171,8 @@ who_regions <- who_shp$adm0
 #############################################
 # Read in PAHO data
 #############################################
-if('combined_data.RData' %in% dir()){
-  load('combined_data.RData')
+if('combined_data.RData' %in% dir("data")){
+  load('data/combined_data.RData')
 } else {
   
   # https://trello.com/c/LgyKpQfk/2696-who-new-dataset-combination
@@ -633,5 +633,5 @@ if('combined_data.RData' %in% dir()){
     data %>% mutate(survey = 'Original'),
     paho %>% mutate(survey = 'PAHO')
   )
-  save(data, file = 'combined_data.RData')
+  save(data, file = 'data/combined_data.RData')
 }
