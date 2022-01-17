@@ -34,6 +34,7 @@ library(stringr)
 library(pander)
 library(knitr)
 library(flextable)
+library(ggpubr)
 library(lubridate)
 library(english)
 
@@ -452,14 +453,75 @@ responses <- responses %>%
   mutate( across(everything(), as.factor))
 
 responses$value <- as.numeric( as.character(responses$value))
+# need_legend = TRUE
+base_path <- paste0("./images/q17/", params$region, "/")
+for(country in levels(responses$Country)) {
+  df <- responses %>% filter(Country == country)
+  for (virus in levels(df$Level)) {
+    fn <- paste0(base_path, country, "_", virus, ".png")
+    # the following code saves the legend only; should only need to be run once, but
+    # leaving it here in case it's needed later...
+    # if( need_legend ){
+    #   g <- ggplot(df %>% filter(Level == virus),
+    #             aes(x = Test, y = value, fill = Test)) +
+    #   geom_col() +
+    #   coord_equal() +
+    #   labs(x = "", y = "") +
+    #   scale_fill_discrete(name="Testing methods") +
+    #   theme(
+    #     axis.text = element_blank(),
+    #     axis.ticks = element_blank(),
+    #     panel.background = element_rect(fill="transparent"),
+    #     plot.background = element_rect(fill="transparent", color = NA),
+    #     panel.grid.major = element_blank(),
+    #     panel.grid.minor = element_blank(),
+    #     legend.position = "bottom"
+    #   )
+    #   the_legend <- get_legend( g )
+    #   ggsave("./images/q17/legend.png", the_legend)
+    #   need_legend <- FALSE
+    # }
+    g <- ggplot(df %>% filter(Level == virus),
+                aes(x = Test, y = value, fill = Test)) +
+      geom_col() +
+      coord_equal() +
+      labs(x = "", y = "") +
+      theme(
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill="transparent"),
+        plot.background = element_rect(fill="transparent", color = NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "none"
+      ) 
+    ggsave(fn, plot=g)
+  }
+}
 
-ggplot(responses, aes(x = Test, y = value, fill = Test)) + 
-  geom_col() + 
-  coord_equal() +
-  theme( axis.text = element_blank(),
-         axis.ticks = element_blank(),
-         legend.position = "bottom") +
-  facet_grid(Country ~ Level)
+chik <- paste0(base_path, dir(base_path)[ grep("Chikungunya", dir(base_path))])
+dengue <- paste0(base_path, dir(base_path)[ grep("Dengue", dir(base_path))])
+yellow <- paste0(base_path, dir(base_path)[ grep("Yellow fever", dir(base_path))])
+zika <- paste0(base_path, dir(base_path)[ grep("Zika", dir(base_path))])
+other <- paste0(base_path, dir(base_path)[ grep("Other", dir(base_path))])
+
+df <- tibble( Country = levels( responses$Country),
+                  Chikungunya = chik,
+                  Dengue = dengue,
+                  "Yellow fever" = yellow,
+                  Zika = zika,
+                  Other = other )
+
+flextable( df ) %>% 
+  colformat_image(j="Chikungunya", width=1, height=0.5) %>% 
+  colformat_image(j="Dengue", width=1, height=0.5) %>% 
+  colformat_image(j="Yellow fever", width=1, height=0.5) %>% 
+  colformat_image(j="Zika", width=1, height=0.5) %>% 
+  colformat_image(j="Other", width=1, height=0.5) %>% 
+  vline( part="body") 
+
+knitr::include_graphics("./images/q17/legend.png")
+# as_ggplot( the_legend )
 
 #   mutate( value = case_when( value == 1 ~ "X", value == 0 ~ " ", is.na(value) ~ " ")) %>%
 # 	pivot_wider(names_from=Level, values_from=value) %>%
