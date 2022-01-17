@@ -445,16 +445,30 @@ responses <- get_responses("17")
 responses <- cbind( Country=data$SI01, responses) %>% 
 	pivot_longer(!Country)
 new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses %>% 
-	mutate(Level = new_cols[,1], "Testing method" = new_cols[,2]) %>% 
-	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "X", value == 0 ~ " ", is.na(value) ~ " ")) %>%
-	pivot_wider(names_from=Level, values_from=value) %>%
-  regulartable() %>%
-  merge_v(j = ~Country) %>%
-  theme_zebra() %>%
-  # hline( part="all") %>% 
-  autofit()
+responses <- responses %>% 
+	mutate(Level = new_cols[,1], "Test" = new_cols[,2]) %>% 
+	select(-name) %>% 
+  replace_na( list(value=0)) %>%
+  mutate( across(everything(), as.factor))
+
+responses$value <- as.numeric( as.character(responses$value))
+
+ggplot(responses, aes(x = Test, y = value, fill = Test)) + 
+  geom_col() + 
+  coord_equal() +
+  theme( axis.text = element_blank(),
+         axis.ticks = element_blank(),
+         legend.position = "bottom") +
+  facet_grid(Country ~ Level)
+
+#   mutate( value = case_when( value == 1 ~ "X", value == 0 ~ " ", is.na(value) ~ " ")) %>%
+# 	pivot_wider(names_from=Level, values_from=value) %>%
+#   regulartable() %>%
+#   merge_v(j = ~Country) %>%
+#   theme_zebra() %>%
+#   # hline( part="all") %>% 
+#   autofit()
+
 ```
 
 #### Additional resources most needed for your country to perform adequate testing for arboviral diseases
