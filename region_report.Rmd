@@ -443,14 +443,14 @@ cbind(Country = data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("17")
-responses <- cbind( Country=data$SI01, responses) %>% 
-	pivot_longer(!Country)
-new_cols <- matrix( unlist( strsplit(responses$name, "\\]\\[") ), ncol=2, byrow=T)
-responses <- responses %>% 
-	mutate(Level = new_cols[,1], "Test" = new_cols[,2]) %>% 
-	select(-name) %>% 
-  replace_na( list(value=0)) %>%
-  mutate( across(everything(), as.factor))
+responses <- cbind(Country = data$SI01, responses) %>%
+  pivot_longer(!Country)
+new_cols <- matrix(unlist(strsplit(responses$name, "\\]\\[")), ncol = 2, byrow = T)
+responses <- responses %>%
+  mutate(Level = new_cols[, 1], "Test" = new_cols[, 2]) %>%
+  select(-name) %>%
+  replace_na(list(value = 0)) %>%
+  mutate(across(everything(), as.factor))
 
 responses$value <- as.numeric( as.character(responses$value))
 # need_legend = TRUE
@@ -459,8 +459,8 @@ for(country in levels(responses$Country)) {
   df <- responses %>% filter(Country == country)
   for (virus in levels(df$Level)) {
     fn <- paste0(base_path, country, "_", virus, ".png")
-    # the following code saves the legend only; should only need to be run once, but
-    # leaving it here in case it's needed later...
+    # the following code saves the legend only; should only need to be run once,
+    # but leaving it here in case it's needed again...
     # if( need_legend ){
     #   g <- ggplot(df %>% filter(Level == virus),
     #             aes(x = Test, y = value, fill = Test)) +
@@ -481,24 +481,28 @@ for(country in levels(responses$Country)) {
     #   ggsave("./images/q17/legend.png", the_legend)
     #   need_legend <- FALSE
     # }
-    g <- ggplot(df %>% filter(Level == virus),
-                aes(x = Test, y = value, fill = Test)) +
-      geom_col() +
-      coord_equal() +
-      labs(x = "", y = "") +
-      theme(
-        axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        panel.background = element_rect(fill="transparent"),
-        plot.background = element_rect(fill="transparent", color = NA),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "none"
-      ) 
-    ggsave(fn, plot=g)
+    if (!file.exists(fn)) {
+      g <- ggplot(df %>% filter(Level == virus),
+                  aes(x = Test, y = value, fill = Test)) +
+        geom_col() +
+        coord_equal() +
+        labs(x = "", y = "") +
+        theme(
+          axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          panel.background = element_rect(fill = "transparent"),
+          plot.background = element_rect(fill = "transparent", color = NA),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          legend.position = "none"
+        )
+      ggsave(fn, plot = g)
+    }
   }
 }
 
+# find all PNGs for each virus and append base_path to get their full file paths;
+# flextable's colformat_image expects a path to an image file
 chik <- paste0(base_path, dir(base_path)[ grep("Chikungunya", dir(base_path))])
 dengue <- paste0(base_path, dir(base_path)[ grep("Dengue", dir(base_path))])
 yellow <- paste0(base_path, dir(base_path)[ grep("Yellow fever", dir(base_path))])
@@ -513,7 +517,7 @@ df <- tibble( Country = levels( responses$Country),
                   Other = other )
 
 flextable( df ) %>% 
-  colformat_image(j="Chikungunya", width=1, height=0.5) %>% 
+  colformat_image(j="Chikungunya", width=0.8, height=0.4) %>% 
   colformat_image(j="Dengue", width=1, height=0.5) %>% 
   colformat_image(j="Yellow fever", width=1, height=0.5) %>% 
   colformat_image(j="Zika", width=1, height=0.5) %>% 

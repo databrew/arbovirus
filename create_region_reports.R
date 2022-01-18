@@ -20,4 +20,3 @@ for(i in 1:length( regions )){
                        output_file = report_name )
   }
 }
-
