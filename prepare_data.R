@@ -642,3 +642,26 @@ simplified_data <-
   simplify_data(data = data,
                 dict = dict)
 write_csv(simplified_data, 'simplified_data.csv')
+
+# Region specific datasets
+if(!file.exists('regions_data.zip')){
+  regions <- sort(unique(simplified_data$region))
+  if(!dir.exists('regions_data')){
+    dir.create('regions_data')
+  }
+  for(i in 1:length(regions)){
+    this_region <- regions[i]
+    message(this_region)
+    this_simplified_data <- simplified_data %>% filter(region == this_region)
+    this_standard_data <- data %>% filter(Region == this_region)
+    write_csv(this_simplified_data, paste0('regions_data/simplified_', this_region, '.csv'))
+    write_csv(this_simplified_data, paste0('regions_data/', this_region, '.csv'))
+  }
+  zip(zipfile = 'regions_data.zip',
+      files = 'regions_data')
+  unlink('regions_data/', recursive = TRUE)
+}
+
+# # Ad hoc request - info on questions 5 and 55 in one spreadsheet
+# # https://trello.com/c/BfxzBTFm/2711-who-arb-all-countries-data-in-a-spreadsheet
+# q555 <- simplified_data[,1:6]
