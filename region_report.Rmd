@@ -20,9 +20,9 @@ opts_chunk$set(comment = NA,
                warning = FALSE, 
                message = FALSE, 
                error = TRUE, 
-               cache = FALSE,
-               fig.width = 9.64,
-               fig.height = 5.9)
+               cache = FALSE )
+               # fig.width = 9.64,
+               # fig.height = 5.9)
                # fig.path = 'figures/')
 # options(scipen = '999')
 ```
@@ -104,6 +104,11 @@ get_responses <- function( question_number ){
 ```
 
 ```{css, echo=FALSE}
+body {
+  font-family: sans-serif;
+  font-size: 12pt;
+}
+
 h1 {
   text-align: center;
 }
@@ -441,19 +446,21 @@ cbind(Country = data$SI01, responses) %>%
 
 #### Arboviral testing capacity by country
 
-```{r}
+```{r fig.width=5, fig.height=3}
 responses <- get_responses("17")
 responses <- cbind(Country = data$SI01, responses) %>%
   pivot_longer(!Country)
 new_cols <- matrix(unlist(strsplit(responses$name, "\\]\\[")), ncol = 2, byrow = T)
 responses <- responses %>%
-  mutate(Level = new_cols[, 1], "Test" = new_cols[, 2]) %>%
+  mutate(Level = new_cols[, 1], Test = new_cols[, 2]) %>%
   select(-name) %>%
   filter( Level != "Other") %>% 
   replace_na(list(value = 0)) %>%
-  mutate(across(everything(), as.factor))
+  mutate( Country = as.factor(Country)) %>% 
+  mutate( Level = as.factor(Level)) %>% 
+  mutate( Test = as.factor(Test)) %>% 
+  mutate( value = as.numeric( as.character(value) )) 
 
-responses$value <- as.numeric( as.character(responses$value))
 # need_legend = TRUE
 base_path <- paste0("./images/q17/", params$region, "/")
 for(country in levels(responses$Country)) {
@@ -518,12 +525,13 @@ df <- tibble( Country = levels( responses$Country),
                   # Other = other )
 
 flextable( df ) %>% 
-  colformat_image(j="Chikungunya", width=1.25, height=0.6) %>% 
-  colformat_image(j="Dengue", width=1, height=0.5) %>% 
-  colformat_image(j="Yellow fever", width=1, height=0.5) %>% 
-  colformat_image(j="Zika", width=1, height=0.5) %>% 
+  colformat_image(j="Chikungunya", width=1.25, height=.75) %>% 
+  colformat_image(j="Dengue", width=1.25, height=0.75) %>% 
+  colformat_image(j="Yellow fever", width=1.25, height=0.75) %>% 
+  colformat_image(j="Zika", width=1.25, height=0.75) %>% 
   # colformat_image(j="Other", width=1, height=0.5) %>% 
-  vline( part="body") 
+  vline( part="body")  %>% 
+  set_caption("Testing capacity by virus and assay type")
 
 knitr::include_graphics("./images/q17/legend.png")
 # as_ggplot( the_legend )
@@ -539,6 +547,7 @@ knitr::include_graphics("./images/q17/legend.png")
 ```
 
 #### Additional resources most needed for your country to perform adequate testing for arboviral diseases
+
 
 ```{r}
 responses <- get_responses("18")
