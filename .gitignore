@@ -6,6 +6,8 @@ tables/
 *.tex
 *.zip
 *.xlsx
+*.png
+images/
 missingness/*.csv
 missingness/*.html
 missingness/.Rhistory
