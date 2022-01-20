@@ -665,3 +665,83 @@ if(!file.exists('regions_data.zip')){
 # # Ad hoc request - info on questions 5 and 55 in one spreadsheet
 # # https://trello.com/c/BfxzBTFm/2711-who-arb-all-countries-data-in-a-spreadsheet
 # q555 <- simplified_data[,1:6]
+q5 <- simplified_data
+toyn <- function(x){ifelse(x, 'Yes', 'No')}
+# Chik
+q5$any_CHIKV <- 
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Chikungunya2015 Cases` > 0 |
+        q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Chikungunya2016 Cases` > 0 |
+        q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Chikungunya2017 Cases` > 0 |
+        q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Chikungunya2018 Cases` > 0 |
+        q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Chikungunya2019 Cases` > 0 | 
+        q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Chikungunya2020 Cases` > 0
+q5$any_CHIKV <- ifelse(is.na(q5$any_CHIKV), FALSE, q5$any_CHIKV)
+q5$any_CHIKV <- toyn(q5$any_CHIKV)
+# dengue
+q5$any_Dengue <- 
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Dengue2015 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Dengue2016 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Dengue2017 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Dengue2018 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Dengue2019 Cases`| 
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Dengue2020 Cases`
+q5$any_Dengue <- ifelse(is.na(q5$any_Dengue), FALSE, q5$any_Dengue)
+q5$any_Dengue  <- toyn(q5$any_Dengue )
+# yellow fever
+q5$`any_Yellow Fever` <- 
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Yellow fever2015 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Yellow fever2016 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Yellow fever2017 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Yellow fever2018 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Yellow fever2019 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Yellow fever2020 Cases`
+q5$`any_Yellow Fever` <- ifelse(is.na(q5$`any_Yellow Fever`), FALSE, q5$`any_Yellow Fever`)
+q5$`any_Yellow Fever` <- toyn(q5$`any_Yellow Fever`)
+# zika
+q5$any_Zika <- 
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Zika2015 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Zika2016 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Zika2017 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Zika2018 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Zika2019 Cases` |
+  q5$`55.   Please provide total number of cases and deaths for the following arboviral diseases from 2015 to 2020 (if available) Zika2020 Cases`
+q5$any_Zika <- ifelse(is.na(q5$any_Zika), FALSE, q5$any_Zika)
+q5$any_Zika <- toyn(q5$any_Zika)
+
+# Add other arboviruses
+other_cols <- which(grepl('not just Aedes-borne viruses', names(q5)))
+for(i in 1:length(other_cols)){
+  this_index <- other_cols[i]
+  this_column_name <- names(q5)[this_index]
+  these_vals <- q5[,this_column_name]
+  these_vals <- as.character(unlist(these_vals))
+  these_vals <- ifelse(is.na(these_vals), 'No', these_vals)
+  these_vals <- ifelse(these_vals == 'Not selected', 'No', these_vals)
+  new_name <- paste0('55. ', unlist(lapply(strsplit(this_column_name, split = ') '), function(x){x[2]})), ' reported 2015-2020')
+  q5[,new_name] <- these_vals
+}
+
+q5 <- q5[,c(1:5, which(grepl('any_', names(q5))), which(grepl(' reported 2015-2020', names(q5))))]
+names(q5)[1:5] <- 
+  c('Country',
+    '5. Chikungunya circulation since 2000',
+    '5. Dengue circulation since 2000',
+    '5. Yellow Fever circulation since 2000',
+    '5. Zika circulation since 2000')
+any_cols <- which(grepl('any_', names(q5)))
+for(j in 1:length(any_cols)){
+  this_index <- any_cols[j]
+  this_column <- names(q5)[this_index]
+  new_name <- gsub('any_', '55. ', this_column)
+  new_name <- paste0(new_name, ' reported 2015-2020')
+  names(q5)[this_index] <- new_name
+}
+
+for(j in 2:5){
+  vals <- as.character(unlist(q5[,j]))
+  vals <- ifelse(is.na(vals), 'No', vals)
+  vals <- ifelse(vals == 'Not selected', 'No', vals)
+  q5[,j] <- vals
+}
+
+write_csv(q5, 'q5.csv')
