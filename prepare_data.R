@@ -743,5 +743,6 @@ for(j in 2:5){
   vals <- ifelse(vals == 'Not selected', 'No', vals)
   q5[,j] <- vals
 }
+q5 <- q5 %>% arrange(Country)
 
 write_csv(q5, 'q5.csv')
