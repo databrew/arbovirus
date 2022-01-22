@@ -63,7 +63,7 @@ if(file.exists("data/Regions_Countries.csv")) {
 region_expansion <- list(
   WPRO = "Western Pacific Region",
   EURO = "European Region",
-  SEARO = "South-East Asian Region",
+  SEARO = "South-East Asia Region",
   EMRO = "Eastern Mediterranean Region",
   PAHO = "Pan American Health Organization"
 )
@@ -86,6 +86,15 @@ if( file.exists("data/Data_dictionary_Survey375147.csv")){
   dict <- read_csv("data/Data_dictionary_Survey375147.csv")
 } else{
   message("You need the data dictionary!")
+}
+
+# exclude countries with no responses after question 4 :
+q5_start <- min( which( dict$`Question number` == "5") )
+incomplete_surveys <- c()
+for( i in 1:nrow(data)){
+  if( all( is.na( data[i, q5_start:nrow( dict )]))){
+    incomplete_surveys <- c( incomplete_surveys, i)
+  }
 }
 
 # utility function 
@@ -122,23 +131,42 @@ h4 {
 
 ## Section I: Respondent details
 
-`r str_to_title(as.english(n_unique_countries))` (`r round(100*( n_unique_countries / n_region_countries))`%) of `r n_region_countries` countries responded, namely `r pander( as.character(data$SI01) )`.
-
 ```{r}
 map_path <- paste0("images/", params$region, ".png")
 knitr::include_graphics( map_path )
 ```
 
+`r str_to_title(as.english(n_unique_countries))` (`r round(100*( n_unique_countries / n_region_countries))`%) of `r n_region_countries` countries responded, namely `r pander( as.character(data$SI01) )`. 
+
+```{r}
+incompletes <- FALSE
+if( length( incomplete_surveys) > 0){
+  incompletes <- TRUE
+  excluded_countries <- paste( data$SI01[ incomplete_surveys ], "only provided initial demographic information; their responses are henceforth excluded.")
+  data <- data[-incomplete_surveys,]
+} 
+```
+
+```{r eval=incompletes, results="asis"}
+pander(excluded_countries)
+```
+
+Names and contact details of persons completing the survey on behalf of the countries is shown in Appendix I.
+
 Non-responding countries are of concern in terms of arbovirus emergence and endemic transmission.
 
 ## Section II: Arboviral disease surveillance system
 
-#### Endemic arboviruses
+#### Documented arbovirus circulation
 
 Arboviruses reported to have circulated in each responding country at any time since the year 2000. This refers only to arboviruses with autochthonous, i.e., local mosquito-borne, transmission.
 
 
 ```{r}
+
+table_num <- 1
+caption <- paste0("Table ", table_num, ". Arboviruses that have circulated autochthonously in the country at any time since 2000")
+
 responses <- get_responses("5") %>%
   select(-Other)
 
@@ -151,9 +179,10 @@ cbind(Country = data$SI01, responses) %>%
                                    # "Unanswered"="Unanswered")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
-  theme_zebra() %>% 
+  # theme_zebra() %>% 
   # hline( i = 1:length(data$SI01)) %>%
-  align( j = 2:5, align="center") %>% autofit()
+  align( j = 2:5, align="center") %>% autofit() %>%
+  set_caption( caption )
 ```
 
 Other arbovirus circulation noted since the year 2000:
