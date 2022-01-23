@@ -9,7 +9,7 @@ output:
     toc: no
     toc_depth: '2'
 params:
-  region: SEARO
+  region: PAHO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -490,7 +490,7 @@ table_num <- table_num + 1
 
 #### Arboviral testing capacity by country
 
-```{r fig.width=5, fig.height=3}
+```{r fig.width=5, fig.height=3, eval=TRUE}
 caption <- paste0("Table ", table_num, ". Testing capacity by virus and assay type")
 responses <- get_responses("17")
 responses <- cbind(Country = data$SI01, responses) %>%
