@@ -110,20 +110,28 @@ get_responses <- function( question_number ){
   }
   return( responses )
 }
+
+table_num <- 1
+
 ```
 
 ```{css, echo=FALSE}
 body {
   font-family: sans-serif;
-  font-size: 12pt;
+  font-size: 11pt;
 }
 
 h1 {
-  text-align: center;
+  text-align: left;
+  font-family: sans-serif;
+  font-size: 12pt;
 }
 
 h4 {
-  text-decoration: underline;
+  text-align: left;
+  font-family: sans-serif;
+  font-size: 12pt;
+  font-style: italic;
 }
 ```
 
@@ -159,12 +167,11 @@ Non-responding countries are of concern in terms of arbovirus emergence and ende
 
 #### Documented arbovirus circulation
 
-Arboviruses reported to have circulated in each responding country at any time since the year 2000. This refers only to arboviruses with autochthonous, i.e., local mosquito-borne, transmission.
-
+All responding countries reported transmission of at least one of chikungunya (CHIKV), dengue (DENV), 
+and Zika (ZIKV) viruses (Table `r table_num`).
 
 ```{r}
 
-table_num <- 1
 caption <- paste0("Table ", table_num, ". Arboviruses that have circulated autochthonously in the country at any time since 2000")
 
 responses <- get_responses("5") %>%
@@ -172,17 +179,21 @@ responses <- get_responses("5") %>%
 
 cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya"="CHIKV",
+                                    "Dengue"="DENV",
+                                    "Yellow fever"="YFV",
+                                    "Zika"="ZIKV")) %>% 
   mutate( Response = recode_factor(.x = Response, 
                                    "Yes"="X", 
                                    "Not selected"=" ")) %>%
-                                   # "Unanswered"="Unanswered")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
-  # theme_zebra() %>% 
   # hline( i = 1:length(data$SI01)) %>%
   align( j = 2:5, align="center") %>% autofit() %>%
   set_caption( caption )
+
+table_num <- table_num + 1
 ```
 
 Other arbovirus circulation noted since the year 2000:
@@ -191,86 +202,59 @@ Other arbovirus circulation noted since the year 2000:
 other <- get_responses("5") %>%
   select(Other)
 
-cbind(Country = data$SI01, other) %>% 
+other <- cbind(Country = data$SI01, other) %>% 
   drop_na(Other) %>%
   rename("Other arbovirus(es)" = Other) %>% 
-  regulartable() %>% 
-  theme_zebra() %>% autofit()
+  regulartable() %>% autofit()
   # hline( part="body" )  
   
 ```
 
 #### Written arbovirus surveillance plans
 
+The viruses covered in these plans are shown in Table 2.
+
 ```{r}
 responses <- get_responses("6")
 
-q6 <- cbind(Country = data$SI01, responses) %>% 
+cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   mutate( Response = recode_factor(.x = Response,
                                    "Yes, we have arbovirus-specific plans(s) or guidelines(s)"="Arbovirus-specific plans",
                                    "Yes. We do not have arbovirus-specific guidelines, but arboviruses are included within general surveillance guidelines."="Within general surveillance guidelines",
                                    "No"="None",
                                    "I don't know"="Don't know")) %>%
-  rename( "Existence of surveillance plans"=Response)
+  rename( "Existence of surveillance plans"=Response) %>% 
+  regulartable() %>% autofit()
 
+other <- get_responses("6b") %>%
+  select(Other)
+cbind(Country = data$SI01, other) %>% 
+  drop_na(Other) %>%
+  rename("Other arbovirus(es)" = Other) %>% 
+  regulartable() %>% autofit()
+
+caption <- paste0("Table ", table_num, ". Viruses included in written surveillance plans")
 responses <- get_responses("6b")%>%
   select(-Other)
-
-q6b <- cbind(Country = data$SI01, responses) %>% 
+cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya"="CHIKV",
+                                    "Dengue"="DENV",
+                                    "Yellow fever"="YFV",
+                                    "Zika"="ZIKV")) %>% 
   mutate( Response = recode_factor(.x = Response, 
                                    "Yes"="X", 
                                    "Not selected"=" ")) %>% 
                                    # "Unanswered"="Unanswered")) %>%
-  pivot_wider( names_from=Arbovirus, values_from=Response)
-
-q6 <- inner_join( q6, q6b) %>%
-  mutate(across(Chikungunya:Zika, as.character))
-idx <- which( q6$`Existence of surveillance plans` == "Don't know" )
-q6[idx,] <- q6[idx,] %>% 
-  replace_na( list( Chikungunya = "?",
-                    Dengue = "?",
-                    "Yellow fever" = "?",
-                    Zika = "?"))
-
-# Discuss with Ingrid!! Spaces (" ") correspond to viruses that were intentionally not selected,
-# which is different from not knowing which viruses are covered by plans
-# idx <- which( q6$`Existence of surveillance plans` == "Within general surveillance guidelines" )
-# if( length(idx) > 0 ){
-#   for(i in 1:length(idx)){
-#     j <- which( q6[idx[i],] == " ")
-#     if( length(j) > 0){
-#       q6[ idx[i], j ] <- "?"
-#     }
-#   }
-# }
-
-q6 %>%
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>% 
   regulartable() %>% 
-  theme_zebra() %>% 
-  # hline( part="body") %>% 
-  autofit()
+  set_caption( caption ) %>% autofit()
 
-```
+table_num <- table_num + 1
 
-Other arboviruses covered in surveillance plans:
-
-```{r}
-other <- get_responses("6b") %>%
-  select(Other)
-
-cbind(Country = data$SI01, other) %>% 
-  drop_na(Other) %>%
-  rename("Other arbovirus(es)" = Other) %>% 
-  regulartable() %>%
-  # hline( part="body" ) %>%  
-  theme_zebra() %>% 
-  autofit()
-  
 ```
 
 #### National programme for arboviral diseases surveillance
@@ -285,12 +269,15 @@ no_programme <- paste( responses$Country[ which( responses$Response == "No progr
 
 ```
 
-`r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` had arboviral disease surveillance 
-integrated into another programme. No programme reported by `r no_programme`.
+`r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` 
+had arboviral disease surveillance integrated into another programme. No programme 
+reported by `r no_programme`.
 
 #### Training provided to arboviral surveillance staff
 
 ```{r}
+
+caption <- paste0("Table ", table_num, ". Training provided to arboviral staff" )
 responses <- get_responses("10") %>%
   select(-Other)
 # training <- colnames( responses )
@@ -312,52 +299,64 @@ df <- cbind(Country = data$SI01, responses) %>%
 # colnames(df) <- c("Country", training)
 
 regulartable(df) %>%
-  theme_zebra() %>%
-  # hline( i = 1:length(data$SI01)) %>%
-  align(j = 2:6, align = "center") %>%
-  autofit()
+  align(j = 2:6, align = "center") %>% autofit()
+
+table_num = table_num + 1
 ```
 
-* Basic training:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
-* Advanced training: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
+* _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
+* _Advanced training_: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
 
-<!-- #### 11. Is reporting mandatory for any arboviral disease cases in your country? -->
+#### Mandatory reporting status of arboviral diseases
 
-```{r eval=FALSE}
+```{r}
 responses <- get_responses("11") 
 cbind(Country = data$SI01, responses) %>% 
   drop_na(Response) %>%
-  regulartable() %>% 
-  theme_zebra() %>%
-  # hline( part="all" ) %>% 
-  autofit()
+  regulartable() %>% autofit()
 ```
 
-#### Reportable diseases by case classification status*
 
 ```{r}
+
+caption <- paste0("Table ", table_num, ". Reportable diseases by case classification status")
 responses <- get_responses("11b")
 
-df <- cbind(Country = data$SI01, responses) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") # %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) 
+df <- cbind(Country = data$SI01, responses) %>%
+  select(-"Other ") %>% 
+  pivot_longer(!Country, names_to = "Arbovirus", values_to = "Response") # %>%
 
-df$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", df$Response))
+df$Response <-
+  str_to_sentence(gsub("Mandatory reporting of ", "", df$Response))
 
-df %>% 
-  mutate( Response = recode_factor(.x=Response,
-                                   "All suspect cases"="S",
-                                   "Confirmed cases only"="C",
-                                   "Not reportable"="N")) %>%
-  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
-  regulartable() %>% 
-  theme_zebra() %>%
-  # hline( part="all" ) %>% 
-  autofit()
+df %>%
+  mutate(
+    Arbovirus = recode_factor(
+      .x = Arbovirus,
+      "Chikungunya" = "CHIKV",
+      "Dengue" = "DENV",
+      "Yellow fever" = "YFV",
+      "Zika (congenital)" = "ZIKV (C)",
+      "Zika (non-congenital)" = "ZIKV (NC)"
+    )
+  ) %>%
+  mutate(
+    Response = recode_factor(
+      .x = Response,
+      "All suspect cases" = "S",
+      "Confirmed cases only" = "C",
+      "Not reportable" = "N"
+    )
+  ) %>%
+  pivot_wider(names_from = Arbovirus, values_from = Response) %>%
+  regulartable() %>%
+  set_caption(caption) %>% autofit()
+
+table_num <- table_num + 1
 
 ```
 
-*S=All suspect cases, C=Confirmed cases only, N=Not reportable
+* S=All suspect cases, C=Confirmed cases only, N=Not reportable
 
 Other reportable diseases by case classification status:
 
@@ -372,29 +371,24 @@ reporting <- cbind( Country=data$SI01, responses[,-idx]) %>%
   select( Country, Reporting=value)
 cbind(arboviruses, Mandatory = reporting$Reporting) %>%
   drop_na(Arbovirus) %>%
-  # mutate( Mandatory = factor( replace_na( as.character(Mandatory), "Unanswered"))) %>%
   rename("Mandatory reporting" = Mandatory) %>%
   regulartable() %>%
-  merge_v(j = ~Country ) %>% 
-  theme_zebra() %>%
-  # hline( part="all") %>% 
-  autofit()
+  merge_v(j = ~Country ) %>% autofit()
   
 ```
 
-#### National epidemiological surveillance for human cases of arboviral disease
+#### Surveillance for human cases of arboviral disease
 
 ```{r}
 
+caption <- paste0("Table ", table_num, ". Performance of national epidemiological surveillance for arboviral diseases in humans")
 responses_12 <- get_responses("12") 
-
 responses_12b <- get_responses("12b")
 colnames( responses_12b ) <- c("Response", "Other")
 responses_12b <- responses_12b %>%
   mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
   mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
   unite( Frequency, Response:Other, sep="") 
-# responses$Frequency[ responses$Frequency == "" ] <- "Unanswered"
 
 responses_12c <- get_responses("12c")
 colnames(responses_12c) <- "Type"
@@ -402,38 +396,43 @@ colnames(responses_12c) <- "Type"
 cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>% 
   rename( "Surveillance conducted" = Response ) %>% 
   regulartable() %>% 
-  theme_zebra() %>%
-  # hline( part="all" ) %>% 
-  autofit()
+  set_caption( caption ) %>% autofit()
 
+table_num <- table_num + 1
 ```
 
 #### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases
 
 ```{r}
+caption <- paste0("Table ", table_num, ". Training of healthcare workers on reporting Aedes-borne arboviral diseases")
 responses <- get_responses("13") 
-colnames(responses) <- c("Response","Comments")
+colnames(responses) <- c("Response","Description")
 responses <- responses %>%
   mutate(Response = recode_factor(.x=Response,
                                   "Yes. If so, please describe in the comments field:"="Yes",
                                   "No"="No",
-                                  "I don't know" ="I don't know"))
+                                  "I don't know" ="I don't know")) 
 cbind(Country = data$SI01, responses) %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  filter( Response == "Yes") %>% 
+  select(-Response) %>%
+  replace_na( list(Description = "Conducted (no further description provided)")) %>% 
+  rename( "Description of training" = Description) %>%
   regulartable() %>% 
-  theme_zebra() %>%
-  # hline( part="all" ) %>% 
-  autofit()
+  set_caption( caption ) %>% autofit()
+
+table_num <- table_num + 1
 ```
 
-#### Arboviral disease surveillance staff perception of factors contributing to the a) success and b) barriers/challenges to arboviral disease surveillance in humans 
+#### Arboviral disease surveillance staff perceptions 
 
 ```{r}
+caption <- paste0("Table ", table_num, ". Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance")
 responses <- get_responses("14") 
 cbind(Country = data$SI01, responses) %>% 
-  # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>% 
-  hline( part="all" ) %>% autofit()
+  set_caption(caption) %>% autofit()
+
+table_num <- table_num + 1
 ```
 
 # Section III: Arbovirus laboratory capacity
