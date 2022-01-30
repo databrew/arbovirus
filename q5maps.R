@@ -148,8 +148,28 @@ ggplot(data = shpfl,
                      values = c('lightblue', 'darkred'),
                     na.value = 'lightgrey') +
   theme_map()
-ggsave('~/Desktop/map2.png', height = 8, width = 9)
+ggsave('~/Desktop/map2.png', height = 8, width = 10)
 
+regions <- sort(unique(shp_sp@data$who_region))
+for(r in 1:length(regions)){
+  this_region <- regions[r]
+  message(this_region)
+  ggplot(data = shpfl %>% filter(who_region == this_region),
+         aes(x = long,
+             y = lat,
+             group = group)) +
+    geom_polygon(aes(fill = value),
+                 color = 'black',
+                 size = 0.5,
+                 alpha = 0.6) +
+    facet_wrap(~key) +
+    # coord_map() +
+    scale_fill_manual(name = '',
+                      values = c('lightblue', 'darkred'),
+                      na.value = 'lightgrey') +
+    theme_map()
+  ggsave(paste0('~/Desktop/map2_', this_region, '.png'), height = 8, width = 10)
+}
 
 # Ggplot with symbology
 
@@ -200,6 +220,33 @@ ggplot() +
   theme_map()
 ggsave('~/Desktop/map3.png', height = 8, width = 10)
 
+regions <- sort(unique(shp_sp@data$who_region))
+for(r in 1:length(regions)){
+  this_region <- regions[r]
+  message(this_region)
+  cols <- rev(RColorBrewer::brewer.pal(n = 5, 'Spectral'))
+  ggplot() +
+    geom_polygon(data = shpf %>% mutate(total = factor(total)) %>%
+                   filter(who_region == this_region),
+                 aes(x = long,
+                     y = lat,
+                     group = group,
+                     fill = total),
+                 color = 'black',
+                 alpha = 0.6,
+                 size = 0.3) +
+    geom_text(data = centroids %>% filter(who_region == this_region),
+              aes(x = lng,
+                  y = lat,
+                  label = label),
+              size = 2,
+              alpha = 0.8) +
+    scale_fill_manual(name = '',
+                      values = cols) +
+    theme_map()
+  ggsave(paste0('~/Desktop/map3_', this_region, '.png'), height = 8, width = 10)
+}
+
 cols <- rev(RColorBrewer::brewer.pal(n = 5, 'Spectral'))
 ggplot() +
   geom_polygon(data = shpf %>% mutate(total = factor(total)),
@@ -220,8 +267,125 @@ ggplot() +
                     values = cols) +
   theme_map() +
   facet_wrap(~who_region, scales = 'free')
-ggsave('~/Desktop/map4.png', height = 8, width = 14)
+ggsave('~/Desktop/map3_paneled.png', height = 8, width = 14)
 
+# # Q 34
+# Make two choropleth maps:
+#   1. For question 34b (Aedes aegypti)
+# 2. For question 34c (Aedes albopictus)
+# 
+# These should be similar to the attached (But do not need to copy the style exactly - just to give an idea).
+# 
+# The colors should reflect the magnitude of the risk level (ie “populations abundant and arboviruses circulating…” through to “occasionally found and pose no significant threat…”)
+# 
+# Once global maps are done, make one map for each question for each region (use region column)
+q34a <- simplified_data %>%
+  dplyr::select(country = `1. State`,
+                region)
+q34b <- simplified_data[,grepl('34', names(simplified_data)) & grepl('choose', names(simplified_data)) & grepl('Please', names(simplified_data)) & !grepl('34.', names(simplified_data), fixed = T)]
+q34 <- bind_cols(q34a, q34b)
+names(q34)[3:4] <- c('aegypti', 'albopictus')
+# Join to spatial
+shp <- who_shp$adm0
+shp$country <- shp$adm0_viz_n
+shp <- left_join(shp, q34 %>% dplyr::select(-region))
+shp_sp <- as(shp, 'Spatial')
+shp_sp <- maptools::pruneMap(shp_sp)
+shpf <- fortify(shp_sp, region = 'country')
+shpf$country <- shpf$id
+shpf <- left_join(shpf, shp_sp@data)
+
+# Factor levels
+shpf$aegypti <- factor(shpf$aegypti,
+                       levels = c("Aedes aegypti mosquitoes are only occasionally found and do not pose a significant public health threat",
+                                  "Aedes aegypti populations are restricted to few sites and do not yet pose a significant threat",
+                                  "Aedes aegypti populations are stable in select areas and pose a significant threat",
+                                  "Aedes aegypti populations are spreading and pose a significant public health threat",
+                                  "Aedes aegypti populations are abundant and arbovirus(es) is (are) circulating"))
+shpf$albopictus <- 
+  factor(shpf$albopictus,
+         levels = c("Aedes albopictus mosquitoes are only occasionally found and do not pose a significant public health threat",
+                    "Aedes albopictus populations are restricted to few sites and do not yet pose a significant threat",
+                    "Aedes albopictus populations are stable in select areas and pose a significant threat",
+                    "Aedes albopictus populations are spreading and pose a significant public health threat",
+                    "Aedes albopictus populations are abundant and arbovirus(es) is (are) circulating"))
+
+
+# Map
+cols <- rev(RColorBrewer::brewer.pal(n = 5, 'Spectral'))
+ggplot() +
+  geom_polygon(data = shpf,
+               aes(x = long,
+                   y = lat,
+                   group = group,
+                   fill = aegypti),
+               color = 'black',
+               alpha = 0.6,
+               size = 0.3) +
+  scale_fill_manual(name = '',
+                    values = cols) +
+  theme_map() +
+  guides(fill=guide_legend(ncol=2,byrow=FALSE))
+ggsave('~/Desktop/map4_aegypti.png', height = 7, width = 10)
+
+
+regions <- sort(unique(shp_sp@data$who_region))
+for(r in 1:length(regions)){
+  this_region <- regions[r]
+  message(this_region)
+  ggplot() +
+    geom_polygon(data = shpf %>% filter(who_region == this_region),
+                 aes(x = long,
+                     y = lat,
+                     group = group,
+                     fill = aegypti),
+                 color = 'black',
+                 alpha = 0.6,
+                 size = 0.3) +
+    scale_fill_manual(name = '',
+                      values = cols) +
+    theme_map() +
+    guides(fill=guide_legend(ncol=2,byrow=FALSE))
+  ggsave(paste0('~/Desktop/map4_aegypti_', this_region, '.png'), height = 7, width = 10)
+}
+
+# Map
+cols <- rev(RColorBrewer::brewer.pal(n = 5, 'Spectral'))
+ggplot() +
+  geom_polygon(data = shpf,
+               aes(x = long,
+                   y = lat,
+                   group = group,
+                   fill = albopictus),
+               color = 'black',
+               alpha = 0.6,
+               size = 0.3) +
+  scale_fill_manual(name = '',
+                    values = cols) +
+  theme_map() +
+  guides(fill=guide_legend(ncol=2,byrow=FALSE))
+ggsave('~/Desktop/map5_albopictus.png', height = 7, width = 10)
+
+
+regions <- sort(unique(shp_sp@data$who_region))
+for(r in 1:length(regions)){
+  this_region <- regions[r]
+  message(this_region)
+  ggplot() +
+    geom_polygon(data = shpf %>% filter(who_region == this_region),
+                 aes(x = long,
+                     y = lat,
+                     group = group,
+                     fill = albopictus),
+                 color = 'black',
+                 alpha = 0.6,
+                 size = 0.3) +
+    scale_fill_manual(name = '',
+                      values = cols) +
+    theme_map() +
+    guides(fill=guide_legend(ncol=2,byrow=FALSE))
+  ggsave(paste0('~/Desktop/map5_albopictus_', this_region, '.png'), height = 7, width = 10)
+}
 
 
 # Join to spatial
