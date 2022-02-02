@@ -9,7 +9,7 @@ output:
     toc: no
     toc_depth: '2'
 params:
-  region: PAHO
+  region: EURO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
