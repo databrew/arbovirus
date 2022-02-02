@@ -3,6 +3,7 @@ tables/
 *.html
 *.pdf
 *.docx
+*.pptx
 *.tex
 *.zip
 *.xlsx
