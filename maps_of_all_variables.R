@@ -37,6 +37,6 @@ for(i in 1:length(variables)){
          y = 'Latitude') 
   ggsave(filename = paste0('~/Desktop/who_maps/', i, '.png'),
          plot = g,
-         width = 9,
+         width = 10.5,
          height = 7)
 }
