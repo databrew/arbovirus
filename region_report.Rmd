@@ -174,10 +174,11 @@ and Zika (ZIKV) viruses (Table `r table_num`).
 
 caption <- paste0("Table ", table_num, ". Arboviruses that have circulated autochthonously in the country at any time since 2000")
 
-responses <- get_responses("5") %>%
-  select(-Other)
+responses <- get_responses("5") 
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
 
-cbind(Country = data$SI01, responses) %>% 
+responses <- cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
   mutate( Arbovirus = recode_factor(.x = Arbovirus,
                                     "Chikungunya"="CHIKV",
@@ -188,6 +189,9 @@ cbind(Country = data$SI01, responses) %>%
                                    "Yes"="X", 
                                    "Not selected"=" ")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  mutate( Other = other$Other )
+
+responses %>%
   regulartable() %>% 
   # hline( i = 1:length(data$SI01)) %>%
   align( j = 2:5, align="center") %>% autofit() %>%
