@@ -32,6 +32,7 @@ opts_chunk$set(comment = NA,
 library(tidyverse)
 library(stringr)
 library(pander)
+panderOptions( 'p.wrap', "")
 library(knitr)
 library(flextable)
 library(ggpubr)
@@ -124,7 +125,8 @@ body {
 h1 {
   text-align: left;
   font-family: sans-serif;
-  font-size: 12pt;
+  font-size: 14pt;
+  font-weight: bold;
 }
 
 h4 {
@@ -172,7 +174,7 @@ and Zika (ZIKV) viruses (Table `r table_num`).
 
 ```{r}
 
-caption <- paste0("Table ", table_num, ". Arboviruses that have circulated autochthonously in the country at any time since 2000")
+caption <- paste0("Table ", table_num, ". Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)")
 
 responses <- get_responses("5") 
 other <- responses %>% select(Other)
@@ -185,11 +187,12 @@ responses <- cbind(Country = data$SI01, responses) %>%
                                     "Dengue"="DENV",
                                     "Yellow fever"="YFV",
                                     "Zika"="ZIKV")) %>% 
+  mutate( Response = na_if(Response, "Not selected")) %>%
   mutate( Response = recode_factor(.x = Response, 
-                                   "Yes"="X", 
-                                   "Not selected"=" ")) %>%
+                                   "Yes"="X")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
-  mutate( Other = other$Other )
+  mutate( Other = other$Other ) %>%
+  filter( if_any(CHIKV:Other, ~ !is.na(.x)))
 
 responses %>%
   regulartable() %>% 
@@ -200,61 +203,51 @@ responses %>%
 table_num <- table_num + 1
 ```
 
-Other arbovirus circulation noted since the year 2000:
-
-```{r}
-other <- get_responses("5") %>%
-  select(Other)
-
-other <- cbind(Country = data$SI01, other) %>% 
-  drop_na(Other) %>%
-  rename("Other arbovirus(es)" = Other) %>% 
-  regulartable() %>% autofit()
-  # hline( part="body" )  
-  
-```
-
 #### Written arbovirus surveillance plans
 
-The viruses covered in these plans are shown in Table 2.
-
 ```{r}
+
+caption <- paste0("Table ", table_num, ". Surveillance plans and the viruses covered (ref Q6, 6b)")
 responses <- get_responses("6")
 
-cbind(Country = data$SI01, responses) %>% 
+q6 <- cbind(Country = data$SI01, responses) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   mutate( Response = recode_factor(.x = Response,
-                                   "Yes, we have arbovirus-specific plans(s) or guidelines(s)"="Arbovirus-specific plans",
+                                   "Yes, we have arbovirus-specific plans(s) or guidelines(s)"="Arbovirus-specific",
                                    "Yes. We do not have arbovirus-specific guidelines, but arboviruses are included within general surveillance guidelines."="Within general surveillance guidelines",
                                    "No"="None",
                                    "I don't know"="Don't know")) %>%
-  rename( "Existence of surveillance plans"=Response) %>% 
-  regulartable() %>% autofit()
+  rename( "Nature of surveillance plans"=Response)
 
 other <- get_responses("6b") %>%
   select(Other)
-cbind(Country = data$SI01, other) %>% 
+other <- cbind(Country = data$SI01, other) %>% 
   drop_na(Other) %>%
-  rename("Other arbovirus(es)" = Other) %>% 
-  regulartable() %>% autofit()
+  rename("Other arbovirus(es) covered" = Other) 
 
-caption <- paste0("Table ", table_num, ". Viruses included in written surveillance plans")
-responses <- get_responses("6b")%>%
+q6b <- get_responses("6b")%>%
   select(-Other)
-cbind(Country = data$SI01, responses) %>% 
+q6b <- cbind(Country = data$SI01, q6b) %>% 
   pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
   mutate( Arbovirus = recode_factor(.x = Arbovirus,
                                     "Chikungunya"="CHIKV",
                                     "Dengue"="DENV",
                                     "Yellow fever"="YFV",
                                     "Zika"="ZIKV")) %>% 
+  mutate( Response = na_if( Response, "Not selected")) %>% 
   mutate( Response = recode_factor(.x = Response, 
-                                   "Yes"="X", 
-                                   "Not selected"=" ")) %>% 
-                                   # "Unanswered"="Unanswered")) %>%
-  pivot_wider( names_from=Arbovirus, values_from=Response) %>% 
+                                   "Yes"="X")) %>% 
+  pivot_wider( names_from=Arbovirus, values_from=Response) 
+
+left_join( q6, q6b, by="Country") %>%
+  left_join( other) %>%
   regulartable() %>% 
+  add_header( CHIKV = "Aedes-borne viruses covered in plans",
+              DENV = "Aedes-borne viruses covered in plans",
+              YFV = "Aedes-borne viruses covered in plans",
+              ZIKV = "Aedes-borne viruses covered in plans" ) %>%
+  merge_h( part = "header" ) %>%
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -281,7 +274,7 @@ reported by `r no_programme`.
 
 ```{r}
 
-caption <- paste0("Table ", table_num, ". Training provided to arboviral staff" )
+caption <- paste0("Table ", table_num, ". Training provided to arboviral surveillance staff (ref Q10)" )
 responses <- get_responses("10") %>%
   select(-Other)
 # training <- colnames( responses )
@@ -324,37 +317,51 @@ cbind(Country = data$SI01, responses) %>%
 
 ```{r}
 
-caption <- paste0("Table ", table_num, ". Reportable diseases by case classification status")
-responses <- get_responses("11b")
-
-df <- cbind(Country = data$SI01, responses) %>%
+caption <- paste0("Table ", table_num, ". Reportable diseases by case classification status (ref Q11b, 11c)")
+q11b <- get_responses("11b")
+q11b <- cbind(Country = data$SI01, q11b) %>%
   select(-"Other ") %>% 
-  pivot_longer(!Country, names_to = "Arbovirus", values_to = "Response") # %>%
+  pivot_longer(!Country, names_to = "Arbovirus", values_to = "Response")
+q11b$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", q11b$Response))
+q11b <- q11b %>%
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya" = "CHIKV",
+                                    "Dengue" = "DENV",
+                                    "Yellow fever" = "YFV",
+                                    "Zika (congenital)" = "ZIKV (C)",
+                                    "Zika (non-congenital)" = "ZIKV (NC)")) %>%
+  mutate( Response = recode_factor( .x = Response,
+                                    "All suspect cases" = "S",
+                                    "Confirmed cases only" = "C",
+                                    "Not reportable" = "N")) %>%
+  pivot_wider(names_from = Arbovirus, values_from = Response) 
 
-df$Response <-
-  str_to_sentence(gsub("Mandatory reporting of ", "", df$Response))
+q11c <- get_responses("11c")
+idx <- which( grepl("Arbovirus",colnames(q11c)))
+arboviruses <- cbind( Country=data$SI01, q11c[,idx]) %>%
+  pivot_longer(!Country) %>%
+  select( Country, Arbovirus=value)
+reporting <- cbind( Country=data$SI01, q11c[,-idx]) %>%
+  pivot_longer(!Country) %>%
+  select( Country, Reporting=value)
+idx <- grep("suspect", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (S)"
+idx <- grep("confirm", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (C)"
+idx <- grep("not", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (N)"
+reporting$Reporting[ is.na( reporting$Reporting) ] <- ""
+q11c <- cbind(arboviruses, Reporting = reporting$Reporting) %>%
+  unite( "Other", Arbovirus:Reporting, sep = "")
+idx <- which( q11c$Other == "NA" )
+q11c <- q11c[-idx,]
+q11c <- q11c %>% 
+  group_by( Country ) %>% 
+  summarize( Other = paste(Other, collapse=", "))
 
-df %>%
-  mutate(
-    Arbovirus = recode_factor(
-      .x = Arbovirus,
-      "Chikungunya" = "CHIKV",
-      "Dengue" = "DENV",
-      "Yellow fever" = "YFV",
-      "Zika (congenital)" = "ZIKV (C)",
-      "Zika (non-congenital)" = "ZIKV (NC)"
-    )
-  ) %>%
-  mutate(
-    Response = recode_factor(
-      .x = Response,
-      "All suspect cases" = "S",
-      "Confirmed cases only" = "C",
-      "Not reportable" = "N"
-    )
-  ) %>%
-  pivot_wider(names_from = Arbovirus, values_from = Response) %>%
+left_join( q11b, q11c) %>%
   regulartable() %>%
+  merge_v(j = ~Country ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -363,30 +370,11 @@ table_num <- table_num + 1
 
 * S=All suspect cases, C=Confirmed cases only, N=Not reportable
 
-Other reportable diseases by case classification status:
-
-```{r}
-responses <- get_responses("11c")
-idx <- which( grepl("Arbovirus",colnames(responses)))
-arboviruses <- cbind( Country=data$SI01, responses[,idx]) %>%
-  pivot_longer(!Country) %>%
-  select( Country, Arbovirus=value)
-reporting <- cbind( Country=data$SI01, responses[,-idx]) %>%
-  pivot_longer(!Country) %>%
-  select( Country, Reporting=value)
-cbind(arboviruses, Mandatory = reporting$Reporting) %>%
-  drop_na(Arbovirus) %>%
-  rename("Mandatory reporting" = Mandatory) %>%
-  regulartable() %>%
-  merge_v(j = ~Country ) %>% autofit()
-  
-```
-
 #### Surveillance for human cases of arboviral disease
 
 ```{r}
 
-caption <- paste0("Table ", table_num, ". Performance of national epidemiological surveillance for arboviral diseases in humans")
+caption <- paste0("Table ", table_num, ". Performance of national epidemiological surveillance for arboviral diseases in humans (ref Q12, 12b, 12c)")
 responses_12 <- get_responses("12") 
 responses_12b <- get_responses("12b")
 colnames( responses_12b ) <- c("Response", "Other")
@@ -409,7 +397,7 @@ table_num <- table_num + 1
 #### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Training of healthcare workers on reporting Aedes-borne arboviral diseases")
+caption <- paste0("Table ", table_num, ". Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)")
 responses <- get_responses("13") 
 colnames(responses) <- c("Response","Description")
 responses <- responses %>%
@@ -431,7 +419,7 @@ table_num <- table_num + 1
 #### Arboviral disease surveillance staff perceptions 
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance")
+caption <- paste0("Table ", table_num, ". Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance (ref Q14)")
 responses <- get_responses("14") 
 cbind(Country = data$SI01, responses) %>% 
   regulartable() %>% 
@@ -445,7 +433,7 @@ table_num <- table_num + 1
 #### Cases for which arbovirus laboratory testing is performed
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Cases for which laboratory testing is performed by transmission period")
+caption <- paste0("Table ", table_num, ". Cases for which laboratory testing is performed by transmission period (ref Q15)")
 responses <- get_responses("15")
 periods <- colnames(responses)
 colnames(responses)=c("Outbreak","Non")
@@ -473,7 +461,7 @@ table_num <- table_num + 1
 #### Viruses for which the national laboratory confirmed cases
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Virus diagnostic confirmatory testing performed by the national laboratory")
+caption <- paste0("Table ", table_num, ". Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)")
 responses <- get_responses("16")
 colnames(responses) <- c("Response","Arbovirus(es)")
 responses <- responses %>%
@@ -601,7 +589,7 @@ knitr::include_graphics("./images/q17/legend.png")
 #### Additional resources most needed for your country to perform adequate testing for arboviral diseases
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Additional resources required for adequate arboviral disease testing")
+caption <- paste0("Table ", table_num, ". Additional resources required for adequate arboviral disease testing (ref Q18)")
 responses <- get_responses("18")
 colnames(responses) <- c(
   "Personnel needed",
@@ -631,7 +619,7 @@ table_num <- table_num + 1
 #### Virological surveillance on humans, i.e., tracking of prevailing genotypes/serotypes
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Capacity for virological surveillance on human specimens")
+caption <- paste0("Table ", table_num, ". Capacity for virological surveillance on human specimens (ref Q19)")
 responses <- get_responses("19")
 idx <- grep("Comment", colnames(responses))
 responses <- responses[,-idx]
@@ -667,7 +655,7 @@ table_num <- table_num + 1
 #### Laboratory staff perceptions
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Laboratory staff perception of factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections")
+caption <- paste0("Table ", table_num, ". Laboratory staff perception of factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections (ref Q20)")
 responses <- get_responses("20")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
@@ -678,7 +666,7 @@ table_num <- table_num + 1
 
 # Section IV: Management of arboviral disease cases
 
-#### Countries with clinical guidelines for healthcare workers on diagnosis and clinical management of cases and severe cases of _Aedes_-borne arboviral diseases
+#### Countries with clinical guidelines for healthcare workers on diagnosis and clinical management of cases and severe cases of _Aedes_-borne arboviral diseases (ref Q21)
 
 ```{r}
 responses <- get_responses("21")
@@ -697,7 +685,7 @@ The following countries indicated availability of clinical guidelines: `r availa
 #### Training healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Training for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases")
+caption <- paste0("Table ", table_num, ". Training for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases (ref Q24)")
 responses <- get_responses("24")
 colnames(responses) <- c("Response","Training")
 cbind(Country=data$SI01, responses) %>%
@@ -716,7 +704,7 @@ table_num <- table_num + 1
 #### Arboviral disease surveillance/clinical staff perceptions
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Arboviral disease surveillance/clinical staff perception of factors contributing to the a) success and b) barriers/challenges with respect to case management")
+caption <- paste0("Table ", table_num, ". Arboviral disease surveillance/clinical staff perception of factors contributing to the a) success and b) barriers/challenges with respect to case management (ref Q25)")
 responses <- get_responses("25")
 cbind(Country=data$SI01, responses) %>%
   drop_na(Response) %>%
@@ -731,19 +719,23 @@ table_num <- table_num + 1
 #### Disease programme, agency, or service in charge of arbovirus vector surveillance
 
 ```{r}
+caption <- paste0("Table ", table_num, ". Agency in charge of arbovirus vector surveillance (ref Q26)")
 responses <- get_responses("26")
 colnames(responses) <- c("Response","Programme")
 responses <- responses %>% select( "Programme")
 cbind(Country=data$SI01, responses) %>%
   mutate( Programme = factor( replace_na( as.character(Programme), "None"))) %>%
   rename( "Programme/Agency" = Programme) %>% 
-  regulartable() %>% autofit()
+  regulartable() %>% 
+  set_caption( caption ) %>% autofit()
+
+table_num <- table_num + 1
 ```
 
 #### Reporting of entomologic surveillance data
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Institution/department in charge of reporting entomologic surveillance data to the national ministry of health/health department")
+caption <- paste0("Table ", table_num, ". Institution/department in charge of reporting entomologic surveillance data to the national ministry of health/health department (ref Q27)")
 responses <- get_responses("27")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
@@ -768,11 +760,10 @@ cbind(Country=data$SI01, other) %>%
   regulartable() %>% autofit()
 ```
 
-#### Entomologic surveillance conducted for arboviral infections in mosquito vectors in the past two years
+#### Entomologic surveillance conducted for arboviral infections in mosquito vectors in the past two years (ref Q28)
 
 ```{r}
 responses <- get_responses("28")
-
 responses <- cbind(Country = data$SI01, responses)
 conducted <- responses$Country[which(responses$Response == "Yes")]
 not_conducted <- responses$Country[which(responses$Response == "No")]
@@ -786,39 +777,43 @@ Countries that conducted entomologic surveillance included `r conducted`. Countr
 Frequency of surveillance:
 
 ```{r}
-responses <- get_responses("28e")
-colnames( responses ) <- c("How_often", "Other")
-responses <- responses %>%
+caption <- paste0("Table ", table_num, ". Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)")
+q28e <- get_responses("28e")
+colnames( q28e ) <- c("How_often", "Other")
+q28e <- q28e %>%
   mutate( How_often = factor( replace_na( as.character(How_often), ""))) %>%
   mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
   unite( Response, How_often:Other, sep="") 
-# responses$Response[ responses$Response == "" ] <- "Unanswered"
+q28e <- cbind( Country = data$SI01, q28e)
 
-cbind( Country = data$SI01, responses) %>% 
-  regulartable( ) %>% autofit()
+q28c <- get_responses("28c")
+colnames( q28c ) <- c("Scope", "Comments")
+q28c <- q28c %>%
+  mutate( Scope = recode_factor(.x = Scope,
+                                   "Country wide"="Country wide",
+                                   "Restricted to specific locations . Please specify where:"="Restricted to specific locations",
+                                   "Don’t know"="I don’t know"))
+responses <- cbind( q28e, q28c)
+
+q28d <- get_responses("28d")
+q28d <- cbind( Country = data$SI01, q28d) %>% 
+  drop_na(Response) %>%
+  mutate( Response = paste0("(", Response, " sentinel sites)")) %>%
+  rename( "Sites" = Response )
+
+responses <- left_join( responses, q28d, by="Country")
+
+  regulartable( ) %>% 
+  set_caption(caption) %>% autofit()
 
 ```
 
 #### Geographic scope of the entomologic surveillance programme
 
-```{r}
-responses <- get_responses("28c")
-colnames( responses ) <- c("Scope", "Comments")
-cbind(Country=data$SI01, responses) %>%
-  mutate( Scope = recode_factor(.x = Scope,
-                                   "Country wide"="Country wide",
-                                   "Restricted to specific locations . Please specify where:"="Restricted to specific locations",
-                                   "Don’t know"="I don’t know")) %>%
-  regulartable() %>% autofit()
-```
-
 Number of sentinel surveillance sites:
 
 ```{r}
-responses <- get_responses("28d")
 
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>% autofit()
 ```
 
 #### Performance of adult and larval/pupal mosquito surveillance
