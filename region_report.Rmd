@@ -1148,53 +1148,90 @@ other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
 
 responses <- responses %>%
-  mutate_at( .vars=vars(colnames(responses)),
-             .funs = forcats::fct_recode,
-             "X" = "Yes",
-             " " = "Not selected")
+  mutate( across(everything(), na_if, "Not selected") ) %>%
+  mutate( across(everything(), as.character)) %>%
+  mutate( across(everything(), str_replace, pattern="Yes", replacement="X"))
 
-cbind(Country=data$SI01, responses, other) %>%
+keep_cols = c()
+for(i in 1:ncol(responses)){
+  if( any( !is.na(responses[,i]) )){
+    keep_cols = c(keep_cols, colnames(responses)[i])
+  }
+}
+
+if( any(!is.na(other$Other))){
+  responses <- cbind( responses, other)
+  keep_cols <- c( keep_cols, "Other")
+}
+
+cbind(Country=data$SI01, responses) %>%
+  select( c("Country", keep_cols )) %>%
+  filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  hline( part="all") %>% 
+  set_caption(caption) %>% autofit()
+
+table_num <- table_num + 1
+
 ```
 
-#### 44. Did your national arboviral disease program issue notifications to the public about local transmission risk and/or possible vector-control activities (e.g. larviciding, adulticiding, community mobilization and participation, etc.) as a prevention message for arboviral diseases within last 2 years? (Check all that apply)
+#### National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities 
 
 ```{r}
+caption <- paste0("Table ", table_num, ". National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak (O) and non-outbreak (N) periods (ref Q44)")
 responses <- get_responses("44")
 idx <- which( grepl("non-outbreak",colnames(responses)))
 
 outbreaks <- cbind( Country=data$SI01, responses[,-idx]) %>%
   pivot_longer(!Country) 
 new_cols <- matrix( unlist( strsplit(outbreaks$name, "\\]\\[") ), ncol=2, byrow=T)
-outbreaks %>% 
+outbreaks <- outbreaks %>% 
 	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
 	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	mutate( value = case_when( value == 1 ~ "O", value == 0 ~ "", is.na(value) ~ "")) %>%
 	pivot_wider(names_from=Response, values_from=value) %>%
-  select(-Level) %>%
-  regulartable() %>%
-  hline( part="all") %>%
-  set_caption("Outbreak periods") # %>% autofit()
+  select(-Level) 
 
 non_outbreaks <- cbind( Country=data$SI01, responses[,idx]) %>%
   pivot_longer(!Country) 
 new_cols <- matrix( unlist( strsplit(non_outbreaks$name, "\\]\\[") ), ncol=2, byrow=T)
-non_outbreaks %>% 
+non_outbreaks <- non_outbreaks %>% 
 	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
 	select(-name) %>%
-	mutate( value = case_when( value == 1 ~ "Yes", is.na(value) ~ "No")) %>%
+	mutate( value = case_when( value == 1 ~ "N", value == 0 ~ "", is.na(value) ~ "")) %>%
 	pivot_wider(names_from=Response, values_from=value) %>%
-  select(-Level) %>%
+  select(-Level) 
+
+responses <- left_join( outbreaks, non_outbreaks, by="Country") %>%
+  unite( "Issued by national public health agency", c("Issued by national public health agency.x", "Issued by national public health agency.y"), sep="") %>%
+  unite( "Issued by state/local health agencies", c("Issued by state/local health agencies.x", "Issued by state/local health agencies.y"), sep="") %>%
+  unite( "No risk in the past two years", c("No risk in the past two years.x", "No risk in the past two years.y"), sep="" ) %>%
+  unite("No notifications even though risk was present", c("No notifications even though risk was present.x", "No notifications even though risk was present.y"), sep="") %>% 
+  mutate( across(everything(), str_replace, pattern="ON", replacement="O, N")) %>%
+  mutate( across( everything(), na_if, "" ))
+
+keep_cols = c()
+for(i in 2:ncol(responses)){
+  if( any( !is.na(responses[,i]) )){
+    keep_cols = c(keep_cols, colnames(responses)[i])
+  }
+}
+
+responses %>%
+  select( c("Country",keep_cols) ) %>%
+  # filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%  ## uncomment to remove empty rows!
   regulartable() %>%
-  hline( part="all") %>%
-  set_caption("Non-outbreak periods") # %>% autofit()
+  hline( part="all") %>% 
+  set_caption(caption) %>% autofit()
+
+table_num <- table_num + 1
 
 ```
 
-#### 44b. Which means does your program use for community sensitization, mobilisation and acceptance of interventions in your country? (Check all that apply)
+#### Media/channels used for community sensitization, mobilisation and acceptance of interventions 
 
 ```{r}
+caption <- paste0("Table ", table_num, ". Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b")
 responses <- get_responses("44b")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
@@ -1207,10 +1244,14 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  hline( part="all") %>% 
+  set_caption( caption ) %>% autofit()
+
+table_num <- table_num + 1
+
 ```
 
-#### 45. Does your country provide regular training sessions for staff in charge of community sensitization, mobilisation and acceptance of interventions dedicated to control arboviral diseases?
+#### Regular training sessions for staff in charge of community sensitization, mobilisation and acceptance of interventions dedicated to control arboviral diseases (ref Q45)
 
 ```{r}
 responses <- get_responses("45")
@@ -1221,38 +1262,57 @@ cbind(Country=data$SI01, responses) %>%
                                    "Yes. If yes, please describe in comments field:"="Yes",
                                    "No"="No",
                                    "I don’t know"="I don’t know")) %>%
-                                   # "Unanswered"="Unanswered")) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  hline( part="all") %>% autofit()
 ```
 
-#### 46. What do the community outreach staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to community participation
+#### Community outreach staff perceptions
 
 ```{r}
+caption <- paste0("Table ", table_num, ". Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)")
 responses <- get_responses("46")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  hline( part="all") %>% 
+  set_caption( caption ) %>% autofit()
+
+table_num <- table_num + 1
+
 ```
 
 # Section VIII: Preparedness for arboviral outbreaks/epidemics
 
-#### 47. Is there either a surveillance and outbreak response committee in your country, or a steering committee for that purpose?
+#### Surveillance and outbreak response committee and emergency preparedness and funding
 
 ```{r}
-responses <- get_responses("47")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  hline( part="all") # %>% autofit()
-```
+caption <- paste0("Table ", table_num, ". Outbreak committee presence, staff training, contingency plan and emergency funding (ref Q47, 48, 52, 53)")
+q47 <- get_responses("47") %>%
+  rename( "Outbreak committee in place" = Response)
+q48 <- get_responses("48") %>%
+  rename( "Staff/committee training for outbreaks" = Response)
 
-#### 48. Does your country have a contingency plan to organize healthcare services during an outbreak (including outbreaks of arboviral diseases)?
+q52 <- get_responses("52")
 
-```{r}
-responses <- get_responses("48")
-cbind(Country=data$SI01, responses) %>%
+emergency_fund <- c()
+for(i in 1:nrow(q52)){
+  col = which( q52[i,] == "Yes")
+  if( length(col) > 0 ){
+    emergency_fund <- c( emergency_fund, paste0(names(q52)[col], collapse="\n"))
+  } else{
+    emergency_fund <- c(emergency_fund, NA)
+  }
+}
+
+q53 <- get_responses("53") %>%
+  rename( "Contingency plan for healthcare services in emergencies" = Response)
+
+cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  hline( part="all") %>% 
+  set_caption(caption) %>% autofit()
+
+table_num <- table_num + 1
+
 ```
 
 #### 49. Are there defined or established criteria for declaring an outbreak of arboviral disease outbreak in your country?
@@ -1290,32 +1350,6 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 responses <- get_responses("51")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  hline( part="all") # %>% autofit()
-```
-
-#### 52. For the last 2 years, which of the following government levels had an emergency fund or a specified emergency funding mechanism for arbovirus outbreak response?
-
-```{r}
-responses <- get_responses("52")
-
-responses <- responses %>%
-  mutate_at( .vars=vars(colnames(responses)),
-             .funs = forcats::fct_recode,
-             "X" = "Yes",
-             " " = "Not selected")
-
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  hline( part="all") # %>% autofit()
-```
-
-
-#### 53. Does your country provide regular training sessions for staff/committee in charge of preparedness for arboviral outbreaks/epidemics?
-
-```{r}
-responses <- get_responses("53")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   hline( part="all") # %>% autofit()
