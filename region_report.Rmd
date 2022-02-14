@@ -811,7 +811,7 @@ left_join( responses, q28d, by="Country") %>%
 #### Performance of adult and larval/pupal mosquito surveillance
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Mosquito surveillance and identification (ref Q29, 30, 31")
+caption <- paste0("Table ", table_num, ". Mosquito surveillance and identification (ref Q29, 30, 31)")
 q29 <- get_responses("29")
 q29 <- q29 %>% 
   mutate( Response = recode_factor(.x=Response,
