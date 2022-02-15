@@ -43,7 +43,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 
-.sticky ~ #global-navigation, .sticky ~ #aggregated-navigation, .sticky ~ #regional-navigation, .sticky ~ #country-navigation {
+.sticky ~ #global-navigation, .sticky ~ #all-regions-navigation, .sticky ~ #region-navigation, .sticky ~ #country-navigation {
     position: fixed !important;
     top: 53px;
     
@@ -149,7 +149,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 /* Aggregated */
-#aggregated-navigation {
+#all-regions-navigation {
   background: #21313b;
   color:#fff;
   position: absolute;
@@ -158,30 +158,30 @@ a:link, a:visited, a:hover, a:active {
   z-index: 99999;
 }
 
-#aggregated-navigation a{
+#all-regions-navigation a{
   color: #fff;
   font-weight: bold;
   margin-top: 50px;
 }
-#aggregated-navigation a:hover,
-#aggregated-navigation a:active{
+#all-regions-navigation a:hover,
+#all-regions-navigation a:active{
   text-decoration: none;
 }
 
-#aggregated-navigation ul{
+#all-regions-navigation ul{
   margin:40px 0;
   padding:0;
   list-style-type:none;
   text-align: center;
 }
 
-#aggregated-navigation li{
+#all-regions-navigation li{
   padding: 10px 0;
 }
 
 
 /* Regional */
-#regional-navigation {
+#region-navigation {
   background: #21313b;
   color:#fff;
   position: absolute;
@@ -190,24 +190,24 @@ a:link, a:visited, a:hover, a:active {
   z-index: 99999;
 }
 
-#regional-navigation a{
+#region-navigation a{
   color: #fff;
   font-weight: bold;
   margin-top: 50px;
 }
-#regional-navigation a:hover,
-#regional-navigation a:active{
+#region-navigation a:hover,
+#region-navigation a:active{
   text-decoration: none;
 }
 
-#regional-navigation ul{
+#region-navigation ul{
   margin:40px 0;
   padding:0;
   list-style-type:none;
   text-align: center;
 }
 
-#regional-navigation li{
+#region-navigation li{
   padding: 10px 0;
 }
 
