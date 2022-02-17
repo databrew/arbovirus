@@ -890,7 +890,7 @@ aegypti <- responses$Country[ which(responses$Response == "Yes, only Aedes aegyp
 `r both` all indicated that both _Aedes aegypti_ and _Aedes albopictus_ were present, whereas `r aegypti` 
 had only identified _Aedes aegypti_.
 
-#### Potential public health threat from Aedes species in your country
+#### Potential public health threat from _Aedes_ species by country
 
 ```{r}
 caption <- paste0("Table ", table_num, ". Potential public health threat from Aedes species by country (ref Q34b, 34c)")
@@ -969,7 +969,7 @@ cbind(Country=data$SI01, responses) %>%
 table_num <- table_num + 1
 ```
 
-#### Surveillance system in place for monitoring Aedes resistance to the insecticide(s) used (ref Q39)
+#### Surveillance system in place for monitoring _Aedes_ resistance to the insecticide(s) used (ref Q39)
 
 ```{r}
 responses <- get_responses("39")
@@ -1032,7 +1032,6 @@ cbind(Country=data$SI01, responses) %>%
 
 table_num <- table_num + 1
 ```
-
 
 #### Vector surveillance staff perceptions
 

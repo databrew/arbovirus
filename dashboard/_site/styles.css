@@ -148,7 +148,7 @@ a:link, a:visited, a:hover, a:active {
   padding: 10px 0;
 }
 
-/* Aggregated */
+/* All regions */
 #all-regions-navigation {
   background: #21313b;
   color:#fff;
@@ -180,8 +180,8 @@ a:link, a:visited, a:hover, a:active {
 }
 
 
-/* Regional */
-#region-navigation {
+/* Individual region */
+#one-region-navigation {
   background: #21313b;
   color:#fff;
   position: absolute;
@@ -190,24 +190,24 @@ a:link, a:visited, a:hover, a:active {
   z-index: 99999;
 }
 
-#region-navigation a{
+#one-region-navigation a{
   color: #fff;
   font-weight: bold;
   margin-top: 50px;
 }
-#region-navigation a:hover,
-#region-navigation a:active{
+#one-region-navigation a:hover,
+#one-region-navigation a:active{
   text-decoration: none;
 }
 
-#region-navigation ul{
+#one-region-navigation ul{
   margin:40px 0;
   padding:0;
   list-style-type:none;
   text-align: center;
 }
 
-#region-navigation li{
+#one-region-navigation li{
   padding: 10px 0;
 }
 
@@ -243,12 +243,12 @@ a:link, a:visited, a:hover, a:active {
   padding: 10px 0;
 }
 
-.submenu-text-formating > li{
+.submenu-text-formatting > li{
   text-align: left;
   padding: 10px !important;
 }
 
-.submenu-text-formating > li:hover {
+.submenu-text-formatting > li:hover {
     background: #d86422;
 }
 
