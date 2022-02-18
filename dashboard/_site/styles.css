@@ -431,7 +431,53 @@ a:link, a:visited, a:hover, a:active {
 
     /* Make the link cover the entire list item-container */
     display: block;
+}
     /* line-height: 30px;* /
 }
 .top-level-menu a:hover { color: #000000; }
 
+
+/* Custom tabbar */
+.custom_tabbar {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    margin-bottom: 35px;
+    background: #f4f1f4;
+}
+
+.custom_tabbar li {
+    width: 100%;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.custom_tabbar li a {
+    color: #808081;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.custom_tabbar__list-active {
+    background: #068ecaba;
+}
+
+.custom_tabbar__list-active a {
+    color: #ffffff !important;
+}
+
+
+/* Decrease font size for laptops with screen 13.3inch and less */
+@media all and (max-width: 1450px) {
+ 
+  .blue-sub-nav li a {
+    font-size: 1.3rem;
+    padding: 1.8rem 1.8rem;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+}
