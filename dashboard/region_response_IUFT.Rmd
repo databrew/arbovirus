@@ -2,6 +2,16 @@
 title: "Regional response capacity indicators"
 ---
 
+<ul class="custom_tabbar">
+  <li><a href="index.html">Africa</a></li>
+  <li class="custom_tabbar__list-active"><a href="index.html">Americas</a></li>
+  <li><a href="index.html">South-East Asia</a></li>
+  <li><a href="index.html">Europe</a></li>
+  <li><a href="index.html">Eastern Mediterranean</a></li>
+  <li><a href="index.html">Western Pacific</a></li>
+</ul>
+
+
 ```{r, include=FALSE, echo = FALSE}
 # Basic knitr options
 library(knitr)
