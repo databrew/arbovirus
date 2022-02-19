@@ -203,6 +203,7 @@ responses %>%
 table_num <- table_num + 1
 ```
 
+
 #### Written arbovirus surveillance plans
 
 ```{r}
@@ -1230,7 +1231,7 @@ table_num <- table_num + 1
 #### Media/channels used for community sensitization, mobilisation and acceptance of interventions 
 
 ```{r}
-caption <- paste0("Table ", table_num, ". Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b")
+caption <- paste0("Table ", table_num, ". Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b)")
 responses <- get_responses("44b")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
