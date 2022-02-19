@@ -1,0 +1,157 @@
+---
+title: "Global data (Contingency plan exists)"
+---
+
+
+```{r setup, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+ggplot2::theme_set(ggplot2::theme_bw())
+
+# options(scipen = '999')
+```
+
+```{js}
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true){
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+
+});
+
+```
+
+
+```{r, child="_sessioninfo.Rmd"}
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+library(RColorBrewer)
+library(scales)
+library(leaflet)
+load('../arboapp/data/world_shp.rda') # load world shape file
+load('../arboapp/data/region_shp.rda')
+df <- load_data(modify_variable_names = TRUE)
+```
+
+# Responses by country
+
+```{r}
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd <- pd %>% filter(!duplicated(country))
+pd$value <- 'Responded'
+make_map(df = pd,
+         pal = 'Dark2',
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap)
+# htmltools::save_html(l, file = '~/Desktop/map1.html')
+```
+
+```{r, eval = FALSE}
+# Responses by country with Africa filled in
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd <- pd %>% filter(!duplicated(country))
+pd$value <- 'Responded'
+pd2 <- world_shp@data %>%
+  filter(REGION == 2) %>%
+  dplyr::select(country) %>%
+  mutate(value = 'Responded')
+pd <- bind_rows(pd, pd2)
+
+l <- make_map(df = pd,
+        pal = 'Dark2',
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap)
+l
+# htmltools::save_html(l, file = '~/Desktop/map2.html')
+```
+
+
+# Surveillance capacity indicators
+
+### Reportable arboviral diseases
+
+##### 11. Is reporting mandatory for any arboviral disease cases in your country?
+

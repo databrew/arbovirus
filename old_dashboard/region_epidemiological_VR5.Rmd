@@ -1,0 +1,187 @@
+---
+title: "Regional epidemiological risk data"
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+ggplot2::theme_set(ggplot2::theme_bw())
+
+# options(scipen = '999')
+```
+
+```{js}
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true){
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+
+});
+
+```
+
+
+```{r, child="_sessioninfo.Rmd"}
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+df <- load_data()
+```
+
+## Vectors recorded in the last 5 years and the public health threat
+
+#### Is there a record of _Aedes aegypti_ or _Aedes albopictus_ being found in your country in the past 5 years? Please choose only one of the following (Question 34) 
+
+```{r}
+
+# relevant question: q34
+
+responses <- get_responses("34")
+qdf <- data.frame(Region = df$Region, Response = responses) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = recode_factor(Response, 
+                                 "Yes, both Aedes aegypti and Aedes albopictus" = "Both Aedes aegypti and Aedes albopictus",
+                                 "Yes, only Aedes aegypti" = "Only Aedes aegypti",
+                                 "Yes, only Aedes albopictus" = "Only Aedes albopictus",
+                                 "Unknown within the country at this time" = "Unknown at this time",
+                                 "None found in the country at this time" = "None found at this time",
+                                 "Unanswered" = "Unanswered")) %>% 
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
+
+```
+
+#### Please describe the potential public health threat from _Aedes aegypti_ in your country. (Question 34b) 
+
+```{r}
+
+# relevant question: q34b
+
+responses <- get_responses("34b") %>%
+  select(-Other) 
+qdf <- data.frame(Region = df$Region, Response = responses$`Please choose only one of the following:`) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
+
+```
+
+#### Please describe the potential public health threat from _Aedes albopictus_ in your country. (Question 34c) 
+
+```{r}
+
+# relevant question: q34c
+
+responses <- get_responses("34c") %>%
+  select(-Other) 
+qdf <- data.frame(Region = df$Region, Response = responses$`Please choose only one of the following:`) %>% 
+  drop_na(Region) %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  group_by(Region, Response) %>%
+  tally 
+qdf %>% 
+  pivot_wider(names_from=Response, values_from=n, names_sort=TRUE) %>%
+  mutate( across( everything(), ~ replace_na(.x, 0))) %>% 
+  adorn_totals() %>%
+  regulartable() %>%
+  hline(i=4) %>%
+  autofit 
+
+```

@@ -1,0 +1,1079 @@
+---
+title: "Global Data (Surveillance capacity indicators)"
+---
+
+
+```{r setup, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+ggplot2::theme_set(ggplot2::theme_bw())
+# if('who_shp.RData' %in% dir()){
+#   load('who_shp.RData')
+# } else {
+#   library(whomapper) # https://github.com/whocov/whomapper
+#   # options(scipen = '999')
+#   who_shp <- whomapper::pull_who_adm0()
+#   save(who_shp, file = 'who_shp.RData')
+# }
+# source('who_map_disp.R')
+library(ggthemes)
+```
+
+```{js}
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true){
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+
+});
+
+```
+
+
+```{r, child="_sessioninfo.Rmd"}
+```
+
+```{r}
+# Read in the combined paho / original dataset
+owd <- getwd()
+setwd('..')
+source('prepare_data.R')
+setwd(owd)
+
+# Simplify data
+df <- simplify_data(data = data,
+                    dict = dict)
+```
+
+```{r, echo = FALSE, eval = FALSE}
+
+##################### THIS ENTIRE CHUNK IS DEPRECATED. DO NOT RUN
+source('functions.R')
+library(RColorBrewer)
+library(scales)
+library(leaflet)
+library(leaflet.extras)
+load('../data/world_shp.rda') # load world shape file
+load('../data/region_shp.rda') # load region shape file
+df <- load_data(modify_variable_names = TRUE)
+df$country <- as.character(df$`1. State`)
+df$adm0_name <- toupper(df$country)
+
+# Where to put new maps # https://trello.com/c/tgd50iIm/2693-who-arb-regional-maps
+who_regions <- who_shp$adm0
+
+# Reconcile the names of WHO countries with the arbovirus countries
+# woh, they're already the same! woohoo!
+# df$adm0_name[!df$adm0_name %in% who_regions$adm0_name]
+
+# Quick diana request
+diana_countries <- c('South Africa', 'Sudan', 'Iran', 'Netherlands', 'Malaysia', 'Ghana', 'Cuba', 'France', 'Australia', 'USA', 'Portugal', 'Singapore', 'India', 'Venezuela', 'Sri Lanka', 'Brazil')
+
+diana_countries[!diana_countries %in% who_regions$adm0_viz_n]
+diana_countries <- 
+  ifelse(diana_countries == 'Iran', 'Iran (Islamic Republic of)',
+         ifelse(diana_countries == 'USA', 'United States of America',
+                ifelse(diana_countries == 'Venezuela', 'Venezuela (Bolivarian Republic of)', diana_countries)))
+
+di <- tibble(country = diana_countries, value = 'Yes')
+
+l <- make_map(df = di,
+         pal = 'blue',
+         rev = TRUE,
+         add_legend = FALSE,
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap,
+         use_who_shp = TRUE) %>%
+  addFullscreenControl()
+l
+htmltools::save_html(l, file = '~/Documents/databrew.github.io/rojas/index.html')
+
+
+# Make a static version
+l <- make_map(df = di,
+         pal = 'blue',
+         rev = TRUE,
+         add_legend = FALSE,
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = '') + 
+    theme_map() +
+  scale_fill_manual(name = '', values = c('lightblue', 'black')) +
+  theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+  guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches')))
+l
+ggsave('~/Desktop/who/diana.png',
+       height = 6,
+       width = 9)
+
+# Read in PAHO data # https://trello.com/c/LgyKpQfk/2696-who-new-dataset-combination
+library(readxl)
+paho <- read_excel('../data/Copia_de_PAHO_key_indicator_spreadsheet_19_Nov_2021-Completo.xlsx', skip = 1)
+# Transform
+ph <- tidyr::gather(paho %>% dplyr::rename(variable = Country),
+                    key = country, 
+                    value,
+                    Canada:`Virgin Islands (US)`)
+ph <- tidyr::spread(data = ph,
+                    key = variable,
+                    value = value)
+# Standardize country names to match WHO shapefiles
+# ph$country <- toupper(ph$country)
+ph$country[!ph$country %in% who_regions$adm0_viz_n]
+# ph$country[!ph$country %in% who_regions$adm0_name]
+# # These ones require modification:
+# [1] "BOLIVIA"                           "BONAIRE, SAINT EUSTATIUS AND SABA"
+# [3] "CURAÇAO"                           "VENEZUELA"                        
+# [5] "VIRGIN ISLANDS (UK)"               "VIRGIN ISLANDS (US)"  
+ph$country <- dplyr::recode(ph$country,
+                                        'Bolivia' = 'Bolivia (Plurinational State of)',
+                                        'Bonaire, Saint Eustatius and Saba' = 'Bonaire',
+                            'Saint Barthelemy' = 'Saint Barthélemy',
+                            
+                                        'Venezuela' = 'Venezuela (Bolivarian Republic of)',
+                                        'Virgin Islands (UK)' = 'British Virgin Islands',
+                                        'Virgin Islands (US)' = 'United States Virgin Islands')
+ph$adm0_name <- toupper(ph$country)
+# ph$country[!ph$country %in% who_regions$adm0_viz_n] # length = 0; all good
+paho <- ph
+```
+
+# Responses by country 
+
+```{r}
+# Request A global map of countries participating. 
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd$value <- 'Responded'
+pd <- pd %>% filter(!duplicated(country))
+
+
+
+l <- make_map(df = pd,
+         pal = 'Dark2',
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap,
+         use_who_shp = TRUE) %>%
+  addFullscreenControl()
+l
+# htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html')
+
+# if(!dir.exists('~/Desktop/who')){
+#   dir.create('~/Desktop/who')
+# }
+
+# Make a static version
+l <- make_map(df = pd,
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = 'Survey participation') + 
+    theme_map() +
+  scale_fill_manual(name = '', values = c('darkgreen', 'white'), na.value = 'white') +
+  theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+  guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches'))) +
+  theme(panel.background = element_rect(fill = "lightblue", colour = "lightblue"))
+# l
+# ggsave('~/Desktop/who/participation_map_with_paho.png',
+#        height = 6,
+#        width = 9)
+
+```
+
+
+
+```{r, eval = FALSE}
+# # A global map of countries with circulation of each of the viruses since 2000
+
+# Request A global map of countries with circulation of each of the viruses since 2000
+# Get data for each disease
+pd <- df[,c('1. State', names(df)[grepl('Which arboviruses have circulated in your country at any', names(df), fixed = TRUE)])]
+names(pd) <- c('country', 'Chikungunya', 'Dengue', 'Yellow fever', 'Zika', 'Other')
+pd$Other <- NULL
+# Simplify values
+for(j in 2:ncol(pd)){
+  vals <- pd[,j]
+  vals <- as.character(vals)
+  out_vals <- ifelse(is.na(vals), 'No', ifelse(vals == 'Yes', 'Yes', 'No'))
+  pd[,j] <- out_vals
+}
+# Get total number of viruses
+pd$total <- apply(pd[,2:5], 1, function(x){sum(ifelse(x == 'Yes', 1, 0))})
+# Clean up a bit
+pd <- pd %>%
+  filter(!is.na(country)) %>%
+  filter(country != 'Iceland') %>%
+  filter(!duplicated(country)) %>%
+  mutate(value = total)
+
+# # Add paho data
+viruses <- c('Chikungunya', 'Dengue', 'Yellow fever', 'Zika')
+# ph <- paho[,1:5]
+# names(ph)[2:5] <- viruses
+# ph$total <- ph$value <- apply(ph[,2:5], 1, function(x){sum(ifelse(grepl('Y', toupper(x)), 1, 0))})
+# for(j in 2:5){
+#   vals <- unlist(ph[,j])
+#   vals <- ifelse(grepl('Y', toupper(vals)), 'Yes', 'No')
+#   ph[,j] <- vals
+# }
+# pd <- bind_rows(
+#   pd,
+#   ph
+# ) 
+pd <- pd %>% dplyr::distinct(country, .keep_all = TRUE)
+
+library(ggthemes)
+for(i in 1:length(viruses)){
+  message(i)
+  this_virus <- viruses[i]
+  this_vector <- unlist(pd[,this_virus])
+  pdx <- pd %>%
+    mutate(value = this_vector)
+  l <- make_map(df = pdx,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = this_virus) + 
+    theme_map() +
+    scale_fill_manual(name = '', values = rev(c('red', 'black'))) +
+    theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '')
+  l
+  # ggsave(filename = paste0('~/Desktop/who/global_with_paho_', this_virus, '.png'),
+  #        height = 5,
+  #        width = 9)
+}
+```
+
+
+```{r, eval = FALSE}
+## Q55 
+
+# A heat/graduated shading map of case numbers for q55 (using total cases for each virus 2015-2020)
+pz <- load_data(modify_variable_names = TRUE)
+pzx <- pz[,grepl('55.', names(pz), fixed = TRUE)]
+pzx <- pzx[,!grepl('Deaths', names(pzx))]
+pzx$country <-  as.character(pz$`1. State`)
+
+pahox <- paho[,grepl('Cases', names(paho))]
+for(j in 1:ncol(pahox)){
+  pahox[,j] <- as.numeric(unlist(pahox[,j]))
+}
+pahox$country <- paho$country
+
+viruses <- c('Chikungunya', 'Dengue', 'Yellow fever', 'Zika')
+vrs <- c('CHIKV', 'DENV', 'YFV', 'ZIKV')
+out_list <- list()
+for(i in 1:length(viruses)){
+  this_virus <- viruses[i]
+  this_vr <- vrs[i]
+  # Get the data from original dataframe
+  this_df <- pzx[,grepl(this_virus, names(pzx))]
+  # Get the data from the paho dataframe
+  other_df <- pahox[,grepl(this_vr, names(pahox))]
+  # aggregate
+  agg1 <- apply(this_df, 1, function(x){sum(x, na.rm = TRUE)})
+  agg2 <- apply(other_df, 1, function(x){sum(x, na.rm = TRUE)})
+  out <- tibble(country = c(pzx$country,
+                            pahox$country),
+                value = c(agg1, agg2),
+                virus = this_virus)
+  out_list[[i]] <- out
+}
+out <- bind_rows(out_list)
+options(scipen = '999')
+for(i in 1:length(viruses)){
+  message(i)
+  this_virus <- viruses[i]
+  pdx <- out %>% filter(virus == this_virus)
+  l <- make_map(df = pdx,
+         pal = 'Spectral',
+         qualitative = FALSE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = paste0(this_virus, ' cases (2015-2020)')) + 
+    theme_map() +
+    scale_fill_gradient(name = '',
+                         low = 'yellow',
+                         high = 'darkred') +
+    theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+    guides(fill = guide_colorbar(barwidth = grid::unit(6, units = 'inches')))
+
+  l
+  ggsave(filename = paste0('~/Desktop/who/global_heat_with_paho_', this_virus, '.png'),
+         height = 5,
+         width = 9)
+}
+```
+
+
+
+
+```{r, eval = FALSE}
+
+# Responses by country
+
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd <- pd %>% filter(!duplicated(country))
+pd$value <- 'Responded'
+l <- make_map(df = pd,
+         pal = 'Dark2',
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap,
+         use_who_shp = TRUE) %>%
+  addFullscreenControl()
+# htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb/index.html')
+```
+
+```{r, eval = FALSE}
+
+pd <- df[grepl('1. State', names(df))]
+names(pd) <- c('country')
+pd$value <- 'Responded'
+# Add paho
+pd <- bind_rows(
+  pd,
+  paho %>% dplyr::select(country) %>% mutate(value = 'Responded')
+) 
+pd <- pd %>% filter(!duplicated(country))
+
+
+
+# Region level maps
+# For each region, make a map
+library(ggthemes)
+library(sp)
+regions <- sort(unique(who_shp$adm0$who_region))
+for(i in 1:length(regions)){
+  pda <- pd
+  r <- regions[i]
+  sub_shp <- who_shp$adm0[who_shp$adm0$who_region == r,]
+  keep_countries <- sub_shp$adm0_viz_n
+  pda <- pda %>% filter(country %in% keep_countries)
+  sub_shp <- sf::as_Spatial(sub_shp)
+  coords <- coordinates(sub_shp)
+  xl <- range(coords[,1])
+  yl <- range(coords[,2])
+  xl[1] <- xl[1] -5
+  xl[2] <- xl[2] + 8
+  yl[1] <- yl[1] - 1
+  yl[2] <- yl[1] + 1
+  keep_countries <- who_shp$adm0$adm0_viz_n[who_shp$adm0$who_region == r]
+  l <- make_map(df = pda,
+         pal = 'darkgreen',
+         qualitative = TRUE,
+         provider = providers$OpenStreetMap,
+         use_who_shp = TRUE,
+         line_color = 'black',
+         # filter_region = r,
+         static = TRUE) +
+    labs(title = r,
+         subtitle = 'Countries which responded to survey') + 
+    theme_map() +
+  scale_fill_manual(name = '', values = c('darkgreen', 'white'), na.value = 'white') +
+  theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+  theme(panel.background = element_rect(fill = "lightblue", colour = "lightblue")) +    theme(legend.position = 'none')
+  h <- 9
+  w <- 8
+  if(r == 'AFRO'){
+   h <- 9 
+   l <- l + coord_sf(xlim = c(-25,60), expand = FALSE) 
+  }
+  if(r == 'AMRO'){
+   h <- 9 
+   l <- l + coord_sf(xlim = c(-165, -10), expand = TRUE) 
+  }
+    if(r == 'EMRO'){
+   h <- 9 
+   l <- l + coord_sf(xlim = c(-10, 83), expand = FALSE) 
+  }
+  if(r == 'EURO'){
+    l <- l + coord_sf(xlim = c(-24, 50), expand = FALSE) 
+}
+if(r == 'SEARO'){
+   h <- 9 
+   l <- l + coord_sf(xlim = c(60, 160), expand = FALSE) 
+
+  }
+  if(r == 'WPRO'){
+    l <- l + coord_sf(xlim = c(70, 180), expand = FALSE) 
+  }
+   
+
+
+  l
+  ggsave(paste0('~/Desktop/who/', r, '.png'),
+         width = w,
+         height = h)
+}
+```
+
+
+
+
+```{r, eval = FALSE}
+# Virus map
+
+# Get data for each disease
+pd <- df[,c('1. State', names(df)[grepl('Which arboviruses have circulated in your country at any', names(df), fixed = TRUE)])]
+names(pd) <- c('country', 'Chikungunya', 'Dengue', 'Yellow fever', 'Zika', 'Other')
+pd$Other <- NULL
+# Simplify values
+for(j in 2:ncol(pd)){
+  vals <- pd[,j]
+  vals <- as.character(vals)
+  out_vals <- ifelse(is.na(vals), 'No', ifelse(vals == 'Yes', 'Yes', 'No'))
+  pd[,j] <- out_vals
+}
+# Get total number of viruses
+pd$total <- apply(pd[,2:5], 1, function(x){sum(ifelse(x == 'Yes', 1, 0))})
+# Clean up a bit
+pd <- pd %>%
+  filter(!is.na(country)) %>%
+  filter(country != 'Iceland') %>%
+  filter(!duplicated(country)) %>%
+  mutate(value = total)
+# Make markers for each disease
+library(leaflet)
+icons_chikungunya <- awesomeIcons(
+  icon = NULL,
+  text = 'C',
+  # icon = 'copyright-mark',
+  iconColor = 'black',
+  markerColor = 'lightgray'
+)
+icons_dengue <- awesomeIcons(
+  # icon = 'leaf',
+  text = 'D',
+  iconColor = 'black',
+  markerColor = 'gray'
+)
+icons_yellow_fever <- awesomeIcons(
+  # icon = 'star-empty',
+  text = 'Y',
+  iconColor = 'black',
+  markerColor = 'orange'
+)
+icons_zika <- awesomeIcons(
+  # icon = 'fire',
+  text = 'Z',
+  iconColor = 'black',
+  markerColor = 'beige'
+)
+joined <- world_shp
+joined@data <- left_join(joined@data, pd)
+disease_names <- names(pd)[2:5]
+for(j in 1:length(disease_names)){
+  this_disease_name <- disease_names[j]
+  vals <- joined@data[,this_disease_name]
+  vals <- ifelse(is.na(vals), 'No', vals)
+  joined@data[,this_disease_name] <- vals
+}
+library(sp)
+coords <- coordinates(joined)
+joined <- joined@data
+joined$lng <- coords[,1]; joined$lat <- coords[,2]
+jitter_factor <- 1.5
+pd_chikungunya <- joined[joined$Chikungunya == 'Yes',] #%>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_dengue <- joined[joined$Dengue == 'Yes',] %>% mutate(lng = lng + jitter_factor, lat = lat + 0) #  mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_yellow_fever <- joined[joined$`Yellow fever` == 'Yes',] %>% mutate(lng = lng - jitter_factor, lat = lat + jitter_factor)  #mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_zika <- joined[joined$Zika == 'Yes',] %>% mutate(lng = lng + jitter_factor, lat = lat - jitter_factor)#mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+
+
+l <- make_map(df = pd,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         label_string = 'Number of arboviruses',
+         legend_title = 'Number of\narboviruses',
+         use_who_shp = TRUE) %>%
+  addTiles(group = 'OSM (default)') %>%
+  addProviderTiles(providers$Stamen.Toner, group = "Toner") %>%
+  addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+  addAwesomeMarkers(data = pd_chikungunya, 
+                    ~lng, 
+                    ~lat, 
+                    icon=icons_chikungunya, 
+                    label=paste0(pd_chikungunya$country, '. ', 'Chikungunya'),
+                    group = 'Chikungunya') %>%
+    addAwesomeMarkers(data = pd_dengue, 
+                    ~lng, 
+                    ~lat, 
+                    icon=icons_dengue, 
+                    label=paste0(pd_dengue$country, '. ', 'Dengue'),
+                    group = 'Dengue') %>%
+      addAwesomeMarkers(data = pd_yellow_fever, 
+                    ~lng, 
+                    ~lat, 
+                    icon=icons_yellow_fever, 
+                    label=paste0(pd_yellow_fever$country, '. ', 'Yellow fever'),
+                    group = 'Yellow fever') %>%
+      addAwesomeMarkers(data = pd_zika, 
+                    ~lng, 
+                    ~lat, 
+                    icon=icons_zika, 
+                    label=paste0(pd_zika$country, '. ', 'Zika'),
+                    group = 'Zika') %>%
+
+  addLayersControl(
+    baseGroups = c("OSM (default)", "Toner", "Toner Lite"),
+    overlayGroups = c("Chikungunya", "Dengue", "Yellow fever", "Zika"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%    addFullscreenControl()
+htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb2/index.html')
+
+  
+```
+
+```{r, eval = FALSE}
+# Get data for each disease
+pd <- df[,c('1. State', names(df)[grepl('Which arboviruses have circulated in your country at any', names(df), fixed = TRUE)])]
+names(pd) <- c('country', 'Chikungunya', 'Dengue', 'Yellow fever', 'Zika', 'Other')
+pd$Other <- NULL
+# Simplify values
+for(j in 2:ncol(pd)){
+  vals <- pd[,j]
+  vals <- as.character(vals)
+  out_vals <- ifelse(is.na(vals), 'No', ifelse(vals == 'Yes', 'Yes', 'No'))
+  pd[,j] <- out_vals
+}
+# Get total number of viruses
+pd$total <- apply(pd[,2:5], 1, function(x){sum(ifelse(x == 'Yes', 1, 0))})
+# Clean up a bit
+pd <- pd %>%
+  filter(!is.na(country)) %>%
+  filter(country != 'Iceland') %>%
+  filter(!duplicated(country)) %>%
+  mutate(value = total)
+joined <- world_shp
+joined@data <- left_join(joined@data, pd)
+disease_names <- names(pd)[2:5]
+for(j in 1:length(disease_names)){
+  this_disease_name <- disease_names[j]
+  vals <- joined@data[,this_disease_name]
+  vals <- ifelse(is.na(vals), 'No', vals)
+  joined@data[,this_disease_name] <- vals
+}
+coords <- coordinates(joined)
+joined <- joined@data
+joined$lng <- coords[,1]; joined$lat <- coords[,2]
+jitter_factor <- 1.5
+pd_chikungunya <- joined[joined$Chikungunya == 'Yes',] #%>% mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_dengue <- joined[joined$Dengue == 'Yes',] %>% mutate(lng = lng + jitter_factor, lat = lat + 0) #  mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_yellow_fever <- joined[joined$`Yellow fever` == 'Yes',] %>% mutate(lng = lng - jitter_factor, lat = lat + jitter_factor)  #mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+pd_zika <- joined[joined$Zika == 'Yes',] %>% mutate(lng = lng + jitter_factor, lat = lat - jitter_factor)#mutate(lng = jitter(lng, factor = jitter_factor), lat = jitter(lat, factor = jitter_factor))
+
+pd_virus <-
+  bind_rows(
+    pd_chikungunya %>% mutate(Virus = 'Chikungunya'),
+    pd_dengue %>% mutate(Virus = 'Dengue')
+  ) %>%
+  bind_rows(
+    pd_yellow_fever %>% mutate(Virus = 'Yellow fever')
+  ) %>%
+  bind_rows(
+    pd_zika %>% mutate(Virus = 'Zika')
+  )
+
+# Region level maps
+# For each region, make a map
+library(ggthemes)
+regions <- sort(unique(who_shp$adm0$who_region))
+for(i in 1:length(regions)){
+  r <- regions[i]
+  l <- make_map(df = pd,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         label_string = 'Number of arboviruses',
+         legend_title = 'Number of\narboviruses',
+         use_who_shp = TRUE,
+         filter_region = r,
+         static = TRUE,
+         remove_some = FALSE) +
+    labs(title = r,
+         subtitle = 'Arboviruses by country') + 
+    theme_map() +
+    scale_fill_gradient2(name = 'Number of virus',
+                        low = 'black', high = 'red') +
+    # theme(legend.position = 'none') +
+    geom_point(data = pd_virus %>% filter(region == r),
+               aes(x = lng, y = lat, color = Virus), group = NA, size = 4, alpha = 0.6) +
+    scale_color_manual(name = 'Virus',
+                       values = c('blue', 'darkgreen', 'purple', 'yellow')) +
+    theme(legend.position = 'bottom')
+  if(r == 'EURO')
+    l <- l + xlim(-25, 44)
+  l
+  if(r == 'WPRO')
+    l <- l + xlim(70, 180)
+  l
+  ggsave(paste0('~/Desktop/who/viruses_', r, '.png'),
+         width = 8,
+         height = 6)
+}
+```
+
+
+
+```{r, eval = FALSE}
+# # Responses by country with Africa filled in
+# pd <- df[grepl('1. State', names(df))]
+# names(pd) <- c('country')
+# pd <- pd %>% filter(!duplicated(country))
+# pd$value <- 'Responded'
+# pd2 <- world_shp@data %>%
+#   filter(REGION == 2) %>%
+#   dplyr::select(country) %>%
+#   mutate(value = 'Responded')
+# pd <- bind_rows(pd, pd2)
+# 
+# l <- make_map(df = pd,
+#         pal = 'Dark2',
+#          qualitative = TRUE,
+#          provider = providers$OpenStreetMap, 
+#         use_who_shp = TRUE)
+# l
+# htmltools::save_html(l, file = '~/Documents/databrew.github.io/whoarb3/index.html')
+```
+
+```{r, eval = FALSE}
+# Please could you generate a separate global map for each of the viruses in the question – I’m planning to do a slide on each.  
+library(ggthemes)
+viruses <- c('Chikungunya', 'Dengue', 'Yellow fever', 'Zika')
+for(i in 1:length(viruses)){
+  this_virus <- viruses[i]
+  this_vector <- unlist(pd[,this_virus])
+  pdx <- pd %>%
+    mutate(value = this_vector)
+  l <- make_map(df = pdx,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = this_virus) + 
+    theme_map() +
+    scale_fill_manual(name = '', values = rev(c('red', 'black'))) +
+    theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '')
+  l
+  ggsave(filename = paste0('~/Desktop/who/global_', this_virus, '.png'),
+         height = 5,
+         width = 9)
+}
+```
+
+```{r, eval = FALSE}
+# This will then ideally be followed by a map like your heatmap below with numbers of viruses on a global scale – lightest shade no viruses, next lightest – one, mid shade – two, darkest – three (I don’t think we have any countries with four among our regions).
+pdx <- pd 
+l <- make_map(df = pdx,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+     labs(title = 'Number of reported viruses') + 
+    theme_map() +
+  # scale_fill_manual(name = '', values = c('red', 'black'))
+    scale_fill_gradient2(name = 'Number of virus',
+                        low = 'black', high = 'red') +
+  theme(legend.position = 'bottom',
+          plot.title = element_text(size = 8)) +
+    labs(x = '', y = '') +
+  guides(fill = guide_colorbar(barwidth = grid::unit(4, units = 'inches')))
+
+l
+```
+
+```{r, eval = FALSE}
+pz <- load_data(modify_variable_names = FALSE)
+# Another map request: it looks like these questions would lend themselves well to a global map (or two maps – one for aegypti and one for albopictus) since these are mutually exclusive categories. Let me know if that’ll work.
+
+# 34b.   Please describe the potential public health threat from Aedes aegypti in your country Please choose only one of the following:
+
+# 34c.   Please describe the potential public health threat from Aedes albopictus in your country Please choose only one of the following:
+
+# df$`34b.   Please describe the potential public health threat from Aedes aegypti in your country Please choose only one of the following:`
+
+pz$value <- pz$SV34
+pz$country <- pz$SI01
+cols <- c('red', 'blue', 'purple', 'black', 'grey')
+l <- make_map(df = pz,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+  scale_fill_manual(name = '', 
+                    values = cols) +
+  ggthemes::theme_map() +
+  theme(legend.position = 'bottom') +
+  labs(x = 'Longitude', y = 'Latitude',
+       title = 'Aedes aegypti and albopictus by country')
+l
+ggsave(filename = paste0('~/Desktop/who/global_', 'aedes_both', '.png'),
+         height = 5,
+         width = 9)
+
+
+pz$value <- pz$SV34b
+pz$country <- pz$SI01
+cols <- c('darkorange', 'red', 'lightblue', 'yellow', 'grey')
+l <- make_map(df = pz,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+  scale_fill_manual(name = '', 
+                    values = cols) +
+  ggthemes::theme_map() +
+  theme(legend.position = 'bottom') +
+  labs(x = 'Longitude', y = 'Latitude',
+       title = 'Aedes aegypti by country') +
+  guides(fill=guide_legend(nrow=3,byrow=TRUE))
+l
+ggsave(filename = paste0('~/Desktop/who/global_', 'aedes_aegypti', '.png'),
+         height = 6,
+         width = 9)
+
+
+
+pz$value <- pz$SV34c
+pz$country <- pz$SI01
+cols <- c('darkorange', 'red', 'lightblue', 'yellow', 'grey')
+l <- make_map(df = pz,
+         pal = 'Spectral',
+         qualitative = TRUE,
+         add_base_layer = FALSE,
+         use_who_shp = TRUE,
+         static = TRUE,
+         remove_some = FALSE,
+         line_color = 'black') +
+  scale_fill_manual(name = '', 
+                    values = cols) +
+  ggthemes::theme_map() +
+  theme(legend.position = 'bottom') +
+  labs(x = 'Longitude', y = 'Latitude',
+       title = 'Aedes albopictus by country') +
+  guides(fill=guide_legend(nrow=3,byrow=TRUE))
+l
+ggsave(filename = paste0('~/Desktop/who/global_', 'aedes_albopictus', '.png'),
+         height = 6.7,
+         width = 10)
+```
+
+# Surveillance capacity indicators
+
+### Reportable arboviral diseases
+
+##### 11. Is reporting mandatory for any arboviral disease cases in your country?
+
+```{r}
+pd <- df[grepl('11. |1. State', names(df))]
+names(pd) <- c('country', 'value')
+make_map(df = pd,
+         qualitative = TRUE)
+```
+
+##### 11b. For which of the following arboviral disease cases is reporting mandatory in your country: Chikungunya
+
+```{r}
+# names(df)[grepl('11b', names(df))]
+pd <- df[,(grepl('11b.', names(df)) & grepl('Chik', names(df))) | grepl('1. State', names(df))]
+names(pd) <- c('country', 'value')
+make_map(df = pd,
+         qualitative = TRUE)
+```
+
+
+##### 11b. For which of the following arboviral disease cases is reporting mandatory in your country: Dengue
+
+```{r}
+# names(df)[grepl('11b', names(df))]
+pd <- df[,(grepl('11b.', names(df)) & grepl('Dengue', names(df))) | grepl('1. State', names(df))]
+names(pd) <- c('country', 'value')
+make_map(df = pd,
+         qualitative = TRUE)
+```
+
+
+##### 11b. For which of the following arboviral disease cases is reporting mandatory in your country: Yellow fever
+
+```{r}
+# names(df)[grepl('11b', names(df))]
+pd <- df[,(grepl('11b.', names(df)) & grepl('Yellow', names(df))) | grepl('1. State', names(df))]
+names(pd) <- c('country', 'value')
+make_map(df = pd,
+         qualitative = TRUE)
+```
+
+
+##### 11b. For which of the following arboviral disease cases is reporting mandatory in your country: Zika (Non-congenital)
+
+```{r}
+# names(df)[grepl('11b', names(df))]
+pd <- df[,(grepl('11b.', names(df)) & grepl('Zika', names(df))) | grepl('1. State', names(df))]
+pd <- pd[,1:2]
+names(pd) <- c('country', 'value')
+make_map(df = pd,
+         qualitative = TRUE)
+```
+
+##### 11b. For which of the following arboviral disease cases is reporting mandatory in your country: Zika (Congenital)
+
+```{r}
+# names(df)[grepl('11b', names(df))]
+pd <- df[,(grepl('11b.', names(df)) & grepl('Zika', names(df))) | grepl('1. State', names(df))]
+pd <- pd[,c(1,3)]
+names(pd) <- c('country', 'value')
+make_map(df = pd,
+         qualitative = TRUE)
+```
+
+
+##### 11b. For which of the following arboviral disease cases is reporting mandatory in your country: Other
+
+```{r}
+# names(df)[grepl('11b', names(df))]
+pd <- df[,(grepl('11b.', names(df)) & grepl('Other', names(df))) | grepl('1. State', names(df))]
+names(pd) <- c('country', 'value')
+make_map(df = pd,
+         qualitative = TRUE)
+```
+
+
+### History of any arbovirus circulation since 2000 
+
+(q5)
+
+
+### Conducting surveillance on humans
+
+(q12)
+
+### Conducting surveillance on vectors 
+
+(q28) 
+
+
+### Conducting surveillance on animals 
+
+(q41)
+
+### Training of surveillance personnel and clinicians
+
+(q10) (q24)
+
+### Presence written arbovirus surveillance and control plans
+
+(q6)
+
+### Arbovirus program independent or integrated
+
+(q7)
+
+### Tools for case reporting 
+
+(q9)
+
+# Laboratory diagnostic indicators
+
+
+### Testing in outbreak vs non-outbreak settings 
+
+(q15)
+
+### Laboratory tests available 
+
+(q17)
+
+### Serotyping and sequencing capacity? 
+
+(q19)
+
+
+# Response capacity indicators
+
+### Surveillance and control plans available 
+
+(q 6)
+
+### Clinical guidelines for healthcare workers 
+
+(q21)
+
+
+### Vector control method employed (q35)
+
+
+### Surveillance and response committee exists (q47)
+
+
+### Contingency plan exists (q48)
+
+
+### Most common vector control methods used 
+
+(q35)
+
+
+### Indicators used for thresholds 
+
+(q37, 37b, 38)
+
+
+### Insecticide resistance
+
+(q39)
+
+### Criteria for declaring an outbreak
+
+(q49)
+
+
+# Epidemiological risk data
+
+
+### Vectors present and level of risk 
+
+(q34, q34b, q34c)
+
+### Entomological surveillance in the last 2 years
+
+(q28)
+
+
+### How often is conducted
+
+(q28e)
+
+
+### Vectors recorded in the last 5 years  and the public health threat 
+
+(q34)
+(34b, 34c)
+
+
+### All arboviruses 2015-2020 (cases and deaths) 
+
+(q55, b, c)
+
+
+### Most recent year data 
+
+(q56)
+
