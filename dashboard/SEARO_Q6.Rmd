@@ -1,5 +1,5 @@
 ---
-title: ""
+title: " "
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -102,14 +102,19 @@ $(document).on('click', function (e){
 ```{r, echo = FALSE}
 source('functions.R')
 dict <- load_dict()
-df <- load_data()
+data <- load_data()
+```
+
+
+```{r}
+data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
 <ul class="custom_tabbar">
-  <li><a href="index.html">EMRO</a></li>
-  <li><a href="index.html">EURO</a></li>
-  <li class="custom_tabbar__list-active"><a href="index.html">SEARO</a></li>
-  <li><a href="index.html">WPRO</a></li>
+<li><a href="EMRO_Q6.html">EMRO</a></li>
+<li><a href="EURO_Q6.html">EURO</a></li>
+<li class="custom_tabbar__list-active"><a href="SEARO_Q6.html">SEARO</a></li>
+<li><a href="WPRO_Q6.html">WPRO</a></li>
 </ul>
 
 ```{r}
