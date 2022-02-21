@@ -104,12 +104,26 @@ a:link, a:visited, a:hover, a:active {
   text-transform: capitalize;
 }
 
-.navigation a {
+/* .navigation a {
   display: block;
   padding: 1em;
   padding-left: 2rem;
   color: #048eca;
   font-size: 1.6rem;
+} */
+
+.navigation a {
+    display: block;
+    padding: 0.5em;
+    padding-left: 2rem;
+    color: #048eca;
+    font-size: 1.45rem;
+    text-transform: uppercase;
+}
+
+.navigation .region_active {
+  color: #d86422;
+  font-weight: 600;
 }
 
 .navigation a:hover {
@@ -480,4 +494,28 @@ a:link, a:visited, a:hover, a:active {
     padding-right: 5px;
   }
   
+}
+
+/* Aside menu */
+.aside_custom_menu {
+    position: absolute;
+    left: 0em;
+    width: 230px;
+    background: #068eca;
+}
+
+.aside_custom_menu li {
+    text-align: justify;
+    list-style: none;
+    border-bottom: 1px solid #068eca;
+    padding: 10px 10px;
+}
+
+.aside_custom_menu li a {
+    color: #ffffff;
+}
+
+.aside_menu__active_element {
+    background: #d86422;
+    padding-left: 20px;
 }

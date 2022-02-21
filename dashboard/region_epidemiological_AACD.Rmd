@@ -100,6 +100,24 @@ $(document).on('click', function (e){
 ```
 
 
+<!-- Aside Menu -->
+<ul class="aside_custom_menu">
+    <li class="aside_menu__active_element"><a href="">Programme, agency, or service in charge of arbovirus vector surveillance</a></li>
+    <li><a href="">Reporting of entomologic surveillance data</a></li>
+    <li><a href="">Entomologic surveillance conducted for arboviral infections in mosquito vectors in the past two years</a></li>
+    <li><a href="">Performance of adult and larval/pupal mosquito surveillance</a></li>
+    <li><a href="">Laboratories testing for arboviruses on mosquito pools in the last two years</a></li>
+    <li><a href="">Presence <i>Aedes aegypti</i> or <i>Aedes albopictus</i> in the past 5 years</a></li>
+    <li><a href="">Potential public health threat from <i>Aedes</i> species</a></li>
+    <li><a href="">Vector control methods</a></li>
+    <li><a href="">Surveillance system in place for monitoring <i>Aedes</i> resistance to the insecticide(s) used</a></li>
+    <li><a href="">Staff training in vector control and surveillance</a></li>
+    <li><a href="">Mosquito control plan and threshold</a></li>
+    <li><a href="">Entomological indices measured</a></li>
+    <li><a href="">Vector surveillance staff perceptions</a></li>
+</ul>
+
+
 ```{r, child="_sessioninfo.Rmd"}
 ```
 
