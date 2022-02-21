@@ -53,9 +53,9 @@ tabs_html <- function( filename ){
 # ATTENTION!! change directory to tabbed_dashboard when using tabs_html() !!
 for(j in 1:length( regions )){
   region <- regions[j]
-  filenames <- dir("dashboard")[ grep(region, dir("dashboard")) ]
+  filenames <- dir("regions_dashboard")[ grep(region, dir("regions_dashboard")) ]
   for(k in 1:length(filenames)){
-    path <- paste0("dashboard/",filenames[k])
+    path <- paste0("regions_dashboard/",filenames[k])
     frontmatter <- read_file("chunk_frontmatter.Rmd")
     frontmatter <- paste0(frontmatter,"\n```{r}\ndata <- data %>% filter(Region=='", region, "') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n")
     # tabs <- tabs_html( filenames[k] )
@@ -66,6 +66,6 @@ for(j in 1:length( regions )){
   }
 }
 
-setwd("dashboard")
+setwd("regions_dashboard")
 rmarkdown::render_site()
 setwd("../")

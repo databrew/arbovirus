@@ -7,7 +7,6 @@ library(flextable)
 library(lubridate)
 library(RColorBrewer)
 library(janitor)
-library(leaflet)
 
 make_colors <- function(n, seed = 123){
   pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
@@ -141,6 +140,7 @@ load_data <- function(modify_variable_names = FALSE){
   # Read in data dictionary
   dict <- load_dict()
   
+  
   # Modify variable names
   if(modify_variable_names){
    df <- simplify_data(data = data,
@@ -161,7 +161,7 @@ get_responses <- function( question_number ){
   # question <- dict$Description[ idx[1] ] #
   # cat( paste("Question", question_number, ":", question) ) #
   var_names <- dict$`Variable name`[idx]
-  responses <- data %>% select( all_of(var_names) )
+  responses <- df %>% select( all_of(var_names) )
   if( !is.na(dict$Subquestion[ idx[1] ]) ){
     # remove square brackets at beginning and end, then rename columns:
     colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
