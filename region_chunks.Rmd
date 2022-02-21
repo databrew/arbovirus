@@ -5,9 +5,6 @@ output:
     toc: no
     toc_float: no
     toc_depth: 2
-  word_document:
-    toc: no
-    toc_depth: '2'
 params:
   region: EURO
 ---
@@ -112,8 +109,6 @@ get_responses <- function( question_number ){
   return( responses )
 }
 
-table_num <- 1
-
 ```
 
 ```{css, echo=FALSE}
@@ -170,11 +165,11 @@ Non-responding countries are of concern in terms of arbovirus emergence and ende
 #### Documented arbovirus circulation
 
 All responding countries reported transmission of at least one of chikungunya (CHIKV), dengue (DENV), 
-and Zika (ZIKV) viruses (Table `r table_num`).
+and Zika (ZIKV) viruses.
 
-```{r}
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q5.Rmd"))}
 
-caption <- paste0("Table ", table_num, ". Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)")
+caption <- "Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)"
 
 responses <- get_responses("5") 
 other <- responses %>% select(Other)
@@ -199,16 +194,15 @@ responses %>%
   # hline( i = 1:length(data$SI01)) %>%
   align( j = 2:5, align="center") %>% autofit() %>%
   set_caption( caption )
-
-table_num <- table_num + 1
+ 
 ```
 
 
 #### Written arbovirus surveillance plans
 
-```{r}
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q6.Rmd"))}
 
-caption <- paste0("Table ", table_num, ". Surveillance plans and the viruses covered (ref Q6, 6b)")
+caption <- "Surveillance plans and the viruses covered (ref Q6, 6b)"
 responses <- get_responses("6")
 
 q6 <- cbind(Country = data$SI01, responses) %>% 
@@ -251,7 +245,7 @@ left_join( q6, q6b, by="Country") %>%
   merge_h( part = "header" ) %>%
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -273,9 +267,9 @@ reported by `r no_programme`.
 
 #### Training provided to arboviral surveillance staff
 
-```{r}
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q10.Rmd"))}
 
-caption <- paste0("Table ", table_num, ". Training provided to arboviral surveillance staff (ref Q10)" )
+caption <- "Training provided to arboviral surveillance staff (ref Q10)"
 responses <- get_responses("10") %>%
   select(-Other)
 # training <- colnames( responses )
@@ -300,7 +294,6 @@ regulartable(df) %>%
   align(j = 2:6, align = "center") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num = table_num + 1
 ```
 
 * _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
@@ -316,9 +309,9 @@ cbind(Country = data$SI01, responses) %>%
 ```
 
 
-```{r}
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q11.Rmd"))}
 
-caption <- paste0("Table ", table_num, ". Reportable diseases by case classification status (ref Q11b, 11c)")
+caption <- "Reportable diseases by case classification status (ref Q11b, 11c)"
 q11b <- get_responses("11b")
 q11b <- cbind(Country = data$SI01, q11b) %>%
   select(-"Other ") %>% 
@@ -365,7 +358,7 @@ left_join( q11b, q11c) %>%
   merge_v(j = ~Country ) %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -373,9 +366,9 @@ table_num <- table_num + 1
 
 #### Surveillance for human cases of arboviral disease
 
-```{r}
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q12.Rmd"))}
 
-caption <- paste0("Table ", table_num, ". Performance of national epidemiological surveillance for arboviral diseases in humans (ref Q12, 12b, 12c)")
+caption <- "Performance of national epidemiological surveillance for arboviral diseases in humans (ref Q12, 12b, 12c)"
 responses_12 <- get_responses("12") 
 responses_12b <- get_responses("12b")
 colnames( responses_12b ) <- c("Response", "Other")
@@ -392,13 +385,14 @@ cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases
 
-```{r}
-caption <- paste0("Table ", table_num, ". Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q13.Rmd"))}
+
+caption <- "Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)"
 responses <- get_responses("13") 
 colnames(responses) <- c("Response","Description")
 responses <- responses %>%
@@ -414,27 +408,29 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Arboviral disease surveillance staff perceptions 
 
-```{r}
-caption <- paste0("Table ", table_num, ". Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance (ref Q14)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q14.Rmd"))}
+
+caption <- "Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance (ref Q14)"
 responses <- get_responses("14") 
 cbind(Country = data$SI01, responses) %>% 
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section III: Arbovirus laboratory capacity
 
 #### Cases for which arbovirus laboratory testing is performed
 
-```{r}
-caption <- paste0("Table ", table_num, ". Cases for which laboratory testing is performed by transmission period (ref Q15)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q15.Rmd"))}
+
+caption <- "Cases for which laboratory testing is performed by transmission period (ref Q15)"
 responses <- get_responses("15")
 periods <- colnames(responses)
 colnames(responses)=c("Outbreak","Non")
@@ -453,7 +449,7 @@ responses %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -461,8 +457,9 @@ table_num <- table_num + 1
 
 #### Viruses for which the national laboratory confirmed cases
 
-```{r}
-caption <- paste0("Table ", table_num, ". Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q16.Rmd"))}
+
+caption <- "Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)"
 responses <- get_responses("16")
 colnames(responses) <- c("Response","Arbovirus(es)")
 responses <- responses %>%
@@ -477,14 +474,12 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
-
 ```
 
 #### Arboviral testing capacity by country
 
 ```{r fig.width=5, fig.height=3, eval=TRUE}
-caption <- paste0("Table ", table_num, ". Testing capacity by virus and assay type")
+caption <- "Testing capacity by virus and assay type"
 responses <- get_responses("17")
 responses <- cbind(Country = data$SI01, responses) %>%
   pivot_longer(!Country)
@@ -572,8 +567,6 @@ flextable( df ) %>%
   vline( part="body")  %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
-
 knitr::include_graphics("./images/q17/legend.png")
 # as_ggplot( the_legend )
 
@@ -589,8 +582,9 @@ knitr::include_graphics("./images/q17/legend.png")
 
 #### Additional resources most needed for your country to perform adequate testing for arboviral diseases
 
-```{r}
-caption <- paste0("Table ", table_num, ". Additional resources required for adequate arboviral disease testing (ref Q18)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q18.Rmd"))}
+
+caption <- "Additional resources required for adequate arboviral disease testing (ref Q18)"
 responses <- get_responses("18")
 colnames(responses) <- c(
   "Personnel needed",
@@ -613,14 +607,15 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
 #### Virological surveillance on humans, i.e., tracking of prevailing genotypes/serotypes
 
-```{r}
-caption <- paste0("Table ", table_num, ". Capacity for virological surveillance on human specimens (ref Q19)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q19.Rmd"))}
+
+caption <- "Capacity for virological surveillance on human specimens (ref Q19)"
 responses <- get_responses("19")
 idx <- grep("Comment", colnames(responses))
 responses <- responses[,-idx]
@@ -650,19 +645,20 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Laboratory staff perceptions
 
-```{r}
-caption <- paste0("Table ", table_num, ". Laboratory staff perception of factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections (ref Q20)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q20.Rmd"))}
+
+caption <- "Laboratory staff perception of factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections (ref Q20)"
 responses <- get_responses("20")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section IV: Management of arboviral disease cases
@@ -685,8 +681,9 @@ The following countries indicated availability of clinical guidelines: `r availa
 
 #### Training healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases
 
-```{r}
-caption <- paste0("Table ", table_num, ". Training for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases (ref Q24)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q24.Rmd"))}
+
+caption <- "Training for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases (ref Q24)"
 responses <- get_responses("24")
 colnames(responses) <- c("Response","Training")
 cbind(Country=data$SI01, responses) %>%
@@ -699,28 +696,30 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Arboviral disease surveillance/clinical staff perceptions
 
-```{r}
-caption <- paste0("Table ", table_num, ". Arboviral disease surveillance/clinical staff perception of factors contributing to the a) success and b) barriers/challenges with respect to case management (ref Q25)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q25.Rmd"))}
+
+caption <- "Arboviral disease surveillance/clinical staff perception of factors contributing to the a) success and b) barriers/challenges with respect to case management (ref Q25)"
 responses <- get_responses("25")
 cbind(Country=data$SI01, responses) %>%
   drop_na(Response) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section V: Routine vector surveillance and control
 
 #### Disease programme, agency, or service in charge of arbovirus vector surveillance
 
-```{r}
-caption <- paste0("Table ", table_num, ". Agency in charge of arbovirus vector surveillance (ref Q26)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q26.Rmd"))}
+
+caption <- "Agency in charge of arbovirus vector surveillance (ref Q26)"
 responses <- get_responses("26")
 colnames(responses) <- c("Response","Programme")
 responses <- responses %>% select( "Programme")
@@ -730,13 +729,14 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Reporting of entomologic surveillance data
 
-```{r}
-caption <- paste0("Table ", table_num, ". Institution/department in charge of reporting entomologic surveillance data to the national ministry of health/health department (ref Q27)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q27.Rmd"))}
+
+caption <- "Institution/department in charge of reporting entomologic surveillance data to the national ministry of health/health department (ref Q27)"
 responses <- get_responses("27")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
@@ -751,7 +751,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 Other reporting of entomologic surveillance data:
@@ -775,8 +775,9 @@ no_response <- responses$Country[which(is.na(responses$Response))]
 Countries that conducted entomologic surveillance included `r conducted`. Countries that did not included
 `r not_conducted`. `r no_response` did not respond. 
 
-```{r}
-caption <- paste0("Table ", table_num, ". Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q28.Rmd"))}
+
+caption <- "Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)"
 q28e <- get_responses("28e")
 colnames( q28e ) <- c("How_often", "Other")
 q28e <- q28e %>%
@@ -811,8 +812,9 @@ left_join( responses, q28d, by="Country") %>%
 
 #### Performance of adult and larval/pupal mosquito surveillance
 
-```{r}
-caption <- paste0("Table ", table_num, ". Mosquito surveillance and identification (ref Q29, 30, 31)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q29.Rmd"))}
+
+caption <- "Mosquito surveillance and identification (ref Q29, 30, 31)"
 q29 <- get_responses("29")
 q29 <- q29 %>% 
   mutate( Response = recode_factor(.x=Response,
@@ -835,7 +837,7 @@ cbind(Country=data$SI01, q29, q30, q31) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 Minimum infection rate (MIR) calculations for any _Aedes_-borne arboviruses:
@@ -849,8 +851,9 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Laboratories testing for arboviruses on mosquito pools in the last two years
 
-```{r}
-caption <- paste0("Table ", table_num, ". Laboratories testing mosquito pools for arboviruses (ref Q33)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q33.Rmd"))}
+
+caption <- "Laboratories testing mosquito pools for arboviruses (ref Q33)"
 responses <- get_responses("33") 
 # other <- responses %>% select(Other)
 # responses <- responses %>% select(-Other)
@@ -876,7 +879,7 @@ cbind(Country=data$SI01, responses) %>%
   # rotate( j=2:7, rotation = "btlr", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Presence _Aedes aegypti_ or _Aedes albopictus_ in the past 5 years (ref Q34)
@@ -893,8 +896,9 @@ had only identified _Aedes aegypti_.
 
 #### Potential public health threat from _Aedes_ species by country
 
-```{r}
-caption <- paste0("Table ", table_num, ". Potential public health threat from Aedes species by country (ref Q34b, 34c)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q34.Rmd"))}
+
+caption <- "Potential public health threat from Aedes species by country (ref Q34b, 34c)"
 q34b <- get_responses("34b")
 colnames( q34b ) <- c("Response", "Other")
 q34b <- q34b %>%
@@ -914,13 +918,14 @@ cbind( Country = data$SI01, q34b, q34c) %>%
   regulartable( ) %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Vector control methods
 
-```{r}
-caption <- paste0("Table ", table_num, ". Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q35.Rmd"))}
+
+caption <- "Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)"
 responses <- get_responses("35")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
@@ -952,22 +957,22 @@ cbind(Country=data$SI01, responses) %>%
 
 empty_cols <- empty_cols[ which(empty_cols != "None")]
 
-table_num <- table_num + 1
+ 
 ```
 
-No countries reported the use of `r (empty_cols)`.
 
-```{r}
-caption <- paste0("Table ", table_num, ". Adulticides and/or larvicides (brand and product name) used (ref Q35c)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q35c.Rmd"))}
+
+caption <- "Adulticides and/or larvicides (brand and product name) used (ref Q35c)"
 responses <- get_responses("35c")
 cbind(Country=data$SI01, responses) %>%
   drop_na( Response ) %>%
   rename("Product used"=Response) %>%
   regulartable() %>%
-  # hline( part="body") %>%
+  hline( part="body") %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Surveillance system in place for monitoring _Aedes_ resistance to the insecticide(s) used (ref Q39)
@@ -990,20 +995,22 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Plan for mosquito-borne disease control including threshold that would result in a recommendation for mosquito adulticiding/other mosquito reduction measures
 
-```{r}
-caption <- paste0("Table ", table_num, ". Mosquito control plan and threshold (ref Q37)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q37.Rmd"))}
+
+caption <- "Mosquito control plan and threshold (ref Q37)"
 responses <- get_responses("37")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Entomological indices measured
 
-```{r}
-caption <- paste0("Table ", table_num, ". Outbreak risk factors data collected routinely and analysed (ref Q37b)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q37b.Rmd"))}
+
+caption <- "Outbreak risk factors data collected routinely and analysed (ref Q37b)"
 responses <- get_responses("37b")
 other <- responses %>% select(Other) 
 responses <- responses %>% select(-Other)
@@ -1031,27 +1038,29 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Vector surveillance staff perceptions
 
-```{r}
-caption <- paste0("Table ", table_num, ". Vector surveillance staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control (ref Q40)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q40.Rmd"))}
+
+caption <- "Vector surveillance staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control (ref Q40)"
 responses <- get_responses("40")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section VI: Animal surveillance
 
 #### National epidemiological surveillance for arboviral disease in animals 
 
-```{r}
-caption <- paste0("Table ", table_num, ". National epidemiological surveillance for arboviral disease in animals in the past two years (e.g., epizootic surveillance for yellow fever in endemic areas) (ref Q41, 41b, 41c)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q41.Rmd"))}
+
+caption <- "National epidemiological surveillance for arboviral disease in animals in the past two years (e.g., epizootic surveillance for yellow fever in endemic areas) (ref Q41, 41b, 41c)"
 q41 <- get_responses("41") %>%
   rename( "Conducted" = Response )
 
@@ -1067,16 +1076,17 @@ q41c <- get_responses("41c") %>%
 
 cbind(Country=data$SI01, q41, q41b, q41c) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Sentinel animal surveillance or epizootic surveillance
 
-```{r}
-caption <- paste0("Table ", table_num, ". Countries conducting sentinel surveillance in animals -- the viruses tested for and species under surveillance (ref Q42, 42b)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q42.Rmd"))}
+
+caption <- "Countries conducting sentinel surveillance in animals -- the viruses tested for and species under surveillance (ref Q42, 42b)"
 q42 <- get_responses("42")
 
 responses <- get_responses("42b")
@@ -1095,18 +1105,19 @@ cbind( Country = data$SI01, q42, arboviruses, species ) %>%
   select( Country, Virus, Species ) %>%
   regulartable() %>%
   merge_v(j = ~Country ) %>% 
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section VII: Community sensitization and participation
 
 #### Presence of a community outreach program that also covers arboviral diseases
 
-```{r}
-caption <- paste0("Table ", table_num, ". Community outreach program presence, leadership, and geographic scope (ref Q43, 43b, 43c)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q43.Rmd"))}
+
+caption <- "Community outreach program presence, leadership, and geographic scope (ref Q43, 43b, 43c)"
 q43 <- get_responses("43") %>%
   rename( "In place" = Response)
 
@@ -1124,10 +1135,10 @@ q43c <- q43c %>%
 
 cbind(Country=data$SI01, q43, q43b, q43c) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Is the community outreach/social mobilization program sufficiently funded to cover staff time, prevention and outreach activities as needed? (ref Q43d)
@@ -1141,8 +1152,9 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Resources that would help ensure adequate capacity of the community outreach programme
 
-```{r}
-caption <- paste0("Table ", table_num, ". Resources needed to ensure adequate community outreach capacity (ref Q43e)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q43e.Rmd"))}
+
+caption <- "Resources needed to ensure adequate community outreach capacity (ref Q43e)"
 responses <- get_responses("43e")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
@@ -1168,17 +1180,18 @@ cbind(Country=data$SI01, responses) %>%
   select( c("Country", keep_cols )) %>%
   filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
 #### National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities 
 
-```{r}
-caption <- paste0("Table ", table_num, ". National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak (O) and non-outbreak (N) periods (ref Q44)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q44.Rmd"))}
+
+caption <- "National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak (O) and non-outbreak (N) periods (ref Q44)"
 responses <- get_responses("44")
 idx <- which( grepl("non-outbreak",colnames(responses)))
 
@@ -1221,17 +1234,18 @@ responses %>%
   select( c("Country",keep_cols) ) %>%
   # filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%  ## uncomment to remove empty rows!
   regulartable() %>%
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
 #### Media/channels used for community sensitization, mobilisation and acceptance of interventions 
 
-```{r}
-caption <- paste0("Table ", table_num, ". Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q44b.Rmd"))}
+
+caption <- "Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b)"
 responses <- get_responses("44b")
 other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
@@ -1244,10 +1258,10 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -1263,21 +1277,21 @@ cbind(Country=data$SI01, responses) %>%
                                    "No"="No",
                                    "I don’t know"="I don’t know")) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
-  autofit()
+  hline( part="all") %>% autofit()
 ```
 
 #### Community outreach staff perceptions
 
-```{r}
-caption <- paste0("Table ", table_num, ". Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q46.Rmd"))}
+
+caption <- "Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)"
 responses <- get_responses("46")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -1285,8 +1299,9 @@ table_num <- table_num + 1
 
 #### Surveillance and outbreak response committee and emergency preparedness and funding
 
-```{r}
-caption <- paste0("Table ", table_num, ". Outbreak committee presence, staff training, contingency plan and emergency funding (ref Q47, 48, 52, 53)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q47.Rmd"))}
+
+caption <- "Outbreak committee presence, staff training, contingency plan and emergency funding (ref Q47, 48, 52, 53)"
 q47 <- get_responses("47") %>%
   rename( "Outbreak committee in place" = Response)
 q48 <- get_responses("48") %>%
@@ -1309,17 +1324,18 @@ q53 <- get_responses("53") %>%
 
 cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
 #### Outbreak declaration and emergency response measures 
 
-```{r}
-caption <- paste0("Table ", table_num, ". Criteria for declaring an outbreak and vector control measures that are deployed in emergencies (ref Q49, 51)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q49.Rmd"))}
+
+caption <- "Criteria for declaring an outbreak and vector control measures that are deployed in emergencies (ref Q49, 51)"
 
 q49 <- get_responses("49")
 colnames( q49 ) <- c("Response", "Comments")
@@ -1337,17 +1353,18 @@ q51 <- get_responses("51") %>%
 
 cbind( q49, q51 ) %>%
   regulartable( ) %>%
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1 
+  
 
 ```
 
 #### Established collaborations with national/regional research institutions / international agencies to be activated in case of arboviral outbreak
 
-```{r}
-caption <- paste0("Table ", table_num, ". Established collaborations with institutions or agencies for arboviral outbreaks (ref Q50)")
+```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q50.Rmd"))}
+
+caption <- "Established collaborations with institutions or agencies for arboviral outbreaks (ref Q50)"
 responses <- get_responses("50")
 colnames( responses ) <- c("Response", "Institutions")
 cbind(Country=data$SI01, responses) %>%
@@ -1357,10 +1374,10 @@ cbind(Country=data$SI01, responses) %>%
   filter( Response == "X" ) %>%
   select(-Response) %>% 
   regulartable() %>%
-  # hline( part="all") %>% 
+  hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1 
+  
 
 ```
 
@@ -1370,7 +1387,7 @@ table_num <- table_num + 1
 responses <- get_responses("54")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 # Section IX: Arboviral disease surveillance data
@@ -1403,8 +1420,8 @@ df %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
   regulartable() %>%
   merge_v(j = ~Country) %>%
-  # hline( part="all") %>%
-  fix_border_issues() %>% autofit()
+  hline( part="all") %>%
+  fix_border_issues() # %>% autofit()
 
 ```
 
@@ -1414,8 +1431,7 @@ df %>%
 responses <- get_responses("55b")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 
@@ -1431,8 +1447,7 @@ cbind( Country=data$SI01, responses) %>%
   rename("Arbovirus(es)" = name) %>%
   regulartable() %>% 
   merge_v( j = ~Country) %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 55d. Please provide total number of cases and deaths due to each of the following other arboviruses that you selected from 2015-2020
@@ -1463,8 +1478,8 @@ df %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
   regulartable() %>%
   merge_v(j = ~Country) %>%
-  # hline( part="all") %>%
-  fix_border_issues() %>% autofit()
+  hline( part="all") %>%
+  fix_border_issues() # %>% autofit
 
 ```
 
@@ -1494,8 +1509,8 @@ df %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
   regulartable() %>%
   merge_v(j = ~Country) %>%
-  # hline( part="all") %>%
-  fix_border_issues() %>% autofit
+  hline( part="all") %>%
+  fix_border_issues() # %>% autofit
 ```
 
 #### 57. Do arbovirus surveillance staff have any perceived reasons for increasing trends in arboviral disease incidence? Check all answers that apply.
@@ -1513,8 +1528,7 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 # Section X: Surveillance staffing
@@ -1530,8 +1544,7 @@ colnames(responses) <- c("Clinicians",
                          "Support staff")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 59. Indicate below how many total staff persons are needed at the national level in your country to achieve full epidemiology and laboratory capacity* to conduct arbovirus surveillance
@@ -1545,8 +1558,7 @@ colnames(responses) <- c("Clinicians",
                          "Support staff")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 60. Optional comments to explain responses to questions 58 and 59 above
@@ -1555,8 +1567,7 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("60")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 61. The national health authority/ministry of health has access to expertise in clinical management of arboviruses (Check all that apply) 
@@ -1574,8 +1585,7 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 62. The national health authority/ministry of health has access to expertise in arbovirus epidemiology (Check all that apply
@@ -1593,8 +1603,7 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 63. The national health authority/ministry of health has access to expertise in arbovirus laboratory diagnosis (Check all that apply)
@@ -1612,8 +1621,7 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 64. The national health authority/ministry of health has access to expertise in entomology (Check all that apply)
@@ -1631,8 +1639,7 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 65. Optional comments to explain responses to any of Questions 61-64
@@ -1641,8 +1648,7 @@ cbind(Country=data$SI01, responses, other) %>%
 responses <- get_responses("65")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 # Section XI: Survey conclusion
@@ -1654,8 +1660,7 @@ responses <- get_responses("66")
 colnames(responses) <- "Response"
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 # Appendix
@@ -1664,8 +1669,7 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 regulartable( data.frame( Country=data$SI01, Contact=data$SI02, Title=data$SI03) ) %>%
-  # hline( i = 1:length(data$SI01)) # %>% 
-  autofit()
+  hline( i = 1:length(data$SI01)) # %>% autofit()
 ```
 
 #### 7b. Please specify the programme into which arboviral diseases is integrated:
@@ -1677,8 +1681,7 @@ colnames( responses) <- "Response"
 cbind(Country = data$SI01, responses) %>% 
   drop_na(Response) %>%
   regulartable() %>% 
-  # hline( part="all" ) # %>% 
-  autofit()
+  hline( part="all" ) # %>% autofit()
 ```
 
 #### 8. For which level of the health structure are individual and aggregated data available ? (Select all relevant levels)
@@ -1698,7 +1701,7 @@ responses %>%
   select(Country, Level, Response=value) %>%
   regulartable() %>%
   set_caption("Individual data") %>%
-  # hline( i =4*(1:n_countries)) %>%
+  hline( i =4*(1:n_countries)) %>%
   merge_v(j = ~Country) %>% 
   fix_border_issues() # %>% autofit()
 
@@ -1707,7 +1710,7 @@ responses %>%
   select(Country, Level, Response=value) %>%
   regulartable() %>%
   set_caption("Aggregated data") %>%
-  # hline( i =4*(1:n_countries)) %>%
+  hline( i =4*(1:n_countries)) %>%
   merge_v(j = ~Country) %>%
   fix_border_issues() # %>% autofit()
 
@@ -1725,8 +1728,7 @@ cbind( Country = data$SI01, responses ) %>%
   # rename("State/provincial" = State) %>% 
   # mutate( District = factor( replace_na( as.character(District), "Unanswered"))) %>%
   regulartable() %>% 
-  # hline( i = 1:length(data$SI01)) # %>% 
-  autofit()
+  hline( i = 1:length(data$SI01)) # %>% autofit()
 
 ```
 
@@ -1742,8 +1744,7 @@ responses <- responses %>%
 cbind(Country = data$SI01, responses) %>% 
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>% 
-  # hline( part="all" ) # %>% 
-  autofit()
+  hline( part="all" ) # %>% autofit()
 ```
 
 #### 19. Do you perform virological surveillance on humans, ie, tracking of prevailing genotypes/serotypes? Please select all that apply.
@@ -1767,8 +1768,7 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 19b. Which samples do you use for virological surveillance? 
@@ -1777,8 +1777,7 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("19b")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 19c. For which viruses do you perform virological surveillance? (check all that apply)  
@@ -1806,8 +1805,7 @@ colnames(responses) <- c("Response","Where")
 cbind(Country=data$SI01, responses) %>%
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```
 
 #### 23. How many hospital beds are available per 100,000 population?
@@ -1817,6 +1815,5 @@ responses <- get_responses("23")
 cbind(Country=data$SI01, responses) %>%
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  hline( part="all") # %>% autofit()
 ```

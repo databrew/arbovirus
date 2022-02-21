@@ -1,0 +1,161 @@
+---
+title: " "
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+ggplot2::theme_set(ggplot2::theme_bw())
+
+# options(scipen = '999')
+```
+
+```{js}
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true){
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+
+});
+
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+data <- load_data()
+```
+
+
+```{r}
+data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+```
+
+```{r}
+
+caption <- "Surveillance plans and the viruses covered (ref Q6, 6b)"
+responses <- get_responses("6")
+
+q6 <- cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  mutate( Response = recode_factor(.x = Response,
+                                   "Yes, we have arbovirus-specific plans(s) or guidelines(s)"="Arbovirus-specific",
+                                   "Yes. We do not have arbovirus-specific guidelines, but arboviruses are included within general surveillance guidelines."="Within general surveillance guidelines",
+                                   "No"="None",
+                                   "I don't know"="Don't know")) %>%
+  rename( "Nature of surveillance plans"=Response)
+
+other <- get_responses("6b") %>%
+  select(Other)
+other <- cbind(Country = data$SI01, other) %>% 
+  drop_na(Other) %>%
+  rename("Other arbovirus(es) covered" = Other) 
+
+q6b <- get_responses("6b")%>%
+  select(-Other)
+q6b <- cbind(Country = data$SI01, q6b) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya"="CHIKV",
+                                    "Dengue"="DENV",
+                                    "Yellow fever"="YFV",
+                                    "Zika"="ZIKV")) %>% 
+  mutate( Response = na_if( Response, "Not selected")) %>% 
+  mutate( Response = recode_factor(.x = Response, 
+                                   "Yes"="X")) %>% 
+  pivot_wider( names_from=Arbovirus, values_from=Response) 
+
+left_join( q6, q6b, by="Country") %>%
+  left_join( other) %>%
+  regulartable() %>% 
+  add_header( CHIKV = "Aedes-borne viruses covered in plans",
+              DENV = "Aedes-borne viruses covered in plans",
+              YFV = "Aedes-borne viruses covered in plans",
+              ZIKV = "Aedes-borne viruses covered in plans" ) %>%
+  merge_h( part = "header" ) %>%
+  set_caption( caption ) %>% autofit()
+
+ 
+
+
+```
