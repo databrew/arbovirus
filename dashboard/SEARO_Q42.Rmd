@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q42.html">EMRO</a></li>
-<li><a href="EURO_Q42.html">EURO</a></li>
-<li class="custom_tabbar__list-active"><a href="SEARO_Q42.html">SEARO</a></li>
-<li><a href="WPRO_Q42.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Countries conducting sentinel surveillance in animals -- the viruses tested for and species under surveillance (ref Q42, 42b)"
@@ -141,6 +134,6 @@ cbind( Country = data$SI01, q42, arboviruses, species ) %>%
   hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```

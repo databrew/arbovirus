@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li class="custom_tabbar__list-active"><a href="EMRO_Q29.html">EMRO</a></li>
-<li><a href="EURO_Q29.html">EURO</a></li>
-<li><a href="SEARO_Q29.html">SEARO</a></li>
-<li><a href="WPRO_Q29.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Mosquito surveillance and identification (ref Q29, 30, 31)"
@@ -142,6 +135,6 @@ cbind(Country=data$SI01, q29, q30, q31) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```

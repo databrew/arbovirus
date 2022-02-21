@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='WPRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q28.html">EMRO</a></li>
-<li><a href="EURO_Q28.html">EURO</a></li>
-<li><a href="SEARO_Q28.html">SEARO</a></li>
-<li class="custom_tabbar__list-active"><a href="WPRO_Q28.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)"

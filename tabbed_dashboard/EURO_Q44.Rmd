@@ -1,0 +1,171 @@
+---
+title: " "
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+ggplot2::theme_set(ggplot2::theme_bw())
+
+# options(scipen = '999')
+```
+
+```{js}
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true){
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+
+});
+
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+data <- load_data()
+```
+
+
+```{r}
+data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+```
+
+<ul class="custom_tabbar">
+<li><a href="EMRO_Q44.html">EMRO</a></li>
+<li class="custom_tabbar__list-active"><a href="EURO_Q44.html">EURO</a></li>
+<li><a href="SEARO_Q44.html">SEARO</a></li>
+<li><a href="WPRO_Q44.html">WPRO</a></li>
+</ul>
+
+```{r}
+
+caption <- "National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak (O) and non-outbreak (N) periods (ref Q44)"
+responses <- get_responses("44")
+idx <- which( grepl("non-outbreak",colnames(responses)))
+
+outbreaks <- cbind( Country=data$SI01, responses[,-idx]) %>%
+  pivot_longer(!Country) 
+new_cols <- matrix( unlist( strsplit(outbreaks$name, "\\]\\[") ), ncol=2, byrow=T)
+outbreaks <- outbreaks %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "O", value == 0 ~ "", is.na(value) ~ "")) %>%
+	pivot_wider(names_from=Response, values_from=value) %>%
+  select(-Level) 
+
+non_outbreaks <- cbind( Country=data$SI01, responses[,idx]) %>%
+  pivot_longer(!Country) 
+new_cols <- matrix( unlist( strsplit(non_outbreaks$name, "\\]\\[") ), ncol=2, byrow=T)
+non_outbreaks <- non_outbreaks %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "N", value == 0 ~ "", is.na(value) ~ "")) %>%
+	pivot_wider(names_from=Response, values_from=value) %>%
+  select(-Level) 
+
+responses <- left_join( outbreaks, non_outbreaks, by="Country") %>%
+  unite( "Issued by national public health agency", c("Issued by national public health agency.x", "Issued by national public health agency.y"), sep="") %>%
+  unite( "Issued by state/local health agencies", c("Issued by state/local health agencies.x", "Issued by state/local health agencies.y"), sep="") %>%
+  unite( "No risk in the past two years", c("No risk in the past two years.x", "No risk in the past two years.y"), sep="" ) %>%
+  unite("No notifications even though risk was present", c("No notifications even though risk was present.x", "No notifications even though risk was present.y"), sep="") %>% 
+  mutate( across(everything(), str_replace, pattern="ON", replacement="O, N")) %>%
+  mutate( across( everything(), na_if, "" ))
+
+keep_cols = c()
+for(i in 2:ncol(responses)){
+  if( any( !is.na(responses[,i]) )){
+    keep_cols = c(keep_cols, colnames(responses)[i])
+  }
+}
+
+responses %>%
+  select( c("Country",keep_cols) ) %>%
+  # filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%  ## uncomment to remove empty rows!
+  regulartable() %>%
+  hline( part="all") %>% 
+  set_caption(caption) %>% autofit()
+
+ 
+
+
+```

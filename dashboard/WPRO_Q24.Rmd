@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='WPRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q24.html">EMRO</a></li>
-<li><a href="EURO_Q24.html">EURO</a></li>
-<li><a href="SEARO_Q24.html">SEARO</a></li>
-<li class="custom_tabbar__list-active"><a href="WPRO_Q24.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Training for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases (ref Q24)"
@@ -132,6 +125,6 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```

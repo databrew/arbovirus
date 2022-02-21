@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q33.html">EMRO</a></li>
-<li class="custom_tabbar__list-active"><a href="EURO_Q33.html">EURO</a></li>
-<li><a href="SEARO_Q33.html">SEARO</a></li>
-<li><a href="WPRO_Q33.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Laboratories testing mosquito pools for arboviruses (ref Q33)"
@@ -145,6 +138,6 @@ cbind(Country=data$SI01, responses) %>%
   # rotate( j=2:7, rotation = "btlr", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```

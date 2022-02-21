@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li class="custom_tabbar__list-active"><a href="EMRO_Q44.html">EMRO</a></li>
-<li><a href="EURO_Q44.html">EURO</a></li>
-<li><a href="SEARO_Q44.html">SEARO</a></li>
-<li><a href="WPRO_Q44.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak (O) and non-outbreak (N) periods (ref Q44)"
@@ -165,7 +158,7 @@ responses %>%
   hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 
 ```

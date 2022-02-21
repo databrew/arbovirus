@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li class="custom_tabbar__list-active"><a href="EMRO_Q6.html">EMRO</a></li>
-<li><a href="EURO_Q6.html">EURO</a></li>
-<li><a href="SEARO_Q6.html">SEARO</a></li>
-<li><a href="WPRO_Q6.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Surveillance plans and the viruses covered (ref Q6, 6b)"
@@ -162,7 +155,7 @@ left_join( q6, q6b, by="Country") %>%
   merge_h( part = "header" ) %>%
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 
 ```

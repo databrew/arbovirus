@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q12.html">EMRO</a></li>
-<li><a href="EURO_Q12.html">EURO</a></li>
-<li class="custom_tabbar__list-active"><a href="SEARO_Q12.html">SEARO</a></li>
-<li><a href="WPRO_Q12.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Performance of national epidemiological surveillance for arboviral diseases in humans (ref Q12, 12b, 12c)"
@@ -136,6 +129,6 @@ cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```

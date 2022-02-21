@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q47.html">EMRO</a></li>
-<li><a href="EURO_Q47.html">EURO</a></li>
-<li class="custom_tabbar__list-active"><a href="SEARO_Q47.html">SEARO</a></li>
-<li><a href="WPRO_Q47.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Outbreak committee presence, staff training, contingency plan and emergency funding (ref Q47, 48, 52, 53)"
@@ -145,7 +138,7 @@ cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
   hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 
 ```

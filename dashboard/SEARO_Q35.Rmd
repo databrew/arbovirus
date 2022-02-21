@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q35.html">EMRO</a></li>
-<li><a href="EURO_Q35.html">EURO</a></li>
-<li class="custom_tabbar__list-active"><a href="SEARO_Q35.html">SEARO</a></li>
-<li><a href="WPRO_Q35.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)"
@@ -151,6 +144,6 @@ cbind(Country=data$SI01, responses) %>%
 
 empty_cols <- empty_cols[ which(empty_cols != "None")]
 
-table_num <- table_num + 1
+ 
 
 ```

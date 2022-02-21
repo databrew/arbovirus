@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='WPRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q46.html">EMRO</a></li>
-<li><a href="EURO_Q46.html">EURO</a></li>
-<li><a href="SEARO_Q46.html">SEARO</a></li>
-<li class="custom_tabbar__list-active"><a href="WPRO_Q46.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)"
@@ -126,7 +119,7 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 
 ```

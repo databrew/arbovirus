@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li class="custom_tabbar__list-active"><a href="EMRO_Q35c.html">EMRO</a></li>
-<li><a href="EURO_Q35c.html">EURO</a></li>
-<li><a href="SEARO_Q35c.html">SEARO</a></li>
-<li><a href="WPRO_Q35c.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Adulticides and/or larvicides (brand and product name) used (ref Q35c)"
@@ -128,6 +121,6 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="body") %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```

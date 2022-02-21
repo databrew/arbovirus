@@ -964,7 +964,7 @@ cbind(Country=data$SI01, responses) %>%
   drop_na( Response ) %>%
   rename("Product used"=Response) %>%
   regulartable() %>%
-  hline( part="body") %>%
+  # hline( part="body") %>%
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1067,7 +1067,7 @@ q41c <- get_responses("41c") %>%
 
 cbind(Country=data$SI01, q41, q41b, q41c) %>%
   regulartable() %>%
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -1095,7 +1095,7 @@ cbind( Country = data$SI01, q42, arboviruses, species ) %>%
   select( Country, Virus, Species ) %>%
   regulartable() %>%
   merge_v(j = ~Country ) %>% 
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -1124,7 +1124,7 @@ q43c <- q43c %>%
 
 cbind(Country=data$SI01, q43, q43b, q43c) %>%
   regulartable() %>%
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1168,7 +1168,7 @@ cbind(Country=data$SI01, responses) %>%
   select( c("Country", keep_cols )) %>%
   filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%
   regulartable() %>%
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1221,7 +1221,7 @@ responses %>%
   select( c("Country",keep_cols) ) %>%
   # filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%  ## uncomment to remove empty rows!
   regulartable() %>%
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1244,7 +1244,7 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -1263,7 +1263,8 @@ cbind(Country=data$SI01, responses) %>%
                                    "No"="No",
                                    "I don’t know"="I don’t know")) %>%
   regulartable() %>%
-  hline( part="all") %>% autofit()
+  # hline( part="all") %>% 
+  autofit()
 ```
 
 #### Community outreach staff perceptions
@@ -1308,7 +1309,7 @@ q53 <- get_responses("53") %>%
 
 cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
   regulartable() %>%
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1336,7 +1337,7 @@ q51 <- get_responses("51") %>%
 
 cbind( q49, q51 ) %>%
   regulartable( ) %>%
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1 
@@ -1356,7 +1357,7 @@ cbind(Country=data$SI01, responses) %>%
   filter( Response == "X" ) %>%
   select(-Response) %>% 
   regulartable() %>%
-  hline( part="all") %>% 
+  # hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1 
@@ -1369,7 +1370,7 @@ table_num <- table_num + 1
 responses <- get_responses("54")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% autofit()
 ```
 
 # Section IX: Arboviral disease surveillance data
@@ -1402,8 +1403,8 @@ df %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
   regulartable() %>%
   merge_v(j = ~Country) %>%
-  hline( part="all") %>%
-  fix_border_issues() # %>% autofit()
+  # hline( part="all") %>%
+  fix_border_issues() %>% autofit()
 
 ```
 
@@ -1413,7 +1414,8 @@ df %>%
 responses <- get_responses("55b")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 
@@ -1429,7 +1431,8 @@ cbind( Country=data$SI01, responses) %>%
   rename("Arbovirus(es)" = name) %>%
   regulartable() %>% 
   merge_v( j = ~Country) %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 55d. Please provide total number of cases and deaths due to each of the following other arboviruses that you selected from 2015-2020
@@ -1460,8 +1463,8 @@ df %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
   regulartable() %>%
   merge_v(j = ~Country) %>%
-  hline( part="all") %>%
-  fix_border_issues() # %>% autofit
+  # hline( part="all") %>%
+  fix_border_issues() %>% autofit()
 
 ```
 
@@ -1491,8 +1494,8 @@ df %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
   regulartable() %>%
   merge_v(j = ~Country) %>%
-  hline( part="all") %>%
-  fix_border_issues() # %>% autofit
+  # hline( part="all") %>%
+  fix_border_issues() %>% autofit
 ```
 
 #### 57. Do arbovirus surveillance staff have any perceived reasons for increasing trends in arboviral disease incidence? Check all answers that apply.
@@ -1510,7 +1513,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 # Section X: Surveillance staffing
@@ -1526,7 +1530,8 @@ colnames(responses) <- c("Clinicians",
                          "Support staff")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 59. Indicate below how many total staff persons are needed at the national level in your country to achieve full epidemiology and laboratory capacity* to conduct arbovirus surveillance
@@ -1540,7 +1545,8 @@ colnames(responses) <- c("Clinicians",
                          "Support staff")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 60. Optional comments to explain responses to questions 58 and 59 above
@@ -1549,7 +1555,8 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("60")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 61. The national health authority/ministry of health has access to expertise in clinical management of arboviruses (Check all that apply) 
@@ -1567,7 +1574,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 62. The national health authority/ministry of health has access to expertise in arbovirus epidemiology (Check all that apply
@@ -1585,7 +1593,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 63. The national health authority/ministry of health has access to expertise in arbovirus laboratory diagnosis (Check all that apply)
@@ -1603,7 +1612,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 64. The national health authority/ministry of health has access to expertise in entomology (Check all that apply)
@@ -1621,7 +1631,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 65. Optional comments to explain responses to any of Questions 61-64
@@ -1630,7 +1641,8 @@ cbind(Country=data$SI01, responses, other) %>%
 responses <- get_responses("65")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 # Section XI: Survey conclusion
@@ -1642,7 +1654,8 @@ responses <- get_responses("66")
 colnames(responses) <- "Response"
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 # Appendix
@@ -1651,7 +1664,8 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 regulartable( data.frame( Country=data$SI01, Contact=data$SI02, Title=data$SI03) ) %>%
-  hline( i = 1:length(data$SI01)) # %>% autofit()
+  # hline( i = 1:length(data$SI01)) # %>% 
+  autofit()
 ```
 
 #### 7b. Please specify the programme into which arboviral diseases is integrated:
@@ -1663,7 +1677,8 @@ colnames( responses) <- "Response"
 cbind(Country = data$SI01, responses) %>% 
   drop_na(Response) %>%
   regulartable() %>% 
-  hline( part="all" ) # %>% autofit()
+  # hline( part="all" ) # %>% 
+  autofit()
 ```
 
 #### 8. For which level of the health structure are individual and aggregated data available ? (Select all relevant levels)
@@ -1683,7 +1698,7 @@ responses %>%
   select(Country, Level, Response=value) %>%
   regulartable() %>%
   set_caption("Individual data") %>%
-  hline( i =4*(1:n_countries)) %>%
+  # hline( i =4*(1:n_countries)) %>%
   merge_v(j = ~Country) %>% 
   fix_border_issues() # %>% autofit()
 
@@ -1692,7 +1707,7 @@ responses %>%
   select(Country, Level, Response=value) %>%
   regulartable() %>%
   set_caption("Aggregated data") %>%
-  hline( i =4*(1:n_countries)) %>%
+  # hline( i =4*(1:n_countries)) %>%
   merge_v(j = ~Country) %>%
   fix_border_issues() # %>% autofit()
 
@@ -1710,7 +1725,8 @@ cbind( Country = data$SI01, responses ) %>%
   # rename("State/provincial" = State) %>% 
   # mutate( District = factor( replace_na( as.character(District), "Unanswered"))) %>%
   regulartable() %>% 
-  hline( i = 1:length(data$SI01)) # %>% autofit()
+  # hline( i = 1:length(data$SI01)) # %>% 
+  autofit()
 
 ```
 
@@ -1726,7 +1742,8 @@ responses <- responses %>%
 cbind(Country = data$SI01, responses) %>% 
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>% 
-  hline( part="all" ) # %>% autofit()
+  # hline( part="all" ) # %>% 
+  autofit()
 ```
 
 #### 19. Do you perform virological surveillance on humans, ie, tracking of prevailing genotypes/serotypes? Please select all that apply.
@@ -1750,7 +1767,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 19b. Which samples do you use for virological surveillance? 
@@ -1759,7 +1777,8 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("19b")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 19c. For which viruses do you perform virological surveillance? (check all that apply)  
@@ -1787,7 +1806,8 @@ colnames(responses) <- c("Response","Where")
 cbind(Country=data$SI01, responses) %>%
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```
 
 #### 23. How many hospital beds are available per 100,000 population?
@@ -1797,5 +1817,6 @@ responses <- get_responses("23")
 cbind(Country=data$SI01, responses) %>%
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  # hline( part="all") # %>% 
+  autofit()
 ```

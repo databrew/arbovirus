@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q5.html">EMRO</a></li>
-<li class="custom_tabbar__list-active"><a href="EURO_Q5.html">EURO</a></li>
-<li><a href="SEARO_Q5.html">SEARO</a></li>
-<li><a href="WPRO_Q5.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)"
@@ -144,7 +137,6 @@ responses %>%
   # hline( i = 1:length(data$SI01)) %>%
   align( j = 2:5, align="center") %>% autofit() %>%
   set_caption( caption )
-
-table_num <- table_num + 1
+ 
 
 ```

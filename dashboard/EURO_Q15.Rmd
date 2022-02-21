@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q15.html">EMRO</a></li>
-<li class="custom_tabbar__list-active"><a href="EURO_Q15.html">EURO</a></li>
-<li><a href="SEARO_Q15.html">SEARO</a></li>
-<li><a href="WPRO_Q15.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Cases for which laboratory testing is performed by transmission period (ref Q15)"
@@ -138,7 +131,7 @@ responses %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 
 ```

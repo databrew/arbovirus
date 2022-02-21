@@ -109,8 +109,6 @@ get_responses <- function( question_number ){
   return( responses )
 }
 
-table_num <- 1
-
 ```
 
 ```{css, echo=FALSE}
@@ -167,7 +165,7 @@ Non-responding countries are of concern in terms of arbovirus emergence and ende
 #### Documented arbovirus circulation
 
 All responding countries reported transmission of at least one of chikungunya (CHIKV), dengue (DENV), 
-and Zika (ZIKV) viruses (Table `r table_num`).
+and Zika (ZIKV) viruses.
 
 ```{cat, engine.opts=list(file=paste0("dashboard/", params$region, "_Q5.Rmd"))}
 
@@ -196,8 +194,7 @@ responses %>%
   # hline( i = 1:length(data$SI01)) %>%
   align( j = 2:5, align="center") %>% autofit() %>%
   set_caption( caption )
-
-table_num <- table_num + 1
+ 
 ```
 
 
@@ -248,7 +245,7 @@ left_join( q6, q6b, by="Country") %>%
   merge_h( part = "header" ) %>%
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -297,7 +294,6 @@ regulartable(df) %>%
   align(j = 2:6, align = "center") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num = table_num + 1
 ```
 
 * _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
@@ -362,7 +358,7 @@ left_join( q11b, q11c) %>%
   merge_v(j = ~Country ) %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -389,7 +385,7 @@ cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases
@@ -412,7 +408,7 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Arboviral disease surveillance staff perceptions 
@@ -425,7 +421,7 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section III: Arbovirus laboratory capacity
@@ -453,7 +449,7 @@ responses %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -478,14 +474,12 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
-
 ```
 
 #### Arboviral testing capacity by country
 
 ```{r fig.width=5, fig.height=3, eval=TRUE}
-caption <- paste0("Table ", table_num, ". Testing capacity by virus and assay type")
+caption <- "Testing capacity by virus and assay type"
 responses <- get_responses("17")
 responses <- cbind(Country = data$SI01, responses) %>%
   pivot_longer(!Country)
@@ -573,8 +567,6 @@ flextable( df ) %>%
   vline( part="body")  %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
-
 knitr::include_graphics("./images/q17/legend.png")
 # as_ggplot( the_legend )
 
@@ -615,7 +607,7 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -653,7 +645,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Laboratory staff perceptions
@@ -666,7 +658,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section IV: Management of arboviral disease cases
@@ -704,7 +696,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Arboviral disease surveillance/clinical staff perceptions
@@ -718,7 +710,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section V: Routine vector surveillance and control
@@ -737,7 +729,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Reporting of entomologic surveillance data
@@ -759,7 +751,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 Other reporting of entomologic surveillance data:
@@ -845,7 +837,7 @@ cbind(Country=data$SI01, q29, q30, q31) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 Minimum infection rate (MIR) calculations for any _Aedes_-borne arboviruses:
@@ -887,7 +879,7 @@ cbind(Country=data$SI01, responses) %>%
   # rotate( j=2:7, rotation = "btlr", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Presence _Aedes aegypti_ or _Aedes albopictus_ in the past 5 years (ref Q34)
@@ -926,7 +918,7 @@ cbind( Country = data$SI01, q34b, q34c) %>%
   regulartable( ) %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Vector control methods
@@ -965,7 +957,7 @@ cbind(Country=data$SI01, responses) %>%
 
 empty_cols <- empty_cols[ which(empty_cols != "None")]
 
-table_num <- table_num + 1
+ 
 ```
 
 
@@ -980,7 +972,7 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="body") %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Surveillance system in place for monitoring _Aedes_ resistance to the insecticide(s) used (ref Q39)
@@ -1011,7 +1003,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Entomological indices measured
@@ -1046,7 +1038,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Vector surveillance staff perceptions
@@ -1059,7 +1051,7 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section VI: Animal surveillance
@@ -1087,7 +1079,7 @@ cbind(Country=data$SI01, q41, q41b, q41c) %>%
   hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Sentinel animal surveillance or epizootic surveillance
@@ -1116,7 +1108,7 @@ cbind( Country = data$SI01, q42, arboviruses, species ) %>%
   hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 # Section VII: Community sensitization and participation
@@ -1146,7 +1138,7 @@ cbind(Country=data$SI01, q43, q43b, q43c) %>%
   hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 ```
 
 #### Is the community outreach/social mobilization program sufficiently funded to cover staff time, prevention and outreach activities as needed? (ref Q43d)
@@ -1191,7 +1183,7 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -1245,7 +1237,7 @@ responses %>%
   hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -1269,7 +1261,7 @@ cbind(Country=data$SI01, responses, other) %>%
   hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -1299,7 +1291,7 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -1335,7 +1327,7 @@ cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
   hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```
 
@@ -1364,7 +1356,7 @@ cbind( q49, q51 ) %>%
   hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1 
+  
 
 ```
 
@@ -1385,7 +1377,7 @@ cbind(Country=data$SI01, responses) %>%
   hline( part="all") %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1 
+  
 
 ```
 

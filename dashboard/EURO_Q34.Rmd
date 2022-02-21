@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li><a href="EMRO_Q34.html">EMRO</a></li>
-<li class="custom_tabbar__list-active"><a href="EURO_Q34.html">EURO</a></li>
-<li><a href="SEARO_Q34.html">SEARO</a></li>
-<li><a href="WPRO_Q34.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Potential public health threat from Aedes species by country (ref Q34b, 34c)"
@@ -139,6 +132,6 @@ cbind( Country = data$SI01, q34b, q34c) %>%
   regulartable( ) %>% 
   set_caption(caption) %>% autofit()
 
-table_num <- table_num + 1
+ 
 
 ```

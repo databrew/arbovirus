@@ -43,7 +43,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 
-.sticky ~ #global-navigation, .sticky ~ #all-regions-navigation, .sticky ~ #region-navigation, .sticky ~ #country-navigation {
+.sticky ~ #overview-navigation, .sticky ~ #regions-navigation, .sticky ~ #emro-navigation, .sticky ~ #euro-navigation, .sticky ~ #searo-navigation, .sticky ~ #wpro-navigation,.sticky ~ #country-navigation {
     position: fixed !important;
     top: 53px;
     
@@ -117,7 +117,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 
-#global-navigation{
+#overview-navigation{
   background: #21313b;
   color:#fff;
   position: absolute;
@@ -127,29 +127,29 @@ a:link, a:visited, a:hover, a:active {
   
 }
 
-#global-navigation a{
+#overview-navigation a{
   color: #fff;
   font-weight: bold;
   margin-top: 50px;
 }
-#global-navigation a:hover,
-#global-navigation a:active{
+#overview-navigation a:hover,
+#overview-navigation a:active{
   text-decoration: none;
 }
 
-#global-navigation ul{
+#overview-navigation ul{
   margin:40px 0;
   padding:0;
   list-style-type:none;
   text-align: center;
 }
 
-#global-navigation li{
+#overview-navigation li{
   padding: 10px 0;
 }
 
 /* All regions */
-#all-regions-navigation {
+#regions-navigation {
   background: #21313b;
   color:#fff;
   position: absolute;
@@ -158,30 +158,30 @@ a:link, a:visited, a:hover, a:active {
   z-index: 99999;
 }
 
-#all-regions-navigation a{
+#regions-navigation a{
   color: #fff;
   font-weight: bold;
   margin-top: 50px;
 }
-#all-regions-navigation a:hover,
-#all-regions-navigation a:active{
+#regions-navigation a:hover,
+#regions-navigation a:active{
   text-decoration: none;
 }
 
-#all-regions-navigation ul{
+#regions-navigation ul{
   margin:40px 0;
   padding:0;
   list-style-type:none;
   text-align: center;
 }
 
-#all-regions-navigation li{
+#regions-navigation li{
   padding: 10px 0;
 }
 
 
-/* Individual region */
-#one-region-navigation {
+/* EMRO region */
+#emro-navigation {
   background: #21313b;
   color:#fff;
   position: absolute;
@@ -190,27 +190,119 @@ a:link, a:visited, a:hover, a:active {
   z-index: 99999;
 }
 
-#one-region-navigation a{
+#emro-navigation a{
   color: #fff;
   font-weight: bold;
   margin-top: 50px;
 }
-#one-region-navigation a:hover,
-#one-region-navigation a:active{
+#emro-navigation a:hover,
+#emro-navigation a:active{
   text-decoration: none;
 }
 
-#one-region-navigation ul{
+#emro-navigation ul{
   margin:40px 0;
   padding:0;
   list-style-type:none;
   text-align: center;
 }
 
-#one-region-navigation li{
+#emro-navigation li{
   padding: 10px 0;
 }
 
+/* EURO region */
+#euro-navigation {
+  background: #21313b;
+  color:#fff;
+  position: absolute;
+  width: 100%;
+  /*top:50px;*/
+  z-index: 99999;
+}
+
+#euro-navigation a{
+  color: #fff;
+  font-weight: bold;
+  margin-top: 50px;
+}
+#euro-navigation a:hover,
+#euro-navigation a:active{
+  text-decoration: none;
+}
+
+#euro-navigation ul{
+  margin:40px 0;
+  padding:0;
+  list-style-type:none;
+  text-align: center;
+}
+
+#euro-navigation li{
+  padding: 10px 0;
+}
+
+/* SEARO region */
+#searo-navigation {
+  background: #21313b;
+  color:#fff;
+  position: absolute;
+  width: 100%;
+  /*top:50px;*/
+  z-index: 99999;
+}
+
+#searo-navigation a{
+  color: #fff;
+  font-weight: bold;
+  margin-top: 50px;
+}
+#searo-navigation a:hover,
+#searo-navigation a:active{
+  text-decoration: none;
+}
+
+#searo-navigation ul{
+  margin:40px 0;
+  padding:0;
+  list-style-type:none;
+  text-align: center;
+}
+
+#searo-navigation li{
+  padding: 10px 0;
+}
+
+/* WPRO region */
+#wpro-navigation {
+  background: #21313b;
+  color:#fff;
+  position: absolute;
+  width: 100%;
+  /*top:50px;*/
+  z-index: 99999;
+}
+
+#wpro-navigation a{
+  color: #fff;
+  font-weight: bold;
+  margin-top: 50px;
+}
+#wpro-navigation a:hover,
+#wpro-navigation a:active{
+  text-decoration: none;
+}
+
+#wpro-navigation ul{
+  margin:40px 0;
+  padding:0;
+  list-style-type:none;
+  text-align: center;
+}
+
+#wpro-navigation li{
+  padding: 10px 0;
+}
 
 /* Country */
 #country-navigation {

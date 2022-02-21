@@ -110,13 +110,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-<ul class="custom_tabbar">
-<li class="custom_tabbar__list-active"><a href="EMRO_Q16.html">EMRO</a></li>
-<li><a href="EURO_Q16.html">EURO</a></li>
-<li><a href="SEARO_Q16.html">SEARO</a></li>
-<li><a href="WPRO_Q16.html">WPRO</a></li>
-</ul>
-
 ```{r}
 
 caption <- "Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)"
@@ -133,8 +126,6 @@ cbind(Country = data$SI01, responses) %>%
   replace_na( list("Arbovirus(es)"="Not specified")) %>%
   regulartable() %>% 
   set_caption( caption ) %>% autofit()
-
-table_num <- table_num + 1
 
 
 ```
