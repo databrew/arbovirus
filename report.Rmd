@@ -24,7 +24,7 @@ header-includes:
 - \usepackage{xcolor}
 fontsize: 12pt
 params:
-  country: Germany
+  country: France
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
