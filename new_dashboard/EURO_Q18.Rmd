@@ -1,0 +1,26 @@
+
+caption <- "Additional resources required for adequate arboviral disease testing (ref Q18)"
+responses <- get_responses("18")
+colnames(responses) <- c(
+  "Personnel needed",
+  "Additional personnel needed",
+  "Training needed",
+  "Additional training needed",
+  "Laboratory equipment needed",
+  "Additional laboratory equipment needed",
+  "Capacity needs",
+  "Other capacity needs"
+)
+cbind(Country = data$SI01, responses) %>%
+  select(
+    Country,
+    "Additional personnel needed",
+    "Additional training needed",
+    "Additional laboratory equipment needed",
+    "Other capacity needs"
+  ) %>%
+  regulartable() %>%
+  set_caption(caption) %>% autofit()
+
+ 
+

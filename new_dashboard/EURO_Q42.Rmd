@@ -1,0 +1,24 @@
+
+caption <- "Countries conducting sentinel surveillance in animals -- the viruses tested for and species under surveillance (ref Q42, 42b)"
+q42 <- get_responses("42")
+
+responses <- get_responses("42b")
+idx <- which( grepl("Virus name",colnames(responses)))
+
+arboviruses <- responses[,idx] %>%
+  mutate( across(everything(), replace_na, "")) %>%
+  unite( Virus, everything(), sep = "\t") 
+
+species <- responses[,-idx] %>%
+  mutate( across(everything(), replace_na, "")) %>%
+  unite( Species, everything(), sep="\t")
+
+cbind( Country = data$SI01, q42, arboviruses, species ) %>%
+  filter( Response == "Yes" ) %>% 
+  select( Country, Virus, Species ) %>%
+  regulartable() %>%
+  merge_v(j = ~Country ) %>% 
+  hline( part="all") %>% 
+  set_caption( caption ) %>% autofit()
+
+ 

@@ -1,0 +1,22 @@
+
+caption <- "Cases for which laboratory testing is performed by transmission period (ref Q15)"
+responses <- get_responses("15")
+periods <- colnames(responses)
+colnames(responses)=c("Outbreak","Non")
+responses <- cbind(Country = data$SI01, responses) %>% 
+  mutate( Outbreak = recode_factor(Outbreak,
+                                   "All suspect cases tested"="A",
+                                   "Subset of suspect cases tested"="S",
+                                   "No suspect cases tested"="N")) %>%
+  mutate( Non = recode_factor(Non,
+                                   "All suspect cases tested"="A",
+                                   "Subset of suspect cases tested"="S",
+                                   "No suspect cases tested"="N")) 
+  
+colnames(responses) <- c("Country",periods)
+responses %>%
+  regulartable() %>% 
+  set_caption(caption) %>% autofit()
+
+ 
+

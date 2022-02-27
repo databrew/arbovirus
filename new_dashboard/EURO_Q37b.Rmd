@@ -1,0 +1,30 @@
+
+caption <- "Outbreak risk factors data collected routinely and analysed (ref Q37b)"
+responses <- get_responses("37b")
+other <- responses %>% select(Other) 
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate( across(everything(), na_if, "Not selected") ) %>%
+  mutate( across(everything(), as.character)) %>%
+  mutate( across(everything(), str_replace, pattern="Yes", replacement="X"))
+
+keep_cols = c()
+for(i in 1:ncol(responses)){
+  if( any( !is.na(responses[,i]) )){
+    keep_cols = c(keep_cols, colnames(responses)[i])
+  }
+}
+
+if( any(!is.na(other$Other))){
+  responses <- cbind( responses, other)
+  keep_cols <- c( keep_cols, "Other")
+}
+
+cbind(Country=data$SI01, responses) %>%
+  select( c("Country", keep_cols )) %>%
+  filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%
+  regulartable() %>%
+  set_caption(caption) %>% autofit()
+
+ 

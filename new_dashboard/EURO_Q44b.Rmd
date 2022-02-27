@@ -1,0 +1,19 @@
+
+caption <- "Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b)"
+responses <- get_responses("44b")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
+  regulartable() %>%
+  hline( part="all") %>% 
+  set_caption( caption ) %>% autofit()
+
+ 
+

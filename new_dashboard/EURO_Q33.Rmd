@@ -1,0 +1,28 @@
+
+caption <- "Laboratories testing mosquito pools for arboviruses (ref Q33)"
+responses <- get_responses("33") 
+# other <- responses %>% select(Other)
+# responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected") 
+
+empty_cols = c()
+for(i in 1:ncol(responses)){
+  responses[,i] <- as.character( responses[,i] )
+  responses[ which( is.na( responses[,i])) ,i] <- " "
+  if( all(responses[,i] != "X" )){
+    empty_cols = c(empty_cols, colnames(responses)[i])
+  }
+}
+
+cbind(Country=data$SI01, responses) %>%
+  select(-empty_cols) %>% 
+  regulartable() %>%
+  # rotate( j=2:7, rotation = "btlr", part="header" ) %>% 
+  set_caption(caption) %>% autofit()
+
+ 

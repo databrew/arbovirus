@@ -1,0 +1,72 @@
+
+caption <- "Surveillance plans and the viruses covered (ref Q6, 6b)"
+responses <- get_responses("6")
+
+q6 <- cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  mutate( Response = recode_factor(.x = Response,
+                                   "Yes, we have arbovirus-specific plans(s) or guidelines(s)"="Arbovirus-specific",
+                                   "Yes. We do not have arbovirus-specific guidelines, but arboviruses are included within general surveillance guidelines."="Within general surveillance guidelines",
+                                   "No"="None",
+                                   "I don't know"="Don't know")) %>%
+  rename( "Nature of surveillance plans"=Response)
+
+other <- get_responses("6b") %>%
+  select(Other)
+other <- cbind(Country = data$SI01, other) %>% 
+  drop_na(Other) %>%
+  rename("Other arbovirus(es) covered" = Other) 
+
+q6b <- get_responses("6b")%>%
+  select(-Other)
+q6b <- cbind(Country = data$SI01, q6b) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya"="CHIKV",
+                                    "Dengue"="DENV",
+                                    "Yellow fever"="YFV",
+                                    "Zika"="ZIKV")) %>% 
+  mutate( Response = na_if( Response, "Not selected")) %>% 
+  mutate( Response = recode_factor(.x = Response, 
+                                   "Yes"="X")) %>% 
+  pivot_wider( names_from=Arbovirus, values_from=Response) 
+
+left_join( q6, q6b, by="Country") %>%
+  left_join( other) %>%
+  regulartable() %>% 
+  add_header( CHIKV = "Aedes-borne viruses covered in plans",
+              DENV = "Aedes-borne viruses covered in plans",
+              YFV = "Aedes-borne viruses covered in plans",
+              ZIKV = "Aedes-borne viruses covered in plans" ) %>%
+  merge_h( part = "header" ) %>%
+  set_caption( caption ) %>% autofit()
+
+ 
+
+
+caption <- "Training provided to arboviral surveillance staff (ref Q10)"
+responses <- get_responses("10") %>%
+  select(-Other)
+# training <- colnames( responses )
+colnames(responses) <- c("Basic","Repeat_basic","Advanced","Repeat_advanced","None")
+df <- cbind(Country = data$SI01, responses) %>%
+  mutate(
+    Basic = if_else(Basic == "Yes", "X", " "),
+    Repeat_basic = if_else(Repeat_basic == "Yes", "X", " "),
+    Advanced = if_else(Advanced == "Yes", "X", " "),
+    Repeat_advanced = if_else(Repeat_advanced == "Yes", "X", " "),
+    None = if_else(None == "Yes", "X", " ")
+  ) %>%
+  rename(
+    "One-time basic training" = Basic,
+    "Repeated/continuing basic training" = Repeat_basic,
+    "One-time advanced training" = Advanced,
+    "Repeated/continuing advanced training" = Repeat_advanced
+  )
+# colnames(df) <- c("Country", training)
+
+regulartable(df) %>%
+  align(j = 2:6, align = "center") %>% 
+  set_caption( caption ) %>% autofit()
+

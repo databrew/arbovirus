@@ -1,0 +1,50 @@
+
+caption <- "Reportable diseases by case classification status (ref Q11b, 11c)"
+q11b <- get_responses("11b")
+q11b <- cbind(Country = data$SI01, q11b) %>%
+  select(-"Other ") %>% 
+  pivot_longer(!Country, names_to = "Arbovirus", values_to = "Response")
+q11b$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", q11b$Response))
+q11b <- q11b %>%
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya" = "CHIKV",
+                                    "Dengue" = "DENV",
+                                    "Yellow fever" = "YFV",
+                                    "Zika (congenital)" = "ZIKV (C)",
+                                    "Zika (non-congenital)" = "ZIKV (NC)")) %>%
+  mutate( Response = recode_factor( .x = Response,
+                                    "All suspect cases" = "S",
+                                    "Confirmed cases only" = "C",
+                                    "Not reportable" = "N")) %>%
+  pivot_wider(names_from = Arbovirus, values_from = Response) 
+
+q11c <- get_responses("11c")
+idx <- which( grepl("Arbovirus",colnames(q11c)))
+arboviruses <- cbind( Country=data$SI01, q11c[,idx]) %>%
+  pivot_longer(!Country) %>%
+  select( Country, Arbovirus=value)
+reporting <- cbind( Country=data$SI01, q11c[,-idx]) %>%
+  pivot_longer(!Country) %>%
+  select( Country, Reporting=value)
+idx <- grep("suspect", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (S)"
+idx <- grep("confirm", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (C)"
+idx <- grep("not", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (N)"
+reporting$Reporting[ is.na( reporting$Reporting) ] <- ""
+q11c <- cbind(arboviruses, Reporting = reporting$Reporting) %>%
+  unite( "Other", Arbovirus:Reporting, sep = "")
+idx <- which( q11c$Other == "NA" )
+q11c <- q11c[-idx,]
+q11c <- q11c %>% 
+  group_by( Country ) %>% 
+  summarize( Other = paste(Other, collapse=", "))
+
+left_join( q11b, q11c) %>%
+  regulartable() %>%
+  merge_v(j = ~Country ) %>% 
+  set_caption(caption) %>% autofit()
+
+ 
+

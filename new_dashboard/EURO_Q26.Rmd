@@ -1,0 +1,12 @@
+
+caption <- "Agency in charge of arbovirus vector surveillance (ref Q26)"
+responses <- get_responses("26")
+colnames(responses) <- c("Response","Programme")
+responses <- responses %>% select( "Programme")
+cbind(Country=data$SI01, responses) %>%
+  mutate( Programme = factor( replace_na( as.character(Programme), "None"))) %>%
+  rename( "Programme/Agency" = Programme) %>% 
+  regulartable() %>% 
+  set_caption( caption ) %>% autofit()
+
+ 

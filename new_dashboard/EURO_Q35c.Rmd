@@ -1,0 +1,11 @@
+
+caption <- "Adulticides and/or larvicides (brand and product name) used (ref Q35c)"
+responses <- get_responses("35c")
+cbind(Country=data$SI01, responses) %>%
+  drop_na( Response ) %>%
+  rename("Product used"=Response) %>%
+  regulartable() %>%
+  hline( part="body") %>%
+  set_caption(caption) %>% autofit()
+
+ 

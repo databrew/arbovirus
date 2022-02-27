@@ -1,0 +1,9 @@
+
+caption <- "Arboviral disease surveillance/clinical staff perception of factors contributing to the a) success and b) barriers/challenges with respect to case management (ref Q25)"
+responses <- get_responses("25")
+cbind(Country=data$SI01, responses) %>%
+  drop_na(Response) %>%
+  regulartable() %>%
+  set_caption(caption) %>% autofit()
+
+ 

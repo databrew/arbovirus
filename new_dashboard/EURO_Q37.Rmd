@@ -1,0 +1,8 @@
+
+caption <- "Mosquito control plan and threshold (ref Q37)"
+responses <- get_responses("37")
+cbind(Country=data$SI01, responses) %>%
+  regulartable() %>% 
+  set_caption(caption) %>% autofit()
+
+ 

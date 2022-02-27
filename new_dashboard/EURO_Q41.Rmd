@@ -1,0 +1,21 @@
+
+caption <- "National epidemiological surveillance for arboviral disease in animals in the past two years (e.g., epizootic surveillance for yellow fever in endemic areas) (ref Q41, 41b, 41c)"
+q41 <- get_responses("41") %>%
+  rename( "Conducted" = Response )
+
+q41b <- get_responses("41b")
+colnames( q41b ) <- c("Frequency", "Other")
+q41b <- q41b %>%
+  mutate( Frequency = factor( replace_na( as.character(Frequency), ""))) %>%
+  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
+  unite( Frequency, Frequency:Other, sep="") 
+
+q41c <- get_responses("41c") %>%
+  rename("Type of surveillance" = Response)
+
+cbind(Country=data$SI01, q41, q41b, q41c) %>%
+  regulartable() %>%
+  hline( part="all") %>% 
+  set_caption( caption ) %>% autofit()
+
+ 

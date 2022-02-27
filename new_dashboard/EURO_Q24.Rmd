@@ -1,0 +1,15 @@
+
+caption <- "Training for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases (ref Q24)"
+responses <- get_responses("24")
+colnames(responses) <- c("Response","Training")
+cbind(Country=data$SI01, responses) %>%
+  mutate( Response = recode_factor(.x = Response,
+                                   "Yes, specific training is provided. If so, please specify:"="X",
+                                   "No"=" ")) %>%
+  filter(Response=="X") %>% 
+  select(-Response) %>%
+  replace_na( list(Training="Not specified")) %>%
+  regulartable() %>%
+  set_caption(caption) %>% autofit()
+
+ 

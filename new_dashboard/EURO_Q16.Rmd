@@ -1,0 +1,16 @@
+
+caption <- "Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)"
+responses <- get_responses("16")
+colnames(responses) <- c("Response","Arbovirus(es)")
+responses <- responses %>%
+  mutate(Response = recode_factor(Response,
+                                  "Yes, for all arboviral infections. Please specify them:"="Yes",
+                                  "Yes, but only for some arboviral infections. Please specify them:"="Yes",
+                                  "No"="No"))
+cbind(Country = data$SI01, responses) %>% 
+  filter( Response == "Yes") %>%
+  select(-Response) %>%
+  replace_na( list("Arbovirus(es)"="Not specified")) %>%
+  regulartable() %>% 
+  set_caption( caption ) %>% autofit()
+

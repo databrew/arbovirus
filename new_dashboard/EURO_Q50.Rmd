@@ -1,0 +1,16 @@
+
+caption <- "Established collaborations with institutions or agencies for arboviral outbreaks (ref Q50)"
+responses <- get_responses("50")
+colnames( responses ) <- c("Response", "Institutions")
+cbind(Country=data$SI01, responses) %>%
+  mutate( Response = recode_factor(.x = Response,
+                                   "Yes. If so, please specify institutions/agencies in the comments field:"="X",
+                                   "No"=" ")) %>%
+  filter( Response == "X" ) %>%
+  select(-Response) %>% 
+  regulartable() %>%
+  hline( part="all") %>% 
+  set_caption(caption) %>% autofit()
+
+  
+

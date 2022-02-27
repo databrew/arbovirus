@@ -1,0 +1,25 @@
+
+caption <- "Mosquito surveillance and identification (ref Q29, 30, 31)"
+q29 <- get_responses("29")
+q29 <- q29 %>% 
+  mutate( Response = recode_factor(.x=Response,
+                                   "Yes"="X",
+                                   "No"=" ")) %>%
+  rename("Adult surveillance"="Response") 
+q30 <- get_responses("30")
+q30 <- q30 %>% 
+  mutate( Response = recode_factor(.x=Response,
+                                   "Yes"="X",
+                                   "No"=" ")) %>%
+  rename("Larval/pupal surveillance"="Response")
+q31 <- get_responses("31")
+q31 <- q31 %>% 
+  mutate( Response = recode_factor(.x=Response,
+                                   "Yes"="X",
+                                   "No"=" ")) %>%
+  rename("Trapped mosquitoes identified to species"="Response")
+cbind(Country=data$SI01, q29, q30, q31) %>%
+  regulartable() %>%
+  set_caption(caption) %>% autofit()
+
+ 

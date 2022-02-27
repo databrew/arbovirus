@@ -1,0 +1,18 @@
+
+caption <- "Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)"
+responses <- get_responses("13") 
+colnames(responses) <- c("Response","Description")
+responses <- responses %>%
+  mutate(Response = recode_factor(.x=Response,
+                                  "Yes. If so, please describe in the comments field:"="Yes",
+                                  "No"="No",
+                                  "I don't know" ="I don't know")) 
+cbind(Country = data$SI01, responses) %>% 
+  filter( Response == "Yes") %>% 
+  select(-Response) %>%
+  replace_na( list(Description = "Conducted (no further description provided)")) %>% 
+  rename( "Description of training" = Description) %>%
+  regulartable() %>% 
+  set_caption( caption ) %>% autofit()
+
+ 
