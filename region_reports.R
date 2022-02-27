@@ -20,8 +20,8 @@ for(j in 1:length( regions )){
     rmarkdown::render( "one_region.Rmd", 
                        params=list(region=nom), 
                        output_file = report_name )
-    # rmarkdown::render( "region_chunks.Rmd", 
-    #                    params=list(region=nom))
+    rmarkdown::render( "region_chunks.Rmd", 
+                        params=list(region=nom))
   }
 }
 

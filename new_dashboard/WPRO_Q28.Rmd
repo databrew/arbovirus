@@ -1,0 +1,147 @@
+---
+title: " "
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+ggplot2::theme_set(ggplot2::theme_bw())
+
+# options(scipen = '999')
+```
+
+```{js}
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true){
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+
+});
+
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+data <- load_data()
+```
+
+
+```{r}
+data <- data %>% filter(Region=='WPRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+```
+
+```{r}
+
+caption <- "Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)"
+q28e <- get_responses("28e")
+colnames( q28e ) <- c("How_often", "Other")
+q28e <- q28e %>%
+  mutate( How_often = factor( replace_na( as.character(How_often), ""))) %>%
+  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
+  unite( Response, How_often:Other, sep="") 
+q28e <- cbind( Country = data$SI01, q28e)
+
+q28c <- get_responses("28c")
+colnames( q28c ) <- c("Scope", "Comments")
+q28c <- q28c %>%
+  mutate( Scope = recode_factor(.x = Scope,
+                                   "Country wide"="Country wide",
+                                   "Restricted to specific locations . Please specify where:"="Restricted to specific locations",
+                                   "Don’t know"="I don’t know"))
+responses <- cbind( q28e, q28c)
+
+q28d <- get_responses("28d")
+q28d <- cbind( Country = data$SI01, q28d) %>% 
+  drop_na(Response) %>%
+  mutate( Response = paste0("(", Response, " sentinel sites)")) %>%
+  rename( "Sites" = Response )
+
+left_join( responses, q28d, by="Country") %>%
+  mutate( Scope = as.character( Scope ) ) %>%
+  replace_na( list( Scope = "", Sites = "")) %>%
+  unite( "Geographic scope", c("Scope", "Sites"), sep = "\n") %>%
+  regulartable( ) %>% 
+  set_caption(caption) %>% autofit()
+
+
+```
