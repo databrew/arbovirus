@@ -25,36 +25,14 @@ for(j in 1:length( regions )){
   }
 }
 
-# filename is assumed to have extension .Rmd
-tabs_html <- function( filename ){
-  region_question <- unlist( strsplit( filename , ".", fixed=TRUE))[1]
-  region_question <- unlist( strsplit( region_question, "_", fixed=TRUE))
-  region <- region_question[1]
-  question <- region_question[2]
-  
-  html <- '\n<ul class="custom_tabbar">\n'
-  for(j in 1:length( regions )){
-    if( regions[j] == region ){
-      html <- paste0( html, '<li class="custom_tabbar__list-active"><a href="' )
-    } else{
-      html <- paste0( html,'<li><a href="' )
-    }
-    html <- paste0( html,
-                    regions[j], '_', question,
-                    '.html">',
-                    regions[j],
-                    '</a></li>\n' )
-  }
-  html <- paste0( html, '</ul>\n' )
-  return( html )
-}
-
 # create RMDs for dashboard
 for(j in 1:length( regions )){
   region <- regions[j]
-  filenames <- dir("new_dashboard")[ grep(region, dir("new_dashboard")) ]
+  region_path <- paste0("new_dashboard/", region, "/")
+  filenames <- dir( region_path )
+  filenames <- filenames[ grep("Rmd", filenames) ]
   for(k in 1:length(filenames)){
-    path <- paste0("new_dashboard/",filenames[k])
+    path <- paste0(region_path, filenames[k])
     frontmatter <- read_file("chunk_frontmatter.Rmd")
     frontmatter <- paste0(frontmatter,"\n```{r}\ndata <- data %>% filter(Region=='", region, "') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n")
     # tabs <- tabs_html( filenames[k] )
@@ -65,6 +43,3 @@ for(j in 1:length( regions )){
   }
 }
 
-setwd("new_dashboard")
-rmarkdown::render_site()
-setwd("../")

@@ -167,7 +167,7 @@ Non-responding countries are of concern in terms of arbovirus emergence and ende
 All responding countries reported transmission of at least one of chikungunya (CHIKV), dengue (DENV), 
 and Zika (ZIKV) viruses.
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q5.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q5.Rmd"))}
 
 caption <- "Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)"
 
@@ -200,7 +200,7 @@ responses %>%
 
 #### Written arbovirus surveillance plans
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q6.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q6.Rmd"))}
 
 caption <- "Surveillance plans and the viruses covered (ref Q6, 6b)"
 responses <- get_responses("6")
@@ -267,7 +267,7 @@ reported by `r no_programme`.
 
 #### Training provided to arboviral surveillance staff
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q6.Rmd"), append=TRUE)}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE)}
 
 caption <- "Training provided to arboviral surveillance staff (ref Q10)"
 responses <- get_responses("10") %>%
@@ -309,7 +309,7 @@ cbind(Country = data$SI01, responses) %>%
 ```
 
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q11.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q11.Rmd"))}
 
 caption <- "Reportable diseases by case classification status (ref Q11b, 11c)"
 q11b <- get_responses("11b")
@@ -366,7 +366,7 @@ left_join( q11b, q11c) %>%
 
 #### Surveillance for human cases of arboviral disease
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q12.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q12.Rmd"))}
 
 caption <- "Performance of national epidemiological surveillance for arboviral diseases in humans (ref Q12, 12b, 12c)"
 responses_12 <- get_responses("12") 
@@ -390,7 +390,7 @@ cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>%
 
 #### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q13.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q13.Rmd"))}
 
 caption <- "Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)"
 responses <- get_responses("13") 
@@ -413,7 +413,7 @@ cbind(Country = data$SI01, responses) %>%
 
 #### Arboviral disease surveillance staff perceptions 
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q14.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q14.Rmd"))}
 
 caption <- "Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance (ref Q14)"
 responses <- get_responses("14") 
@@ -428,7 +428,7 @@ cbind(Country = data$SI01, responses) %>%
 
 #### Cases for which arbovirus laboratory testing is performed
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q15.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q15.Rmd"))}
 
 caption <- "Cases for which laboratory testing is performed by transmission period (ref Q15)"
 responses <- get_responses("15")
@@ -457,7 +457,7 @@ responses %>%
 
 #### Viruses for which the national laboratory confirmed cases
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q16.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q16.Rmd"))}
 
 caption <- "Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)"
 responses <- get_responses("16")
@@ -582,7 +582,7 @@ knitr::include_graphics("./images/q17/legend.png")
 
 #### Additional resources most needed for your country to perform adequate testing for arboviral diseases
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q18.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q18.Rmd"))}
 
 caption <- "Additional resources required for adequate arboviral disease testing (ref Q18)"
 responses <- get_responses("18")
@@ -613,7 +613,7 @@ cbind(Country = data$SI01, responses) %>%
 
 #### Virological surveillance on humans, i.e., tracking of prevailing genotypes/serotypes
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q19.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q19.Rmd"))}
 
 caption <- "Capacity for virological surveillance on human specimens (ref Q19)"
 responses <- get_responses("19")
@@ -650,7 +650,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Laboratory staff perceptions
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q20.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q20.Rmd"))}
 
 caption <- "Laboratory staff perception of factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections (ref Q20)"
 responses <- get_responses("20")
@@ -681,7 +681,7 @@ The following countries indicated availability of clinical guidelines: `r availa
 
 #### Training healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q24.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q24.Rmd"))}
 
 caption <- "Training for healthcare workers on clinical diagnosis and management of Aedes-borne arboviral diseases (ref Q24)"
 responses <- get_responses("24")
@@ -701,7 +701,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Arboviral disease surveillance/clinical staff perceptions
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q25.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q25.Rmd"))}
 
 caption <- "Arboviral disease surveillance/clinical staff perception of factors contributing to the a) success and b) barriers/challenges with respect to case management (ref Q25)"
 responses <- get_responses("25")
@@ -717,7 +717,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Disease programme, agency, or service in charge of arbovirus vector surveillance
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q26.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q26.Rmd"))}
 
 caption <- "Agency in charge of arbovirus vector surveillance (ref Q26)"
 responses <- get_responses("26")
@@ -734,7 +734,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Reporting of entomologic surveillance data
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q27.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q27.Rmd"))}
 
 caption <- "Institution/department in charge of reporting entomologic surveillance data to the national ministry of health/health department (ref Q27)"
 responses <- get_responses("27")
@@ -775,7 +775,7 @@ no_response <- responses$Country[which(is.na(responses$Response))]
 Countries that conducted entomologic surveillance included `r conducted`. Countries that did not included
 `r not_conducted`. `r no_response` did not respond. 
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q28.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q28.Rmd"))}
 
 caption <- "Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)"
 q28e <- get_responses("28e")
@@ -812,7 +812,7 @@ left_join( responses, q28d, by="Country") %>%
 
 #### Performance of adult and larval/pupal mosquito surveillance
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q29.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q29.Rmd"))}
 
 caption <- "Mosquito surveillance and identification (ref Q29, 30, 31)"
 q29 <- get_responses("29")
@@ -851,7 +851,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Laboratories testing for arboviruses on mosquito pools in the last two years
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q33.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q33.Rmd"))}
 
 caption <- "Laboratories testing mosquito pools for arboviruses (ref Q33)"
 responses <- get_responses("33") 
@@ -896,7 +896,7 @@ had only identified _Aedes aegypti_.
 
 #### Potential public health threat from _Aedes_ species by country
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q34.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q34.Rmd"))}
 
 caption <- "Potential public health threat from Aedes species by country (ref Q34b, 34c)"
 q34b <- get_responses("34b")
@@ -923,7 +923,7 @@ cbind( Country = data$SI01, q34b, q34c) %>%
 
 #### Vector control methods
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q35.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q35.Rmd"))}
 
 caption <- "Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)"
 responses <- get_responses("35")
@@ -961,7 +961,7 @@ empty_cols <- empty_cols[ which(empty_cols != "None")]
 ```
 
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q35c.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q35c.Rmd"))}
 
 caption <- "Adulticides and/or larvicides (brand and product name) used (ref Q35c)"
 responses <- get_responses("35c")
@@ -995,7 +995,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Plan for mosquito-borne disease control including threshold that would result in a recommendation for mosquito adulticiding/other mosquito reduction measures
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q37.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q37.Rmd"))}
 
 caption <- "Mosquito control plan and threshold (ref Q37)"
 responses <- get_responses("37")
@@ -1008,7 +1008,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Entomological indices measured
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q37b.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q37b.Rmd"))}
 
 caption <- "Outbreak risk factors data collected routinely and analysed (ref Q37b)"
 responses <- get_responses("37b")
@@ -1043,7 +1043,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Vector surveillance staff perceptions
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q40.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q40.Rmd"))}
 
 caption <- "Vector surveillance staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control (ref Q40)"
 responses <- get_responses("40")
@@ -1058,7 +1058,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### National epidemiological surveillance for arboviral disease in animals 
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q41.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q41.Rmd"))}
 
 caption <- "National epidemiological surveillance for arboviral disease in animals in the past two years (e.g., epizootic surveillance for yellow fever in endemic areas) (ref Q41, 41b, 41c)"
 q41 <- get_responses("41") %>%
@@ -1084,7 +1084,7 @@ cbind(Country=data$SI01, q41, q41b, q41c) %>%
 
 #### Sentinel animal surveillance or epizootic surveillance
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q42.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q42.Rmd"))}
 
 caption <- "Countries conducting sentinel surveillance in animals -- the viruses tested for and species under surveillance (ref Q42, 42b)"
 q42 <- get_responses("42")
@@ -1115,7 +1115,7 @@ cbind( Country = data$SI01, q42, arboviruses, species ) %>%
 
 #### Presence of a community outreach program that also covers arboviral diseases
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q43.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q43.Rmd"))}
 
 caption <- "Community outreach program presence, leadership, and geographic scope (ref Q43, 43b, 43c)"
 q43 <- get_responses("43") %>%
@@ -1152,7 +1152,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Resources that would help ensure adequate capacity of the community outreach programme
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q43e.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q43e.Rmd"))}
 
 caption <- "Resources needed to ensure adequate community outreach capacity (ref Q43e)"
 responses <- get_responses("43e")
@@ -1189,7 +1189,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities 
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q44.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q44.Rmd"))}
 
 caption <- "National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak (O) and non-outbreak (N) periods (ref Q44)"
 responses <- get_responses("44")
@@ -1243,7 +1243,7 @@ responses %>%
 
 #### Media/channels used for community sensitization, mobilisation and acceptance of interventions 
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q44b.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q44b.Rmd"))}
 
 caption <- "Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b)"
 responses <- get_responses("44b")
@@ -1282,7 +1282,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Community outreach staff perceptions
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q46.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q46.Rmd"))}
 
 caption <- "Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)"
 responses <- get_responses("46")
@@ -1299,7 +1299,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Surveillance and outbreak response committee and emergency preparedness and funding
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q47.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q47.Rmd"))}
 
 caption <- "Outbreak committee presence, staff training, contingency plan and emergency funding (ref Q47, 48, 52, 53)"
 q47 <- get_responses("47") %>%
@@ -1333,7 +1333,7 @@ cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
 
 #### Outbreak declaration and emergency response measures 
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q49.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q49.Rmd"))}
 
 caption <- "Criteria for declaring an outbreak and vector control measures that are deployed in emergencies (ref Q49, 51)"
 
@@ -1362,7 +1362,7 @@ cbind( q49, q51 ) %>%
 
 #### Established collaborations with national/regional research institutions / international agencies to be activated in case of arboviral outbreak
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "_Q50.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q50.Rmd"))}
 
 caption <- "Established collaborations with institutions or agencies for arboviral outbreaks (ref Q50)"
 responses <- get_responses("50")

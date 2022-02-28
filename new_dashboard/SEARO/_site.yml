@@ -1,0 +1,7 @@
+name: "SEARO"
+output:
+  html_document:
+    include:
+      in_header: searo_header.html
+      after_body: footer.html
+    css: styles.css

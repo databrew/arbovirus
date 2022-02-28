@@ -18,7 +18,7 @@ make_colors <- function(n, seed = 123){
 
 load_dict <- function(){
   owd <- getwd()
-  setwd('../')
+  setwd('../../')
   if( file.exists("data/Data_dictionary_Survey375147.csv")){
     dict <- read_csv("data/Data_dictionary_Survey375147.csv")
   } else{
@@ -128,7 +128,7 @@ simplify_data <- function(data,
 load_data <- function(modify_variable_names = FALSE){
   # Read in data
   owd <- getwd()
-  setwd('../')
+  setwd('../../')
   if( file.exists("data/data.RData")){
     load("data/data.RData")
   } else{
