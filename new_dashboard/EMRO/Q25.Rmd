@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -110,8 +116,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-```{r}
-
 caption <- "Arboviral disease surveillance/clinical staff perception of factors contributing to the a) success and b) barriers/challenges with respect to case management (ref Q25)"
 responses <- get_responses("25")
 cbind(Country=data$SI01, responses) %>%
@@ -120,5 +124,3 @@ cbind(Country=data$SI01, responses) %>%
   set_caption(caption) %>% autofit()
 
  
-
-```

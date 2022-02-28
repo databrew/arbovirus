@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)"
 responses <- get_responses("13") 
@@ -129,5 +133,3 @@ cbind(Country = data$SI01, responses) %>%
   set_caption( caption ) %>% autofit()
 
  
-
-```

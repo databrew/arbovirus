@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -110,8 +116,6 @@ data <- load_data()
 data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-```{r}
-
 caption <- "Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance (ref Q14)"
 responses <- get_responses("14") 
 cbind(Country = data$SI01, responses) %>% 
@@ -119,5 +123,3 @@ cbind(Country = data$SI01, responses) %>%
   set_caption(caption) %>% autofit()
 
  
-
-```

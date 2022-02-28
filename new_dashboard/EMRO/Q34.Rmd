@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Potential public health threat from Aedes species by country (ref Q34b, 34c)"
 q34b <- get_responses("34b")
@@ -133,5 +137,3 @@ cbind( Country = data$SI01, q34b, q34c) %>%
   set_caption(caption) %>% autofit()
 
  
-
-```

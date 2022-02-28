@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Resources needed to ensure adequate community outreach capacity (ref Q43e)"
 responses <- get_responses("43e")
@@ -143,5 +147,3 @@ cbind(Country=data$SI01, responses) %>%
 
  
 
-
-```

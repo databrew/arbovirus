@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -110,8 +116,6 @@ data <- load_data()
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-```{r}
-
 caption <- "Adulticides and/or larvicides (brand and product name) used (ref Q35c)"
 responses <- get_responses("35c")
 cbind(Country=data$SI01, responses) %>%
@@ -122,5 +126,3 @@ cbind(Country=data$SI01, responses) %>%
   set_caption(caption) %>% autofit()
 
  
-
-```

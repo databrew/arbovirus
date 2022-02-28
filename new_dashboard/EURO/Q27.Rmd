@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Institution/department in charge of reporting entomologic surveillance data to the national ministry of health/health department (ref Q27)"
 responses <- get_responses("27")
@@ -128,5 +132,3 @@ cbind(Country=data$SI01, responses) %>%
   set_caption(caption) %>% autofit()
 
  
-
-```

@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)"
 responses <- get_responses("35")
@@ -145,5 +149,3 @@ cbind(Country=data$SI01, responses) %>%
 empty_cols <- empty_cols[ which(empty_cols != "None")]
 
  
-
-```

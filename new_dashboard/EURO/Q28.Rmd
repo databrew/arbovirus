@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)"
 q28e <- get_responses("28e")
@@ -143,5 +147,3 @@ left_join( responses, q28d, by="Country") %>%
   regulartable( ) %>% 
   set_caption(caption) %>% autofit()
 
-
-```

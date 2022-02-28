@@ -33,12 +33,12 @@ for(j in 1:length( regions )){
   filenames <- filenames[ grep("Rmd", filenames) ]
   for(k in 1:length(filenames)){
     path <- paste0(region_path, filenames[k])
+    question <- unlist(strsplit( filenames[k], split=".", fixed=TRUE))[1]
     frontmatter <- read_file("chunk_frontmatter.Rmd")
     frontmatter <- paste0(frontmatter,"\n```{r}\ndata <- data %>% filter(Region=='", region, "') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n")
-    # tabs <- tabs_html( filenames[k] )
     chunk <- read_file(path)
-    # contents <- paste0(frontmatter, tabs, "\n```{r}\n", chunk, "\n```\n")
-    contents <- paste0(frontmatter, "\n```{r}\n", chunk, "\n```\n")
+    # contents <- paste0(frontmatter, "\n```{r}\n\n", chunk, "\n```\n\n")
+    contents <- paste0(frontmatter, chunk)
     write_file(contents, path, append=FALSE)
   }
 }

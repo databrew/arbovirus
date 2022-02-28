@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='WPRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "National epidemiological surveillance for arboviral disease in animals in the past two years (e.g., epizootic surveillance for yellow fever in endemic areas) (ref Q41, 41b, 41c)"
 q41 <- get_responses("41") %>%
@@ -132,5 +136,3 @@ cbind(Country=data$SI01, q41, q41b, q41c) %>%
   set_caption( caption ) %>% autofit()
 
  
-
-```

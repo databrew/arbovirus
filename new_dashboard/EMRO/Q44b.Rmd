@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b)"
 responses <- get_responses("44b")
@@ -130,5 +134,3 @@ cbind(Country=data$SI01, responses, other) %>%
 
  
 
-
-```

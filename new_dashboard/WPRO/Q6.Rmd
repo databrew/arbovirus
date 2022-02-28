@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='WPRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Surveillance plans and the viruses covered (ref Q6, 6b)"
 responses <- get_responses("6")
@@ -183,5 +187,3 @@ regulartable(df) %>%
   align(j = 2:6, align = "center") %>% 
   set_caption( caption ) %>% autofit()
 
-
-```

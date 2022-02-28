@@ -99,6 +99,12 @@ $(document).on('click', function (e){
 
 ```
 
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
 ```{r, echo = FALSE}
 source('../functions.R')
 dict <- load_dict()
@@ -109,8 +115,6 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region=='WPRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-```{r}
 
 caption <- "Mosquito surveillance and identification (ref Q29, 30, 31)"
 q29 <- get_responses("29")
@@ -136,5 +140,3 @@ cbind(Country=data$SI01, q29, q30, q31) %>%
   set_caption(caption) %>% autofit()
 
  
-
-```

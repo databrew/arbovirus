@@ -162,14 +162,14 @@ Non-responding countries are of concern in terms of arbovirus emergence and ende
 
 ## Section II: Arboviral disease surveillance system
 
-#### Documented arbovirus circulation
+```{r}
+text <- "\n#### Documented arbovirus circulation\n\nAll responding countries reported transmission of at least one of chikungunya (CHIKV), dengue (DENV), and Zika (ZIKV) viruses.\n\n"
+text <- paste0( text, "#### Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)\n\n" )
+text <- paste0( text, "```{r}\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q5.Rmd") )
+```
 
-All responding countries reported transmission of at least one of chikungunya (CHIKV), dengue (DENV), 
-and Zika (ZIKV) viruses.
-
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q5.Rmd"))}
-
-caption <- "Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)"
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q5.Rmd"), append=TRUE)}
 
 responses <- get_responses("5") 
 other <- responses %>% select(Other)
@@ -192,11 +192,13 @@ responses <- cbind(Country = data$SI01, responses) %>%
 responses %>%
   regulartable() %>% 
   # hline( i = 1:length(data$SI01)) %>%
-  align( j = 2:5, align="center") %>% autofit() %>%
-  set_caption( caption )
- 
+  align( j = 2:5, align="center") %>% autofit() 
 ```
 
+```{r}
+text <- "\n```\n\n"
+write_file( text, paste0("new_dashboard/", params$region, "/Q5.Rmd"), append=TRUE )
+```
 
 #### Written arbovirus surveillance plans
 
