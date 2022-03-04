@@ -6,7 +6,7 @@ output:
     toc_float: no
     toc_depth: 2
 params:
-  region: EURO
+  region: EMRO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -200,11 +200,15 @@ text <- "\n```\n\n"
 write_file( text, paste0("new_dashboard/", params$region, "/Q5.Rmd"), append=TRUE )
 ```
 
-#### Written arbovirus surveillance plans
+```{r}
+text <- "\n#### Written arbovirus surveillance plans\n\n"
+text <- paste0( text, "#### Surveillance plans and the viruses covered (ref Q6, 6b)\n\n" )
+text <- paste0( text, "```{r}\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q6.Rmd") )
+```
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q6.Rmd"))}
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE)}
 
-caption <- "Surveillance plans and the viruses covered (ref Q6, 6b)"
 responses <- get_responses("6")
 
 q6 <- cbind(Country = data$SI01, responses) %>% 
@@ -244,16 +248,22 @@ left_join( q6, q6b, by="Country") %>%
               DENV = "Aedes-borne viruses covered in plans",
               YFV = "Aedes-borne viruses covered in plans",
               ZIKV = "Aedes-borne viruses covered in plans" ) %>%
-  merge_h( part = "header" ) %>%
-  set_caption( caption ) %>% autofit()
-
- 
+  merge_h( part = "header" ) %>% autofit()
 
 ```
 
-#### National programme for arboviral diseases surveillance
+```{r}
+text <- "\n```\n\n"
+write_file( text, paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE )
+```
 
 ```{r}
+text <- "\n#### National programme for arboviral diseases surveillance\n\n"
+text <- paste0( text, "```{r}\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE )
+```
+
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE)}
 responses <- get_responses("7")
 
 responses <- cbind(Country = data$SI01, responses) 
@@ -263,15 +273,20 @@ no_programme <- paste( responses$Country[ which( responses$Response == "No progr
 
 ```
 
-`r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` 
-had arboviral disease surveillance integrated into another programme. No programme 
-reported by `r no_programme`.
+```{r}
+text <- "\n```\n\n"
+text <- paste0( text, "\n`r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` had arboviral disease surveillance integrated into another programme. No programme reported by `r no_programme`.\n\n") 
+write_file( text, paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE )
+```
 
-#### Training provided to arboviral surveillance staff
+```{r}
+text <- "\n#### Training provided to arboviral surveillance staff (ref Q10)\n\n"
+text <- paste0( text, "```{r}\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE )
+```
 
 ```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE)}
 
-caption <- "Training provided to arboviral surveillance staff (ref Q10)"
 responses <- get_responses("10") %>%
   select(-Other)
 # training <- colnames( responses )
@@ -293,27 +308,38 @@ df <- cbind(Country = data$SI01, responses) %>%
 # colnames(df) <- c("Country", training)
 
 regulartable(df) %>%
-  align(j = 2:6, align = "center") %>% 
-  set_caption( caption ) %>% autofit()
+  align(j = 2:6, align = "center") %>% autofit()
 
 ```
 
-* _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
-* _Advanced training_: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
-
-#### Mandatory reporting status of arboviral diseases
+```{r}
+text <- "\n```\n\n"
+text <- paste0(text, "\n* _Basic training_ : data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)\n")
+text <- paste0(text, "* _Advanced training_ : statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q6.Rmd"), append=TRUE )
+```
 
 ```{r}
+text <- "\n#### Mandatory reporting status of arboviral diseases\n\n"
+text <- paste0(text, "\n```{r}\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q11.Rmd"))
+```
+
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q11.Rmd"), append=TRUE)}
 responses <- get_responses("11") 
 cbind(Country = data$SI01, responses) %>% 
   drop_na(Response) %>%
   regulartable() %>% autofit()
 ```
 
+```{r}
+text <- "\n```\n\n"
+text <- paste0( text, "\n#### Reportable diseases by case classification status (ref Q11b, 11c)\n\n")
+text <- paste0( text, "\n```{r}\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q11.Rmd"), append=TRUE)
+```
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q11.Rmd"))}
-
-caption <- "Reportable diseases by case classification status (ref Q11b, 11c)"
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q11.Rmd"), append=TRUE)}
 q11b <- get_responses("11b")
 q11b <- cbind(Country = data$SI01, q11b) %>%
   select(-"Other ") %>% 
@@ -357,20 +383,19 @@ q11c <- q11c %>%
 
 left_join( q11b, q11c) %>%
   regulartable() %>%
-  merge_v(j = ~Country ) %>% 
-  set_caption(caption) %>% autofit()
-
- 
-
+  merge_v(j = ~Country ) %>% autofit()
 ```
 
-* S=All suspect cases, C=Confirmed cases only, N=Not reportable
+```{r}
+text <- "\n```\n\n"
+text <- paste0(text, "\n* S = All suspect cases, C = Confirmed cases only, N = Not reportable\n\n")
+text <- paste0(text, "\n#### Surveillance for human cases of arboviral disease\n\n")
+text <- paste0(text, "\n#### Performance of national epidemiological surveillance for arboviral diseases in humans (ref Q12, 12b, 12c)")
+text <- paste0(text, "\n```{r}\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q11.Rmd"), append=TRUE)
+```
 
-#### Surveillance for human cases of arboviral disease
-
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q12.Rmd"))}
-
-caption <- "Performance of national epidemiological surveillance for arboviral diseases in humans (ref Q12, 12b, 12c)"
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q11.Rmd"), append=TRUE)}
 responses_12 <- get_responses("12") 
 responses_12b <- get_responses("12b")
 colnames( responses_12b ) <- c("Response", "Other")
@@ -384,17 +409,18 @@ colnames(responses_12c) <- "Type"
 
 cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>% 
   rename( "Surveillance conducted" = Response ) %>% 
-  regulartable() %>% 
-  set_caption( caption ) %>% autofit()
-
- 
+  regulartable() %>% autofit()
 ```
 
-#### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases
+```{r}
+text <- "\n```\n\n"
+text <- paste0(text, "\n#### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases\n\n")
+text <- paste0(text, "\n#### Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)\n\n")
+text <- paste0(text, "\n```{r}\n\n")
+write_file( text, paste0("new_dashboard/", params$region, "/Q11.Rmd"), append=TRUE)
+```
 
-```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q13.Rmd"))}
-
-caption <- "Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)"
+```{cat, engine.opts=list(file=paste0("new_dashboard/", params$region, "/Q11.Rmd"), append=TRUE)}
 responses <- get_responses("13") 
 colnames(responses) <- c("Response","Description")
 responses <- responses %>%
@@ -407,10 +433,12 @@ cbind(Country = data$SI01, responses) %>%
   select(-Response) %>%
   replace_na( list(Description = "Conducted (no further description provided)")) %>% 
   rename( "Description of training" = Description) %>%
-  regulartable() %>% 
-  set_caption( caption ) %>% autofit()
+  regulartable() %>% autofit()
+```
 
- 
+```{r}
+text <- "\n```\n\n"
+write_file( text, paste0("new_dashboard/", params$region, "/Q11.Rmd"), append=TRUE)
 ```
 
 #### Arboviral disease surveillance staff perceptions 

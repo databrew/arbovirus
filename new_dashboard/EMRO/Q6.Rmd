@@ -116,7 +116,13 @@ data <- load_data()
 data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-caption <- "Surveillance plans and the viruses covered (ref Q6, 6b)"
+#### Written arbovirus surveillance plans
+
+#### Surveillance plans and the viruses covered (ref Q6, 6b)
+
+```{r}
+
+
 responses <- get_responses("6")
 
 q6 <- cbind(Country = data$SI01, responses) %>% 
@@ -156,13 +162,35 @@ left_join( q6, q6b, by="Country") %>%
               DENV = "Aedes-borne viruses covered in plans",
               YFV = "Aedes-borne viruses covered in plans",
               ZIKV = "Aedes-borne viruses covered in plans" ) %>%
-  merge_h( part = "header" ) %>%
-  set_caption( caption ) %>% autofit()
-
- 
+  merge_h( part = "header" ) %>% autofit()
 
 
-caption <- "Training provided to arboviral surveillance staff (ref Q10)"
+```
+
+
+#### National programme for arboviral diseases surveillance
+
+```{r}
+
+responses <- get_responses("7")
+
+responses <- cbind(Country = data$SI01, responses) 
+specific_programme <- paste( responses$Country[ which( responses$Response == "Specific programme" )], collapse=", ")
+another_programme <- paste( responses$Country[ which( responses$Response == "Integrated in another programme" )], collapse=", ")
+no_programme <- paste( responses$Country[ which( responses$Response == "No programme" )], collapse=", ")
+
+
+```
+
+
+`r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` had arboviral disease surveillance integrated into another programme. No programme reported by `r no_programme`.
+
+
+#### Training provided to arboviral surveillance staff (ref Q10)
+
+```{r}
+
+
 responses <- get_responses("10") %>%
   select(-Other)
 # training <- colnames( responses )
@@ -184,6 +212,12 @@ df <- cbind(Country = data$SI01, responses) %>%
 # colnames(df) <- c("Country", training)
 
 regulartable(df) %>%
-  align(j = 2:6, align = "center") %>% 
-  set_caption( caption ) %>% autofit()
+  align(j = 2:6, align = "center") %>% autofit()
+
+
+```
+
+
+* _Basic training_ : data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
+* _Advanced training_ : statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
 
