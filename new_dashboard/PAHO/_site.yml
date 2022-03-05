@@ -1,5 +1,4 @@
 name: "WHO-ARBO"
-output_dir: "."
 output:
   html_document:
     include:

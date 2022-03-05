@@ -16,6 +16,7 @@ ggplot2::theme_set(ggplot2::theme_bw())
 # options(scipen = '999')
 ```
 
+
 ```{js}
 element = document.getElementById('WHO_logo');
 console.log(element)
@@ -43,19 +44,19 @@ function scrollFunction() {
 
 $(document).on('click', function (e){
     /* Global data  */
-    var global_menu_opened = $('#global-navigation').hasClass('in');
-    if(!$(e.target).closest('#global-navigation').length &&
-        !$(e.target).is('#global-navigation') &&
+    var global_menu_opened = $('#overview-navigation').hasClass('in');
+    if(!$(e.target).closest('#overview-navigation').length &&
+        !$(e.target).is('#overview-navigation') &&
         global_menu_opened === true){
-            $('#global-navigation').collapse('toggle');
-            $( "#Global-Li-area" ).removeClass("activeMenuState");
+            $('#overview-navigation').collapse('toggle');
+            $( "#Overview-Li-area" ).removeClass("activeMenuState");
     }
     
-    if ($('#global-navigation').attr('aria-expanded') === "false") {
-      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    if ($('#overview-navigation').attr('aria-expanded') === "false") {
+      $( "#Overview-Li-area" ).removeClass("activeMenuState");
     }
-    if ($('#global-navigation').attr('aria-expanded') === "true") {
-      $( "#Global-Li-area" ).addClass("activeMenuState");
+    if ($('#overview-navigation').attr('aria-expanded') === "true") {
+      $( "#Overview-Li-area" ).addClass("activeMenuState");
     }
 
      /* Regional data  */
@@ -96,11 +97,13 @@ $(document).on('click', function (e){
 
 ```
 
+
 ```{css, echo=FALSE}
 h4 {
   text-align: center;
 }
 ```
+
 
 ```{r, echo = FALSE}
 source('../functions.R')
