@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: EURO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,34 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Outbreak committee presence, staff training, contingency plan and emergency funding (ref Q47, 48, 52, 53)"
-q47 <- get_responses("47") %>%
-  rename( "Outbreak committee in place" = Response)
-q48 <- get_responses("48") %>%
-  rename( "Staff/committee training for outbreaks" = Response)
-
-q52 <- get_responses("52")
-
-emergency_fund <- c()
-for(i in 1:nrow(q52)){
-  col = which( q52[i,] == "Yes")
-  if( length(col) > 0 ){
-    emergency_fund <- c( emergency_fund, paste0(names(q52)[col], collapse="\n"))
-  } else{
-    emergency_fund <- c(emergency_fund, NA)
-  }
-}
-
-q53 <- get_responses("53") %>%
-  rename( "Contingency plan for healthcare services in emergencies" = Response)
-
-cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
-  regulartable() %>%
-  hline( part="all") %>% 
-  set_caption(caption) %>% autofit()
-
- 
-

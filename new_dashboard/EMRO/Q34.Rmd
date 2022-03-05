@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: EMRO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,27 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Potential public health threat from Aedes species by country (ref Q34b, 34c)"
-q34b <- get_responses("34b")
-colnames( q34b ) <- c("Response", "Other")
-q34b <- q34b %>%
-  mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
-  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
-  unite( Response, Response:Other, sep="") %>%
-  rename("Aedes aegypti threat"=Response)
-q34c <- get_responses("34c")
-colnames( q34c ) <- c("Response", "Other")
-q34c <- q34c %>%
-  mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
-  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
-  unite( Response, Response:Other, sep="") %>%
-  rename("Aedes albopictus threat"=Response)
-
-cbind( Country = data$SI01, q34b, q34c) %>% 
-  regulartable( ) %>% 
-  set_caption(caption) %>% autofit()
-
- 

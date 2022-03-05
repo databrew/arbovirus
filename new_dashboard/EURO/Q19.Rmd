@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: EURO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,37 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Capacity for virological surveillance on human specimens (ref Q19)"
-responses <- get_responses("19")
-idx <- grep("Comment", colnames(responses))
-responses <- responses[,-idx]
-responses <- responses %>%
-  mutate_at( .vars=vars(colnames(responses)),
-             .funs = forcats::fct_recode,
-             "X"="Yes",
-             " "="Not selected") 
-
-colnames(responses) <- c("Virus isolation",
-                         "RT-PCR",
-                         "Other nucleic acid tests",
-                         "Serological testing",
-                         "None",
-                         "I don't know") 
-empty_cols = c()
-for(i in 1:ncol(responses)){
-  responses[,i] <- as.character( responses[,i] )
-  responses[ which( is.na( responses[,i])) ,i] <- " "
-  if( all(responses[,i] != "X" )){
-    empty_cols = c(empty_cols, colnames(responses)[i])
-  }
-}
-
-cbind(Country=data$SI01, responses) %>%
-  select( -empty_cols ) %>%
-  regulartable() %>%
-  set_caption( caption ) %>% autofit()
-
- 

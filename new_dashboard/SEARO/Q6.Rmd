@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: SEARO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,111 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-#### Written arbovirus surveillance plans
-
-#### Surveillance plans and the viruses covered (ref Q6, 6b)
-
-```{r}
-
-
-responses <- get_responses("6")
-
-q6 <- cbind(Country = data$SI01, responses) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
-  mutate( Response = recode_factor(.x = Response,
-                                   "Yes, we have arbovirus-specific plans(s) or guidelines(s)"="Arbovirus-specific",
-                                   "Yes. We do not have arbovirus-specific guidelines, but arboviruses are included within general surveillance guidelines."="Within general surveillance guidelines",
-                                   "No"="None",
-                                   "I don't know"="Don't know")) %>%
-  rename( "Nature of surveillance plans"=Response)
-
-other <- get_responses("6b") %>%
-  select(Other)
-other <- cbind(Country = data$SI01, other) %>% 
-  drop_na(Other) %>%
-  rename("Other arbovirus(es) covered" = Other) 
-
-q6b <- get_responses("6b")%>%
-  select(-Other)
-q6b <- cbind(Country = data$SI01, q6b) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Arbovirus = recode_factor(.x = Arbovirus,
-                                    "Chikungunya"="CHIKV",
-                                    "Dengue"="DENV",
-                                    "Yellow fever"="YFV",
-                                    "Zika"="ZIKV")) %>% 
-  mutate( Response = na_if( Response, "Not selected")) %>% 
-  mutate( Response = recode_factor(.x = Response, 
-                                   "Yes"="X")) %>% 
-  pivot_wider( names_from=Arbovirus, values_from=Response) 
-
-left_join( q6, q6b, by="Country") %>%
-  left_join( other) %>%
-  regulartable() %>% 
-  add_header( CHIKV = "Aedes-borne viruses covered in plans",
-              DENV = "Aedes-borne viruses covered in plans",
-              YFV = "Aedes-borne viruses covered in plans",
-              ZIKV = "Aedes-borne viruses covered in plans" ) %>%
-  merge_h( part = "header" ) %>% autofit()
-
-
-```
-
-
-#### National programme for arboviral diseases surveillance
-
-```{r}
-
-responses <- get_responses("7")
-
-responses <- cbind(Country = data$SI01, responses) 
-specific_programme <- paste( responses$Country[ which( responses$Response == "Specific programme" )], collapse=", ")
-another_programme <- paste( responses$Country[ which( responses$Response == "Integrated in another programme" )], collapse=", ")
-no_programme <- paste( responses$Country[ which( responses$Response == "No programme" )], collapse=", ")
-
-
-```
-
-
-`r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` had arboviral disease surveillance integrated into another programme. No programme reported by `r no_programme`.
-
-
-#### Training provided to arboviral surveillance staff (ref Q10)
-
-```{r}
-
-
-responses <- get_responses("10") %>%
-  select(-Other)
-# training <- colnames( responses )
-colnames(responses) <- c("Basic","Repeat_basic","Advanced","Repeat_advanced","None")
-df <- cbind(Country = data$SI01, responses) %>%
-  mutate(
-    Basic = if_else(Basic == "Yes", "X", " "),
-    Repeat_basic = if_else(Repeat_basic == "Yes", "X", " "),
-    Advanced = if_else(Advanced == "Yes", "X", " "),
-    Repeat_advanced = if_else(Repeat_advanced == "Yes", "X", " "),
-    None = if_else(None == "Yes", "X", " ")
-  ) %>%
-  rename(
-    "One-time basic training" = Basic,
-    "Repeated/continuing basic training" = Repeat_basic,
-    "One-time advanced training" = Advanced,
-    "Repeated/continuing advanced training" = Repeat_advanced
-  )
-# colnames(df) <- c("Country", training)
-
-regulartable(df) %>%
-  align(j = 2:6, align = "center") %>% autofit()
-
-
-```
-
-
-* _Basic training_ : data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
-* _Advanced training_ : statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
-

@@ -1,4 +1,5 @@
 name: "EURO"
+output_dir: "."
 output:
   html_document:
     include:

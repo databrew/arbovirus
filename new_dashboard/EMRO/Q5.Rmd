@@ -1,5 +1,8 @@
 ---
-title: " "
+title: "Documented arbovirus circulation"
+output: html_document
+params:
+  region: EMRO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,17 +116,12 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-#### Documented arbovirus circulation
-
-All responding countries reported transmission of at least one of chikungunya (CHIKV), dengue (DENV), and Zika (ZIKV) viruses.
 
 #### Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)
 
 ```{r}
-
 
 responses <- get_responses("5") 
 other <- responses %>% select(Other)

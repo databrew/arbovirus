@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: EMRO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,37 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)"
-q28e <- get_responses("28e")
-colnames( q28e ) <- c("How_often", "Other")
-q28e <- q28e %>%
-  mutate( How_often = factor( replace_na( as.character(How_often), ""))) %>%
-  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
-  unite( Response, How_often:Other, sep="") 
-q28e <- cbind( Country = data$SI01, q28e)
-
-q28c <- get_responses("28c")
-colnames( q28c ) <- c("Scope", "Comments")
-q28c <- q28c %>%
-  mutate( Scope = recode_factor(.x = Scope,
-                                   "Country wide"="Country wide",
-                                   "Restricted to specific locations . Please specify where:"="Restricted to specific locations",
-                                   "Don’t know"="I don’t know"))
-responses <- cbind( q28e, q28c)
-
-q28d <- get_responses("28d")
-q28d <- cbind( Country = data$SI01, q28d) %>% 
-  drop_na(Response) %>%
-  mutate( Response = paste0("(", Response, " sentinel sites)")) %>%
-  rename( "Sites" = Response )
-
-left_join( responses, q28d, by="Country") %>%
-  mutate( Scope = as.character( Scope ) ) %>%
-  replace_na( list( Scope = "", Sites = "")) %>%
-  unite( "Geographic scope", c("Scope", "Sites"), sep = "\n") %>%
-  regulartable( ) %>% 
-  set_caption(caption) %>% autofit()
-

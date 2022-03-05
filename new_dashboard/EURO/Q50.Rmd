@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: EURO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,21 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Established collaborations with institutions or agencies for arboviral outbreaks (ref Q50)"
-responses <- get_responses("50")
-colnames( responses ) <- c("Response", "Institutions")
-cbind(Country=data$SI01, responses) %>%
-  mutate( Response = recode_factor(.x = Response,
-                                   "Yes. If so, please specify institutions/agencies in the comments field:"="X",
-                                   "No"=" ")) %>%
-  filter( Response == "X" ) %>%
-  select(-Response) %>% 
-  regulartable() %>%
-  hline( part="all") %>% 
-  set_caption(caption) %>% autofit()
-
-  
-

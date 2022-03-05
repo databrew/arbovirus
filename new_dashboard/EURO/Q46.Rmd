@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: EURO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,15 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)"
-responses <- get_responses("46")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  hline( part="all") %>% 
-  set_caption( caption ) %>% autofit()
-
- 
-

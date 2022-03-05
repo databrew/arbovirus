@@ -1,4 +1,5 @@
 name: "SEARO"
+output_dir: "."
 output:
   html_document:
     include:

@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: SEARO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,13 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='SEARO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Mosquito control plan and threshold (ref Q37)"
-responses <- get_responses("37")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>% 
-  set_caption(caption) %>% autofit()
-
- 

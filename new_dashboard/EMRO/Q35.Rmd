@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: EMRO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,39 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EMRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)"
-responses <- get_responses("35")
-other <- responses %>% select(Other)
-responses <- responses %>% select(-Other)
-
-responses <- responses %>%
-  mutate_at( .vars=vars(colnames(responses)),
-             .funs = forcats::fct_recode,
-             "X" = "Yes",
-             " " = "Not selected") %>%
-  rename("Adulticiding"="Adulticiding (insecticide application against adult mosquitoes)")
-
-empty_cols = c()
-for(i in 1:ncol(responses)){
-  responses[,i] <- as.character( responses[,i] )
-  responses[ which( is.na( responses[,i])) ,i] <- " "
-  if( all(responses[,i] != "X" )){
-    empty_cols = c(empty_cols, colnames(responses)[i])
-  }
-}
-
-if( any(!is.na(other$Other))){
-  responses <- cbind( responses, other)
-}
-
-cbind(Country=data$SI01, responses) %>%
-  select(-empty_cols) %>%
-  regulartable() %>%
-  set_caption(caption) %>% autofit()
-
-empty_cols <- empty_cols[ which(empty_cols != "None")]
-
- 

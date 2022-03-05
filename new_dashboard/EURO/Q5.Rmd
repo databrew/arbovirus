@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: EURO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,40 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='EURO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-#### Documented arbovirus circulation
-
-All responding countries reported transmission of at least one of chikungunya (CHIKV), dengue (DENV), and Zika (ZIKV) viruses.
-
-#### Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)
-
-```{r}
-
-
-responses <- get_responses("5") 
-other <- responses %>% select(Other)
-responses <- responses %>% select(-Other)
-
-responses <- cbind(Country = data$SI01, responses) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Arbovirus = recode_factor(.x = Arbovirus,
-                                    "Chikungunya"="CHIKV",
-                                    "Dengue"="DENV",
-                                    "Yellow fever"="YFV",
-                                    "Zika"="ZIKV")) %>% 
-  mutate( Response = na_if(Response, "Not selected")) %>%
-  mutate( Response = recode_factor(.x = Response, 
-                                   "Yes"="X")) %>%
-  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
-  mutate( Other = other$Other ) %>%
-  filter( if_any(CHIKV:Other, ~ !is.na(.x)))
-
-responses %>%
-  regulartable() %>% 
-  # hline( i = 1:length(data$SI01)) %>%
-  align( j = 2:5, align="center") %>% autofit() 
-
-```
-

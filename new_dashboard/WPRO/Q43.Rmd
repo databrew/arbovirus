@@ -1,5 +1,8 @@
 ---
-title: " "
+title: ' '
+output: html_document
+params:
+  region: WPRO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -113,28 +116,5 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% filter(Region=='WPRO') %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-caption <- "Community outreach program presence, leadership, and geographic scope (ref Q43, 43b, 43c)"
-q43 <- get_responses("43") %>%
-  rename( "In place" = Response)
-
-q43b <- get_responses("43b") %>%
-  rename( "Entity in charge" = Response)
-
-q43c <- get_responses("43c") 
-colnames( q43c ) <- c("Response","Areas") 
-q43c <- q43c %>% 
-  mutate( across( everything(), as.character)) %>%
-  mutate( across( everything(), replace_na, "") )
-q43c$Response[ grep("Only selected areas", q43c$Response ) ] <- "Only selected areas"
-q43c <- q43c %>%
-  unite( Scope, Response:Areas, sep="\n")
-
-cbind(Country=data$SI01, q43, q43b, q43c) %>%
-  regulartable() %>%
-  hline( part="all") %>% 
-  set_caption(caption) %>% autofit()
-
- 
