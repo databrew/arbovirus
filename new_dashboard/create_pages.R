@@ -13,7 +13,11 @@ pages <- c("5","6","11","14",              # Section 2
            "47","49","54"                  # Section 8
            )
 pages <- paste0("Q",pages)
-pages <- c( pages, "context", "participation", "national", "about" )
+pages <- c( pages, 
+            "context", 
+            # "participation", 
+            "national", 
+            "about" )
 
 menu_start <- function( id ){
   html <- paste0("<div id='", 
@@ -70,7 +74,7 @@ header_content <- function( region, page ){
                     "<ul id='navbar' class='blue-sub-nav'>\n",
                     "<li id='whiteLogoPosition'>\n<img id='white_WHO_logo' src='img/WHO_LOGO_white.png'>\n</li>\n",
                     "<li id='Overview-Li-area'>\n",
-                    "<a role='button' data-toggle='collapse' href='#overview-navigation' aria-expanded='false' aria-controls='overview-navigation'>Global arbovirus survey results</a>\n",
+                    "<a role='button' data-toggle='collapse' href='#overview-navigation' aria-expanded='false' aria-controls='overview-navigation'>Arbovirus survey overview</a>\n",
                     "</li>\n<li id='Regional-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
                     # "</li>\n<li id = 'Country-Li-area'>\n",

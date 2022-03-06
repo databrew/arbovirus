@@ -8,6 +8,7 @@ library(flextable)
 library(lubridate)
 library(RColorBrewer)
 library(janitor)
+library(english)
 
 make_colors <- function(n, seed = 123){
   pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
