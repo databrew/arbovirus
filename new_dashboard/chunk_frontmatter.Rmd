@@ -106,7 +106,7 @@ h4 {
 
 
 ```{r, echo = FALSE}
-source('../functions.R')
+source('functions.R')
 dict <- load_dict()
 data <- load_data()
 ```

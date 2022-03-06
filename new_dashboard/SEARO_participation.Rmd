@@ -1,0 +1,155 @@
+---
+title: ' '
+pagetitle: 'SEARO participation'
+output:
+  html_document:
+    includes:
+      in_header: SEARO_participation_header.html
+params:
+  region: SEARO
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE,
+               fig.width = 9.64,
+               fig.height = 5.9,
+               fig.path = 'figures/')
+ggplot2::theme_set(ggplot2::theme_bw())
+
+# options(scipen = '999')
+```
+
+
+```{js}
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Global data  */
+    var global_menu_opened = $('#overview-navigation').hasClass('in');
+    if(!$(e.target).closest('#overview-navigation').length &&
+        !$(e.target).is('#overview-navigation') &&
+        global_menu_opened === true){
+            $('#overview-navigation').collapse('toggle');
+            $( "#Overview-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#overview-navigation').attr('aria-expanded') === "false") {
+      $( "#Overview-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#overview-navigation').attr('aria-expanded') === "true") {
+      $( "#Overview-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true){
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+
+});
+
+```
+
+
+```{css, echo=FALSE}
+h4 {
+  text-align: center;
+}
+```
+
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+data <- load_data( complete=FALSE )
+region_countries <- load_regions_countries()
+```
+
+
+```{r}
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+n_unique_countries <- length( unique( data$SI01 ))
+region_countries <- region_countries %>%
+  filter(Region == params$region)
+n_region_countries <- length( region_countries$Country)
+```
+
+`r str_to_title(as.english(n_unique_countries))` of `r n_region_countries` countries (`r round(100*( n_unique_countries / n_region_countries))`%) responded:  
+
+`r pander( data$SI01 )`. 
+
+```{r}
+q5_start <- min(which(dict$`Question number` == "5"))
+incomplete_surveys <- c()
+for (i in 1:nrow(data)) {
+  if (all(is.na(data[i, q5_start:nrow(dict)]))) {
+    incomplete_surveys <- c(incomplete_surveys, i)
+  }
+}
+incompletes <- FALSE
+if( length( incomplete_surveys) > 0){
+  incompletes <- TRUE
+  excluded_countries <- paste( data$SI01[ incomplete_surveys ], "only provided initial demographic information; their responses are henceforth excluded.\n Non-responding countries are of concern in terms of arbovirus emergence and endemic transmission.")
+} 
+```
+
+```{r eval=incompletes, results="asis"}
+pander(excluded_countries)
+```

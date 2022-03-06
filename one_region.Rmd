@@ -9,7 +9,7 @@ output:
     toc: no
     toc_depth: '2'
 params:
-  region: EURO
+  region: EMRO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}

@@ -1,11 +1,12 @@
 ---
 title: ' '
+pagetitle: 'PAHO Q11'
 output:
   html_document:
     includes:
-      in_header: SEARO_Q50_header.html
+      in_header: PAHO_Q11_header.html
 params:
-  region: SEARO
+  region: PAHO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -115,7 +116,7 @@ h4 {
 
 
 ```{r, echo = FALSE}
-source('../functions.R')
+source('functions.R')
 dict <- load_dict()
 data <- load_data()
 ```
