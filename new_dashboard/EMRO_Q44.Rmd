@@ -125,3 +125,71 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+#### National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak (O) and non-outbreak (N) periods (ref Q44) 
+
+```{r}
+responses <- get_responses("44")
+idx <- which( grepl("non-outbreak",colnames(responses)))
+
+outbreaks <- cbind( Country=data$SI01, responses[,-idx]) %>%
+  pivot_longer(!Country) 
+new_cols <- matrix( unlist( strsplit(outbreaks$name, "\\]\\[") ), ncol=2, byrow=T)
+outbreaks <- outbreaks %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "O", value == 0 ~ "", is.na(value) ~ "")) %>%
+	pivot_wider(names_from=Response, values_from=value) %>%
+  select(-Level) 
+
+non_outbreaks <- cbind( Country=data$SI01, responses[,idx]) %>%
+  pivot_longer(!Country) 
+new_cols <- matrix( unlist( strsplit(non_outbreaks$name, "\\]\\[") ), ncol=2, byrow=T)
+non_outbreaks <- non_outbreaks %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "N", value == 0 ~ "", is.na(value) ~ "")) %>%
+	pivot_wider(names_from=Response, values_from=value) %>%
+  select(-Level) 
+
+responses <- left_join( outbreaks, non_outbreaks, by="Country") %>%
+  unite( "Issued by national public health agency", c("Issued by national public health agency.x", "Issued by national public health agency.y"), sep="") %>%
+  unite( "Issued by state/local health agencies", c("Issued by state/local health agencies.x", "Issued by state/local health agencies.y"), sep="") %>%
+  unite( "No risk in the past two years", c("No risk in the past two years.x", "No risk in the past two years.y"), sep="" ) %>%
+  unite("No notifications even though risk was present", c("No notifications even though risk was present.x", "No notifications even though risk was present.y"), sep="") %>% 
+  mutate( across(everything(), str_replace, pattern="ON", replacement="O, N")) %>%
+  mutate( across( everything(), na_if, "" ))
+
+keep_cols = c()
+for(i in 2:ncol(responses)){
+  if( any( !is.na(responses[,i]) )){
+    keep_cols = c(keep_cols, colnames(responses)[i])
+  }
+}
+
+responses %>%
+  select( c("Country",keep_cols) ) %>%
+  # filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%  ## uncomment to remove empty rows!
+  regulartable() %>% autofit()
+
+```
+
+<br>
+
+#### Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b)
+
+```{r}
+responses <- get_responses("44b")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses, other) %>%
+  regulartable() %>% autofit()
+
+```

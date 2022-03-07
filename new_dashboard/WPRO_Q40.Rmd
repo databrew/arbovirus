@@ -125,3 +125,11 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+#### Vector surveillance staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control (ref Q40)
+
+```{r}
+responses <- get_responses("40")
+cbind(Country=data$SI01, responses) %>%
+  regulartable() %>% autofit()
+```

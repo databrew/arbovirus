@@ -125,3 +125,44 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+#### Presence _Aedes aegypti_ or _Aedes albopictus_ in the past 5 years (ref Q34)
+
+```{r}
+responses <- get_responses("34") 
+responses <- cbind(Country=data$SI01, responses)
+both <- responses$Country[ which(responses$Response == "Yes, both Aedes aegypti and Aedes albopictus" )]
+aegypti <- responses$Country[ which(responses$Response == "Yes, only Aedes aegypti" )]
+```
+
+`r both` all indicated that both _Aedes aegypti_ and _Aedes albopictus_ were present, whereas `r aegypti` 
+had only identified _Aedes aegypti_.
+
+<br>
+
+### Potential public health threat from _Aedes_ species by country
+
+<br>
+
+#### Potential public health threat from Aedes species by country (ref Q34b, 34c)
+
+```{r}
+q34b <- get_responses("34b")
+colnames( q34b ) <- c("Response", "Other")
+q34b <- q34b %>%
+  mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
+  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
+  unite( Response, Response:Other, sep="") %>%
+  rename("Aedes aegypti threat"=Response)
+q34c <- get_responses("34c")
+colnames( q34c ) <- c("Response", "Other")
+q34c <- q34c %>%
+  mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
+  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
+  unite( Response, Response:Other, sep="") %>%
+  rename("Aedes albopictus threat"=Response)
+
+cbind( Country = data$SI01, q34b, q34c) %>% 
+  regulartable( ) %>% autofit()
+
+```

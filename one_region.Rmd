@@ -1364,13 +1364,17 @@ table_num <- table_num + 1
 
 ```
 
-#### 54. What do the arboviral disease surveillance staff perceive as factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics in your country?
+#### Arboviral disease surveillance staff perception of factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics (ref Q54)
 
 ```{r}
+caption <- paste0("Table ", table_num, ". Arboviral disease surveillance staff perception of factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics (ref Q54)")
 responses <- get_responses("54")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
   # hline( part="all") # %>% autofit()
+  set_caption(caption) %>% autofit()
+
+table_num <- table_num + 1 
 ```
 
 # Section IX: Arboviral disease surveillance data

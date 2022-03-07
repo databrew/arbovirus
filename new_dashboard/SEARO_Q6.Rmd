@@ -175,6 +175,8 @@ left_join( q6, q6b, by="Country") %>%
   merge_h( part = "header" ) %>% autofit()
 ```
 
+<br>
+
 #### National programme for arboviral diseases surveillance
 
 ```{r}
@@ -188,7 +190,9 @@ no_programme <- paste( responses$Country[ which( responses$Response == "No progr
 ```
 
 `r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` 
-had arboviral disease surveillance integrated into another programme. No programme reported by `r no_programme`.
+had arboviral disease surveillance integrated into another programme. 
+
+<br>
 
 #### Training provided to arboviral surveillance staff (ref Q10)
 
@@ -218,5 +222,9 @@ regulartable(df) %>%
 
 ```
 
+<center>
+
 * _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
 * _Advanced training_: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
+
+</center>

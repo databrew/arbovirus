@@ -125,3 +125,48 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+#### Outbreak committee presence, staff training, contingency plan and emergency funding (ref Q47, 48, 52, 53)
+
+```{r}
+q47 <- get_responses("47") %>%
+  rename( "Outbreak committee in place" = Response)
+q48 <- get_responses("48") %>%
+  rename( "Staff/committee training for outbreaks" = Response)
+
+q52 <- get_responses("52")
+
+emergency_fund <- c()
+for(i in 1:nrow(q52)){
+  col = which( q52[i,] == "Yes")
+  if( length(col) > 0 ){
+    emergency_fund <- c( emergency_fund, paste0(names(q52)[col], collapse="\n"))
+  } else{
+    emergency_fund <- c(emergency_fund, NA)
+  }
+}
+
+q53 <- get_responses("53") %>%
+  rename( "Contingency plan for healthcare services in emergencies" = Response)
+
+cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
+  regulartable() %>% autofit()
+
+```
+
+<br>
+
+#### Established collaborations with institutions or agencies for arboviral outbreaks (ref Q50)
+
+```{r}
+responses <- get_responses("50")
+colnames( responses ) <- c("Response", "Institutions")
+cbind(Country=data$SI01, responses) %>%
+  mutate( Response = recode_factor(.x = Response,
+                                   "Yes. If so, please specify institutions/agencies in the comments field:"="X",
+                                   "No"=" ")) %>%
+  filter( Response == "X" ) %>%
+  select(-Response) %>% 
+  regulartable() %>% autofit()
+
+```

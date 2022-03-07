@@ -125,3 +125,116 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+#### Mandatory reporting status of arboviral diseases
+
+All countries reported that at least one of the arboviruses was reportable.
+
+<br> 
+
+#### Reportable diseases by case classification status (ref Q11b, 11c)
+
+```{r}
+q11b <- get_responses("11b")
+q11b <- cbind(Country = data$SI01, q11b) %>%
+  select(-"Other ") %>% 
+  pivot_longer(!Country, names_to = "Arbovirus", values_to = "Response")
+q11b$Response <- str_to_sentence(gsub("Mandatory reporting of ", "", q11b$Response))
+q11b <- q11b %>%
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya" = "CHIKV",
+                                    "Dengue" = "DENV",
+                                    "Yellow fever" = "YFV",
+                                    "Zika (congenital)" = "ZIKV (C)",
+                                    "Zika (non-congenital)" = "ZIKV (NC)")) %>%
+  mutate( Response = recode_factor( .x = Response,
+                                    "All suspect cases" = "S",
+                                    "Confirmed cases only" = "C",
+                                    "Not reportable" = "N")) %>%
+  pivot_wider(names_from = Arbovirus, values_from = Response) 
+
+q11c <- get_responses("11c")
+idx <- which( grepl("Arbovirus",colnames(q11c)))
+arboviruses <- cbind( Country=data$SI01, q11c[,idx]) %>%
+  pivot_longer(!Country) %>%
+  select( Country, Arbovirus=value)
+reporting <- cbind( Country=data$SI01, q11c[,-idx]) %>%
+  pivot_longer(!Country) %>%
+  select( Country, Reporting=value)
+idx <- grep("suspect", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (S)"
+idx <- grep("confirm", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (C)"
+idx <- grep("not", str_to_lower(reporting$Reporting))
+reporting$Reporting[idx] <- " (N)"
+reporting$Reporting[ is.na( reporting$Reporting) ] <- ""
+q11c <- cbind(arboviruses, Reporting = reporting$Reporting) %>%
+  unite( "Other", Arbovirus:Reporting, sep = "")
+idx <- which( q11c$Other == "NA" )
+q11c <- q11c[-idx,]
+q11c <- q11c %>% 
+  group_by( Country ) %>% 
+  summarize( Other = paste(Other, collapse=", "))
+
+left_join( q11b, q11c) %>%
+  regulartable() %>%
+  merge_v(j = ~Country ) %>% autofit()
+
+```
+
+<center>
+
+* S = All suspect cases, C = Confirmed cases only, N = Not reportable
+
+</center>
+
+<br>
+
+### Surveillance for human cases of arboviral disease
+
+<br>
+
+#### Performance of national epidemiological surveillance for arboviral diseases in humans (ref Q12, 12b, 12c)
+
+```{r}
+responses_12 <- get_responses("12") 
+responses_12b <- get_responses("12b")
+colnames( responses_12b ) <- c("Response", "Other")
+responses_12b <- responses_12b %>%
+  mutate( Response = factor( replace_na( as.character(Response), ""))) %>%
+  mutate( Other = factor( replace_na( as.character(Other), ""))) %>%
+  unite( Frequency, Response:Other, sep="") 
+
+responses_12c <- get_responses("12c")
+colnames(responses_12c) <- "Type"
+
+cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>% 
+  rename( "Surveillance conducted" = Response ) %>% 
+  regulartable() %>% autofit()
+
+```
+
+<br>
+
+### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases
+
+<br> 
+
+#### Training of healthcare workers on reporting Aedes-borne arboviral diseases (ref Q13)
+
+```{r}
+responses <- get_responses("13") 
+colnames(responses) <- c("Response","Description")
+responses <- responses %>%
+  mutate(Response = recode_factor(.x=Response,
+                                  "Yes. If so, please describe in the comments field:"="Yes",
+                                  "No"="No",
+                                  "I don't know" ="I don't know")) 
+cbind(Country = data$SI01, responses) %>% 
+  filter( Response == "Yes") %>% 
+  select(-Response) %>%
+  replace_na( list(Description = "Conducted (no further description provided)")) %>% 
+  rename( "Description of training" = Description) %>%
+  regulartable() %>% autofit()
+
+```

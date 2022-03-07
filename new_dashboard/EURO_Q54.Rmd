@@ -125,3 +125,11 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+#### Arboviral disease surveillance staff perception of factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics (ref Q54)
+
+```{r}
+responses <- get_responses("54")
+cbind(Country=data$SI01, responses) %>%
+  regulartable() %>% autofit()
+```

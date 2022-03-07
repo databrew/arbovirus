@@ -125,3 +125,41 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+### Arboviral testing capacity by country
+
+<br>
+
+#### Testing capacity by virus and assay type (ref Q17)
+
+<br>
+
+### Additional resources most needed for your country to perform adequate testing for arboviral diseases
+
+<br>
+
+#### Additional resources required for adequate arboviral disease testing (ref Q18)
+
+```{r}
+responses <- get_responses("18")
+colnames(responses) <- c(
+  "Personnel needed",
+  "Additional personnel needed",
+  "Training needed",
+  "Additional training needed",
+  "Laboratory equipment needed",
+  "Additional laboratory equipment needed",
+  "Capacity needs",
+  "Other capacity needs"
+)
+cbind(Country = data$SI01, responses) %>%
+  select(
+    Country,
+    "Additional personnel needed",
+    "Additional training needed",
+    "Additional laboratory equipment needed",
+    "Other capacity needs"
+  ) %>%
+  regulartable() %>% autofit()
+
+```
