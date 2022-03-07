@@ -131,7 +131,7 @@ region_countries <- region_countries %>%
 n_region_countries <- length( region_countries$Country)
 ```
 
-`r str_to_title(as.english(n_unique_countries))` of `r n_region_countries` countries (`r round(100*( n_unique_countries / n_region_countries))`%) responded:  
+`r str_to_title(as.english(n_unique_countries))` of `r n_region_countries` `r params$region` countries (`r round(100*( n_unique_countries / n_region_countries))`%) responded:  
 
 `r pander( data$SI01 )`. 
 

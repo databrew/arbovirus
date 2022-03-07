@@ -119,9 +119,22 @@ h4 {
 source('functions.R')
 dict <- load_dict()
 data <- load_data()
+region_countries <- load_regions_countries()
 ```
 
 
 ```{r}
-data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 ) %>% drop_na(Region)
+```
+
+`r length(unique(data$SI01))` countries participated in the survey. Participation by region:
+
+```{r}
+df <- data %>% group_by( Region ) %>% tally( name = "Number of countries")
+countries <- c()
+for(i in 1:length(df$Region)){
+  countries <- c( countries, data %>% filter( Region == df$Region[i] ) %>% pull(SI01) %>% paste0( collapse=", ") )
+}
+df <- df %>% mutate( Countries = countries )
+regulartable( df ) %>% autofit()
 ```
