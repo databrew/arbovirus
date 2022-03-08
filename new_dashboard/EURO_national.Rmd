@@ -122,6 +122,27 @@ data <- load_data()
 ```
 
 
-```{r}
-data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
-```
+Available reports: 
+
+<ul>
+<li><a href="country_reports/Albania.pdf" style="color:#048eca;">Albania</a></li>
+<li><a href="country_reports/Armenia.pdf" style="color:#048eca;">Armenia</a></li>
+<li><a href="country_reports/Bosnia and Herzegovina.pdf" style="color:#048eca;">Bosnia and Herzegovina</a></li>
+<li><a href="country_reports/Bulgaria.pdf" style="color:#048eca;">Bulgaria</a></li>
+<li><a href="country_reports/Croatia.pdf" style="color:#048eca;">Croatia</a></li>
+<li><a href="country_reports/France.pdf" style="color:#048eca;">France</a></li>
+<li><a href="country_reports/Georgia.pdf" style="color:#048eca;">Georgia</a></li>
+<li><a href="country_reports/Germany.pdf" style="color:#048eca;">Germany</a></li>
+<li><a href="country_reports/Greece.pdf" style="color:#048eca;">Greece</a></li>
+<li><a href="country_reports/Hungary.pdf" style="color:#048eca;">Hungary</a></li>
+<li><a href="country_reports/Italy.pdf" style="color:#048eca;">Italy</a></li>
+<li><a href="country_reports/Malta.pdf" style="color:#048eca;">Malta</a></li>
+<li><a href="country_reports/Monaco.pdf" style="color:#048eca;">Monaco</a></li>
+<li><a href="country_reports/Portugal.pdf" style="color:#048eca;">Portugal</a></li>
+<li><a href="country_reports/Romania.pdf" style="color:#048eca;">Romania</a></li>
+<li><a href="country_reports/San Marino.pdf" style="color:#048eca;">San Marino</a></li>
+<li><a href="country_reports/Slovenia.pdf" style="color:#048eca;">Slovenia</a></li>
+<li><a href="country_reports/Spain.pdf" style="color:#048eca;">Spain</a></li>
+<li><a href="country_reports/Switzerland.pdf" style="color:#048eca;">Switzerland</a></li>
+<li><a href="country_reports/Turkey.pdf" style="color:#048eca;">Turkey</a></li>
+</ul>

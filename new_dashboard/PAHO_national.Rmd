@@ -122,6 +122,7 @@ data <- load_data()
 ```
 
 
-```{r}
-data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
-```
+Available reports: 
+
+<ul>
+</ul>

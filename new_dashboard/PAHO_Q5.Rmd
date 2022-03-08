@@ -125,3 +125,35 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+### Documented arbovirus circulation
+
+Circulation of _Aedes_-borne arboviruses is infrequent in the region. No countries have reported autochthonous yellow fever transmission and while local transmission of dengue and chikungunya has been reported periodically, only France has reported autochthonous Zika virus transmission.
+
+<br>
+
+#### Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)
+
+```{r}
+responses <- get_responses("5") 
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya"="CHIKV",
+                                    "Dengue"="DENV",
+                                    "Yellow fever"="YFV",
+                                    "Zika"="ZIKV")) %>% 
+  mutate( Response = na_if(Response, "Not selected")) %>%
+  mutate( Response = recode_factor(.x = Response, 
+                                   "Yes"="X")) %>%
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  mutate( Other = other$Other ) %>%
+  filter( if_any(CHIKV:Other, ~ !is.na(.x)))
+
+responses %>%
+  regulartable() %>% 
+  align( j = 2:5, align="center") %>% autofit() 
+```

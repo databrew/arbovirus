@@ -133,10 +133,16 @@ simplify_data <- function(data,
 }
 
 #' @param modify_variable_names If TRUE, then variable names will be overwritten / modified to be more meaningful
-load_data <- function(modify_variable_names = FALSE, complete=TRUE){
+load_data <- function(combined = TRUE, modify_variable_names = FALSE, complete=TRUE){
   
-  if( file.exists("../data/data.RData")){
-    load("../data/data.RData")
+  if( combined ){
+    path = "../data/combined_data.RData"
+  } else{
+    path = "../data/data.RData"
+  }
+  
+  if( file.exists( path )){
+    load( path )
   } else{
     message("You need the data!")
   }

@@ -1,23 +1,9 @@
 library(readr)
+library(dplyr)
 
 regions <- c("ALL","EMRO","EURO","PAHO","SEARO","WPRO")
 
-# for simplicity, use first question per page as filename
-pages <- c("5","6","11","14",              # Section 2
-           "58", "61",                     # Section 10
-           "15","17","19","20",            # Section 3
-           "21","25",                      # Section 4
-           "26","28","34","35","37","40",  # Section 5
-           "41",                           # Section 6
-           "43","44","46",                 # Section 7
-           "47","49","54"                  # Section 8
-           )
-pages <- paste0("Q",pages)
-pages <- c( pages, 
-            "context", 
-            # "participation", 
-            # "national", 
-            "about" )
+load("../data/data.RData")
 
 menu_start <- function( id ){
   html <- paste0("<div id='", 
@@ -143,23 +129,35 @@ header_content <- function( region, page ){
 # create html headers for pages (one per question per region) AND create RMD files
 
 for(j in 1:length( regions )){
+  content <- "\nAvailable reports: \n\n<ul>\n"
   region <- regions[j]
-  for(k in 1:length(pages)){
     
-    # make header file to be included in RMD file:
-    header_path <- paste0(region, "_", pages[k], "_header.html")
-    write_file( header_content( region, pages[k] ), header_path, append=FALSE )
+  # make header file to be included in RMD file:
+  header_path <- paste0(region, "_national_header.html")
+  write_file( header_content( region, "national" ), header_path, append=FALSE )
     
-    # make RMD file:
-    rmd_path <- paste0(region, "_", pages[k], ".Rmd")
-    yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", pages[k], "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
-    frontmatter <- read_file("chunk_frontmatter.Rmd")
-    if( region != "ALL"){
-      filter <- "\n```{r}\ndata <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
-    } else{
-      filter <- "\n```{r}\ndata <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
+  # make RMD file:
+  rmd_path <- paste0(region, "_national.Rmd")
+  yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", "national", "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
+  frontmatter <- read_file("chunk_frontmatter.Rmd")
+  
+  if( region == "ALL"){
+    countries <- data %>% droplevels() %>% drop_na(Region) %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 ) %>% pull(SI01)
+    for( k in 1:length(countries)){
+      country <- countries[k]
+      content <- paste0(content, "<li><a href=\"country_reports/", country, ".pdf\" style=\"color:#048eca;\">", country, "</a></li>\n")
     }
-    write_file( paste0(yaml,frontmatter,filter), rmd_path, append=FALSE )
+  } else if(region == "PAHO" ){
+    # need to create PAHO reports!!
+  } else{
+    countries <- data %>% filter(Region==region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 ) %>% pull(SI01)
+    for( k in 1:length(countries)){
+      country <- countries[k]
+      content <- paste0(content, "<li><a href=\"country_reports/", country, ".pdf\" style=\"color:#048eca;\">", country, "</a></li>\n")
+    }
   }
+  content <- paste0( content, "</ul>\n")
+  
+  write_file( paste0(yaml,frontmatter,content), rmd_path, append=FALSE )
 }
 

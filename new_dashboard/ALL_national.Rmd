@@ -122,6 +122,61 @@ data <- load_data()
 ```
 
 
-```{r}
-data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
-```
+Available reports: 
+
+<ul>
+<li><a href="country_reports/Afghanistan.pdf" style="color:#048eca;">Afghanistan</a></li>
+<li><a href="country_reports/Albania.pdf" style="color:#048eca;">Albania</a></li>
+<li><a href="country_reports/Armenia.pdf" style="color:#048eca;">Armenia</a></li>
+<li><a href="country_reports/Bahrain.pdf" style="color:#048eca;">Bahrain</a></li>
+<li><a href="country_reports/Bangladesh.pdf" style="color:#048eca;">Bangladesh</a></li>
+<li><a href="country_reports/Bhutan.pdf" style="color:#048eca;">Bhutan</a></li>
+<li><a href="country_reports/Bosnia and Herzegovina.pdf" style="color:#048eca;">Bosnia and Herzegovina</a></li>
+<li><a href="country_reports/Bulgaria.pdf" style="color:#048eca;">Bulgaria</a></li>
+<li><a href="country_reports/Cambodia.pdf" style="color:#048eca;">Cambodia</a></li>
+<li><a href="country_reports/China.pdf" style="color:#048eca;">China</a></li>
+<li><a href="country_reports/Croatia.pdf" style="color:#048eca;">Croatia</a></li>
+<li><a href="country_reports/Egypt.pdf" style="color:#048eca;">Egypt</a></li>
+<li><a href="country_reports/France.pdf" style="color:#048eca;">France</a></li>
+<li><a href="country_reports/Georgia.pdf" style="color:#048eca;">Georgia</a></li>
+<li><a href="country_reports/Germany.pdf" style="color:#048eca;">Germany</a></li>
+<li><a href="country_reports/Greece.pdf" style="color:#048eca;">Greece</a></li>
+<li><a href="country_reports/Hungary.pdf" style="color:#048eca;">Hungary</a></li>
+<li><a href="country_reports/India.pdf" style="color:#048eca;">India</a></li>
+<li><a href="country_reports/Indonesia.pdf" style="color:#048eca;">Indonesia</a></li>
+<li><a href="country_reports/Iraq.pdf" style="color:#048eca;">Iraq</a></li>
+<li><a href="country_reports/Italy.pdf" style="color:#048eca;">Italy</a></li>
+<li><a href="country_reports/Jordan.pdf" style="color:#048eca;">Jordan</a></li>
+<li><a href="country_reports/Kiribati.pdf" style="color:#048eca;">Kiribati</a></li>
+<li><a href="country_reports/Lao People's Democratic Republic.pdf" style="color:#048eca;">Lao People's Democratic Republic</a></li>
+<li><a href="country_reports/Libya.pdf" style="color:#048eca;">Libya</a></li>
+<li><a href="country_reports/Malaysia.pdf" style="color:#048eca;">Malaysia</a></li>
+<li><a href="country_reports/Maldives.pdf" style="color:#048eca;">Maldives</a></li>
+<li><a href="country_reports/Malta.pdf" style="color:#048eca;">Malta</a></li>
+<li><a href="country_reports/Monaco.pdf" style="color:#048eca;">Monaco</a></li>
+<li><a href="country_reports/Myanmar.pdf" style="color:#048eca;">Myanmar</a></li>
+<li><a href="country_reports/Nauru.pdf" style="color:#048eca;">Nauru</a></li>
+<li><a href="country_reports/Nepal.pdf" style="color:#048eca;">Nepal</a></li>
+<li><a href="country_reports/Oman.pdf" style="color:#048eca;">Oman</a></li>
+<li><a href="country_reports/Pakistan.pdf" style="color:#048eca;">Pakistan</a></li>
+<li><a href="country_reports/Papua New Guinea.pdf" style="color:#048eca;">Papua New Guinea</a></li>
+<li><a href="country_reports/Philippines.pdf" style="color:#048eca;">Philippines</a></li>
+<li><a href="country_reports/Portugal.pdf" style="color:#048eca;">Portugal</a></li>
+<li><a href="country_reports/Qatar.pdf" style="color:#048eca;">Qatar</a></li>
+<li><a href="country_reports/Romania.pdf" style="color:#048eca;">Romania</a></li>
+<li><a href="country_reports/San Marino.pdf" style="color:#048eca;">San Marino</a></li>
+<li><a href="country_reports/Saudi Arabia.pdf" style="color:#048eca;">Saudi Arabia</a></li>
+<li><a href="country_reports/Singapore.pdf" style="color:#048eca;">Singapore</a></li>
+<li><a href="country_reports/Slovenia.pdf" style="color:#048eca;">Slovenia</a></li>
+<li><a href="country_reports/Somalia.pdf" style="color:#048eca;">Somalia</a></li>
+<li><a href="country_reports/Spain.pdf" style="color:#048eca;">Spain</a></li>
+<li><a href="country_reports/Sudan.pdf" style="color:#048eca;">Sudan</a></li>
+<li><a href="country_reports/Switzerland.pdf" style="color:#048eca;">Switzerland</a></li>
+<li><a href="country_reports/Syrian Arab Republic.pdf" style="color:#048eca;">Syrian Arab Republic</a></li>
+<li><a href="country_reports/Thailand.pdf" style="color:#048eca;">Thailand</a></li>
+<li><a href="country_reports/Tunisia.pdf" style="color:#048eca;">Tunisia</a></li>
+<li><a href="country_reports/Turkey.pdf" style="color:#048eca;">Turkey</a></li>
+<li><a href="country_reports/Vanuatu.pdf" style="color:#048eca;">Vanuatu</a></li>
+<li><a href="country_reports/Viet Nam.pdf" style="color:#048eca;">Viet Nam</a></li>
+<li><a href="country_reports/Yemen.pdf" style="color:#048eca;">Yemen</a></li>
+</ul>

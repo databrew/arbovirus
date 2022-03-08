@@ -136,5 +136,13 @@ for(i in 1:length(df$Region)){
   countries <- c( countries, data %>% filter( Region == df$Region[i] ) %>% pull(SI01) %>% paste0( collapse=", ") )
 }
 df <- df %>% mutate( Countries = countries )
+# theme_zebra...
+regulartable( df ) %>% theme_zebra() %>% autofit()
+```
+
+<br>
+
+```{r}
+# or plain???
 regulartable( df ) %>% autofit()
 ```

@@ -122,6 +122,15 @@ data <- load_data()
 ```
 
 
-```{r}
-data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
-```
+Available reports: 
+
+<ul>
+<li><a href="country_reports/Bangladesh.pdf" style="color:#048eca;">Bangladesh</a></li>
+<li><a href="country_reports/Bhutan.pdf" style="color:#048eca;">Bhutan</a></li>
+<li><a href="country_reports/India.pdf" style="color:#048eca;">India</a></li>
+<li><a href="country_reports/Indonesia.pdf" style="color:#048eca;">Indonesia</a></li>
+<li><a href="country_reports/Maldives.pdf" style="color:#048eca;">Maldives</a></li>
+<li><a href="country_reports/Myanmar.pdf" style="color:#048eca;">Myanmar</a></li>
+<li><a href="country_reports/Nepal.pdf" style="color:#048eca;">Nepal</a></li>
+<li><a href="country_reports/Thailand.pdf" style="color:#048eca;">Thailand</a></li>
+</ul>

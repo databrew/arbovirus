@@ -122,6 +122,18 @@ data <- load_data()
 ```
 
 
-```{r}
-data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
-```
+Available reports: 
+
+<ul>
+<li><a href="country_reports/Cambodia.pdf" style="color:#048eca;">Cambodia</a></li>
+<li><a href="country_reports/China.pdf" style="color:#048eca;">China</a></li>
+<li><a href="country_reports/Kiribati.pdf" style="color:#048eca;">Kiribati</a></li>
+<li><a href="country_reports/Lao People's Democratic Republic.pdf" style="color:#048eca;">Lao People's Democratic Republic</a></li>
+<li><a href="country_reports/Malaysia.pdf" style="color:#048eca;">Malaysia</a></li>
+<li><a href="country_reports/Nauru.pdf" style="color:#048eca;">Nauru</a></li>
+<li><a href="country_reports/Papua New Guinea.pdf" style="color:#048eca;">Papua New Guinea</a></li>
+<li><a href="country_reports/Philippines.pdf" style="color:#048eca;">Philippines</a></li>
+<li><a href="country_reports/Singapore.pdf" style="color:#048eca;">Singapore</a></li>
+<li><a href="country_reports/Vanuatu.pdf" style="color:#048eca;">Vanuatu</a></li>
+<li><a href="country_reports/Viet Nam.pdf" style="color:#048eca;">Viet Nam</a></li>
+</ul>

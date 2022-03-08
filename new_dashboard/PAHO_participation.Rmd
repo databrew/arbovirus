@@ -125,3 +125,14 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+
+```{r}
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+n_unique_countries <- length( unique( data$SI01 ))
+
+```
+
+`r str_to_title(as.english(n_unique_countries))` `r params$region` countries responded:   
+
+`r pander( data$SI01 )`. 

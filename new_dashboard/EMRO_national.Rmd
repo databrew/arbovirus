@@ -122,6 +122,22 @@ data <- load_data()
 ```
 
 
-```{r}
-data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
-```
+Available reports: 
+
+<ul>
+<li><a href="country_reports/Afghanistan.pdf" style="color:#048eca;">Afghanistan</a></li>
+<li><a href="country_reports/Bahrain.pdf" style="color:#048eca;">Bahrain</a></li>
+<li><a href="country_reports/Egypt.pdf" style="color:#048eca;">Egypt</a></li>
+<li><a href="country_reports/Iraq.pdf" style="color:#048eca;">Iraq</a></li>
+<li><a href="country_reports/Jordan.pdf" style="color:#048eca;">Jordan</a></li>
+<li><a href="country_reports/Libya.pdf" style="color:#048eca;">Libya</a></li>
+<li><a href="country_reports/Oman.pdf" style="color:#048eca;">Oman</a></li>
+<li><a href="country_reports/Pakistan.pdf" style="color:#048eca;">Pakistan</a></li>
+<li><a href="country_reports/Qatar.pdf" style="color:#048eca;">Qatar</a></li>
+<li><a href="country_reports/Saudi Arabia.pdf" style="color:#048eca;">Saudi Arabia</a></li>
+<li><a href="country_reports/Somalia.pdf" style="color:#048eca;">Somalia</a></li>
+<li><a href="country_reports/Sudan.pdf" style="color:#048eca;">Sudan</a></li>
+<li><a href="country_reports/Syrian Arab Republic.pdf" style="color:#048eca;">Syrian Arab Republic</a></li>
+<li><a href="country_reports/Tunisia.pdf" style="color:#048eca;">Tunisia</a></li>
+<li><a href="country_reports/Yemen.pdf" style="color:#048eca;">Yemen</a></li>
+</ul>
