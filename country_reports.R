@@ -16,7 +16,7 @@ for(i in 1:length( countries )){
   if( !is.na( nom ) ){
     report_name <- paste0("country_reports/",nom,".pdf")
     rmarkdown::render( "country.Rmd", 
-                       params=list(country=nom), 
+                       params=list(country=nom, anonymous=TRUE), 
                        output_file = report_name )
   }
 }

@@ -153,3 +153,8 @@ if( length( incomplete_surveys) > 0){
 ```{r eval=incompletes, results="asis"}
 pander(excluded_countries)
 ```
+
+```{r}
+map_path <- paste0("img/", params$region, ".png")
+knitr::include_graphics( map_path )
+```

@@ -142,7 +142,7 @@ h4 {
 ## Section I: Respondent details
 
 ```{r}
-map_path <- paste0("images/", params$region, ".png")
+map_path <- paste0("img/", params$region, ".png")
 knitr::include_graphics( map_path )
 ```
 

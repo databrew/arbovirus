@@ -25,6 +25,7 @@ header-includes:
 fontsize: 12pt
 params:
   country: France
+  anonymous: TRUE
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -91,13 +92,13 @@ get_responses <- function( question_number ){
 
 #### 2. Respondent/person to be contacted for clarification, if needed (last name, first name, e-mail address)
 
-> `r data$SI02` 
+> `r if( !params$anonymous ){ data$SI02 }` 
 
 
 
 #### 3. Professional title and affiliation
 
-> `r data$SI03` 
+> `r if( !params$anonymous ){ data$SI03 }` 
 
 
 

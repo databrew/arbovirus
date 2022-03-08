@@ -137,7 +137,7 @@ for(i in 1:length(df$Region)){
 }
 df <- df %>% mutate( Countries = countries )
 # theme_zebra...
-regulartable( df ) %>% theme_zebra() %>% autofit()
+regulartable( df ) %>% theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 <br>
