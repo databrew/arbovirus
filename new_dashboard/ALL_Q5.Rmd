@@ -125,3 +125,30 @@ data <- load_data()
 ```{r}
 data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+### Documented arbovirus circulation
+
+<br>
+
+#### Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)
+
+```{r}
+responses <- get_responses("5")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+cbind( Region = data$Region, responses) %>% 
+  drop_na(Region) %>% 
+  pivot_longer(!Region, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
+  mutate( Response = fct_relevel(Response, "Yes", "Not selected", "Unanswered")) %>%
+  group_by(Region, Arbovirus, Response) %>% 
+  tally %>% 
+  pivot_wider( names_from=Response, values_from=n, names_sort = TRUE) %>% 
+  regulartable %>% 
+  merge_v(j = ~Region) %>% 
+  valign(j = 1, valign = "center", part = "all") %>% 
+  hline(i=4*(1:4)) %>% 
+  colformat_num( na_str = "0" ) %>%
+  fix_border_issues %>% autofit 
+```

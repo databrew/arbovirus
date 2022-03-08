@@ -123,5 +123,6 @@ data <- load_data()
 
 
 ```{r}
-data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% mutate(SI01 = as.character(SI01)) %>% drop_na(Region) %>% arrange( SI01 )
 ```
+

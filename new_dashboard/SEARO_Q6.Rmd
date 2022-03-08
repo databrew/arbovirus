@@ -222,9 +222,9 @@ regulartable(df) %>%
 
 ```
 
-<center>
+<p>
 
 * _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
 * _Advanced training_: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
 
-</center>
+<br>

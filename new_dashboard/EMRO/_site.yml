@@ -1,7 +1,0 @@
-name: "EMRO"
-output:
-  html_document:
-    include:
-      in_header: emro_header.html
-      after_body: footer.html
-    css: styles.css

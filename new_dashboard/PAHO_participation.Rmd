@@ -136,3 +136,8 @@ n_unique_countries <- length( unique( data$SI01 ))
 `r str_to_title(as.english(n_unique_countries))` `r params$region` countries responded:   
 
 `r pander( data$SI01 )`. 
+
+```{r}
+map_path <- paste0("img/", params$region, ".png")
+knitr::include_graphics( map_path )
+```

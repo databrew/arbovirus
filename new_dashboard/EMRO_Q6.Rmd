@@ -136,8 +136,6 @@ data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 
 responses <- get_responses("6")
 
 q6 <- cbind(Country = data$SI01, responses) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   mutate( Response = recode_factor(.x = Response,
                                    "Yes, we have arbovirus-specific plans(s) or guidelines(s)"="Arbovirus-specific",
                                    "Yes. We do not have arbovirus-specific guidelines, but arboviruses are included within general surveillance guidelines."="Within general surveillance guidelines",
@@ -222,10 +220,9 @@ regulartable(df) %>%
 
 ```
 
-<center>
+<p>
 
 * _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
 * _Advanced training_: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
 
-</center>
-
+<br>
