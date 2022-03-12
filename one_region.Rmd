@@ -508,9 +508,11 @@ responses <- responses %>%
                       "IgM antibody testing",
                       "Neutralizing antibody testing",
                       "RT-PCR or other nucleic acid amplification test")) %>%
-  droplevels()
+  droplevels() 
 
-colors = c("pink", "gainsboro", "lemonchiffon3", "lavenderblush3", "slategray1")
+# colors = c("pink", "gainsboro", "lemonchiffon3", "lavenderblush3", "slategray1")
+# a colorblind-friendly palette:
+colors <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#CC79A7")
 letters = c("A", "M", "G", "N", "P")
 base_path <- paste0("img/q17/", params$region, "/")
 for(country in levels(responses$Country)) {
@@ -568,6 +570,10 @@ table_num <- table_num + 1
 # knitr::include_graphics("./images/q17/legend.png")
 
 ```
+
+* A = antigen test ; M = IgM antibody test ; G = IgG antibody test ; N = neutralizing antibody test ; P = PCR or other nucleic acid amplification test
+
+<br>
 
 #### Additional resources most needed for your country to perform adequate testing for arboviral diseases
 
