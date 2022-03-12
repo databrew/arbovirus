@@ -483,6 +483,12 @@ table_num <- table_num + 1
 
 #### Arboviral testing capacity by country
 
+Testing methods:
+
+<center>
+<img src="img/q17_legend.png">
+</center>
+
 ```{r fig.width=3, fig.height=1, eval=TRUE}
 caption <- paste0("Table ", table_num, ". Testing capacity by virus and assay type")
 responses <- get_responses("17")
@@ -519,7 +525,7 @@ for(country in levels(responses$Country)) {
   df <- responses %>% filter(Country == country)
   for (virus in levels(df$Level)) {
     fn <- paste0(base_path, country, "_", virus, ".png")
-    # if (!file.exists(fn)) {
+    if (!file.exists(fn)) {
       values <- df %>% filter(Level==virus) %>% pull(value)
       
       g <- ggplot() + 
@@ -537,9 +543,32 @@ for(country in levels(responses$Country)) {
                legend.position = "none" )
       
       ggsave(fn, plot = g)
-    # }
+    }
   }
 }
+
+# code to create legend (file: q17_legend.png)
+# values <- c(1,1,1,1,1)
+# ggplot() + 
+#   geom_rect( aes(xmin=seq(0,20,by=5), xmax=seq(1,21,by=5),ymin=0,ymax=1), fill=colors, alpha=values ) +
+#   annotate("text", x=0.5+ seq(0,20,by=5), y=0.5, label=letters,size=8, alpha=values ) + 
+#   annotate("text", x=0.5+ seq(0,20,by=5), y=0.5, label="-",size=8, alpha= 1-values ) + 
+#   coord_equal() + 
+#   labs(x = "", y = "") + 
+#   theme( axis.text = element_blank(),
+#          axis.ticks = element_blank(),
+#          panel.background = element_rect(fill = "transparent"),
+#          plot.background = element_rect(fill = "transparent", color = NA),
+#          panel.grid.major = element_blank(),
+#          panel.grid.minor = element_blank(),
+#          legend.position = "none" ) + 
+#   annotate("text",x=0.5,y=-0.75,label="Antigen",size=6) + 
+#   annotate("text",x=5.5,y=-0.75,label="IgM antibody",size=6) + 
+#   annotate("text",x=10.5,y=-0.75,label="IgG antibody",size=6) + 
+#   annotate("text",x=15.5,y=-0.75,label="Neutralizing antibody",size=6) + 
+#   annotate("text",x=20.5,y=-0.75,label="PCR/nucleic acid",size=6) +
+#   xlim(-2,25) + 
+#   ylim(-2,2)
 
 # find all PNGs for each virus and append base_path to get their full file paths;
 # flextable's colformat_image expects a path to an image file
@@ -567,11 +596,9 @@ flextable( df ) %>%
 
 table_num <- table_num + 1
 
-# knitr::include_graphics("./images/q17/legend.png")
+# knitr::include_graphics("img/q17_legend.png")
 
 ```
-
-* A = antigen test ; M = IgM antibody test ; G = IgG antibody test ; N = neutralizing antibody test ; P = PCR or other nucleic acid amplification test
 
 <br>
 
