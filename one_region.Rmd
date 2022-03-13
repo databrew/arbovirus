@@ -547,7 +547,7 @@ for(country in levels(responses$Country)) {
   }
 }
 
-# code to create legend (file: q17_legend.png)
+# code to create legend (file: img/q17_legend.png)
 # values <- c(1,1,1,1,1)
 # ggplot() + 
 #   geom_rect( aes(xmin=seq(0,20,by=5), xmax=seq(1,21,by=5),ymin=0,ymax=1), fill=colors, alpha=values ) +
@@ -586,12 +586,15 @@ df <- tibble( Country = levels( responses$Country),
                   # Other = other )
 
 flextable( df ) %>% 
-  colformat_image(j="Chikungunya", width=1.25, height=0.75) %>% 
-  colformat_image(j="Dengue", width=1.25, height=0.75) %>% 
-  colformat_image(j="Yellow fever", width=1.25, height=0.75) %>% 
-  colformat_image(j="Zika", width=1.25, height=0.75) %>% 
+  colformat_image(j="Chikungunya", width=2.25, height=0.75) %>% 
+  colformat_image(j="Dengue", width=2.25, height=0.75) %>% 
+  colformat_image(j="Yellow fever", width=2.25, height=0.75) %>% 
+  colformat_image(j="Zika", width=2.25, height=0.75) %>% 
   # colformat_image(j="Other", width=1, height=0.5) %>% 
   vline( part="body")  %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  align( align = "center", part = "header" ) %>%
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
