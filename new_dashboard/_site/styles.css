@@ -167,7 +167,7 @@ a:link, a:visited, a:hover, a:active {
   background: #21313b;
   color:#fff;
   position: absolute;
-  width: 100%;
+  width: 50%;
   /*top:50px;*/
   z-index: 99999;
 }
@@ -193,6 +193,99 @@ a:link, a:visited, a:hover, a:active {
   padding: 10px 0;
 }
 
+/* Regional sub menu | regional-navigation__abroviral_disease*/
+#regional-navigation__abroviral_disease {
+  background: #21313b;
+  color:#fff;
+  position: absolute;
+  width: 50%;
+  right: 0;
+  /*top:50px;*/
+  z-index: 99999;
+}
+
+#regional-navigation__abroviral_disease a{
+  color: #fff;
+  font-weight: bold;
+  margin-top: 50px;
+}
+#regional-navigation__abroviral_disease a:hover,
+#regional-navigation__abroviral_disease a:active{
+  text-decoration: none;
+}
+
+#regional-navigation__abroviral_disease ul{
+  margin:40px 0;
+  padding:0;
+  list-style-type:none;
+  text-align: center;
+}
+
+#regional-navigation__abroviral_disease li{
+  padding: 10px 0;
+}
+
+/* regional | regional-navigation__arbrovirus_lab_capacity */
+#regional-navigation__arbrovirus_lab_capacity, 
+#regional-navigation__surveillance_staffing,
+#regional-navigation__management_arboviral_disease_cases,
+#regional-navigation__routine_vector_surveillance_and_control,
+#regional-navigation__community_sensitization_and_participation,
+#regional-navigation__preparedness_for_arboviral_outbreaks_epidemics {
+  background: #21313b;
+  color:#fff;
+  position: absolute;
+  width: 50%;
+  right: 0;
+  /*top:50px;*/
+  z-index: 99999;
+}
+
+#regional-navigation__arbrovirus_lab_capacity a, 
+#regional-navigation__surveillance_staffing a,
+#regional-navigation__management_arboviral_disease_cases a,
+#regional-navigation__routine_vector_surveillance_and_control a,
+#regional-navigation__community_sensitization_and_participation a,
+#regional-navigation__preparedness_for_arboviral_outbreaks_epidemics a{
+  color: #fff;
+  font-weight: bold;
+  margin-top: 50px;
+}
+#regional-navigation__arbrovirus_lab_capacity a:hover,
+#regional-navigation__arbrovirus_lab_capacity a:active,
+#regional-navigation__surveillance_staffing a:hover,
+#regional-navigation__surveillance_staffing a:active,
+#regional-navigation__management_arboviral_disease_cases a:hover,
+#regional-navigation__management_arboviral_disease_cases a:active,
+#regional-navigation__routine_vector_surveillance_and_control a:hover,
+#regional-navigation__routine_vector_surveillance_and_control a:active,
+#regional-navigation__community_sensitization_and_participation a:hover,
+#regional-navigation__community_sensitization_and_participation a:active,
+#regional-navigation__preparedness_for_arboviral_outbreaks_epidemics a:hover,
+#regional-navigation__preparedness_for_arboviral_outbreaks_epidemics a:active {
+  text-decoration: none;
+}
+
+#regional-navigation__arbrovirus_lab_capacity ul, 
+#regional-navigation__surveillance_staffing ul,
+#regional-navigation__management_arboviral_disease_cases ul,
+#regional-navigation__routine_vector_surveillance_and_control ul,
+#regional-navigation__community_sensitization_and_participation ul,
+#regional-navigation__preparedness_for_arboviral_outbreaks_epidemics ul {
+  margin:40px 0;
+  padding:0;
+  list-style-type:none;
+  text-align: center;
+}
+
+#regional-navigation__arbrovirus_lab_capacity li, 
+#regional-navigation__surveillance_staffing li,
+#regional-navigation__management_arboviral_disease_cases li,
+#regional-navigation__routine_vector_surveillance_and_control li,
+#regional-navigation__community_sensitization_and_participation li,
+#regional-navigation__preparedness_for_arboviral_outbreaks_epidemics li{
+  padding: 10px 0;
+}
 
 /* national */
 #country-navigation {
@@ -486,4 +579,66 @@ a:link, a:visited, a:hover, a:active {
 .aside_menu__active_element {
     background: #d86422;
     padding-left: 20px !important;
+}
+
+
+/* -------------------------- REGION DROPDOWN ------------------------------ */
+/* Dropdown Button */
+.dropbtn {
+    background-color: #068eca;
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
+
+.selected_region {
+  font-weight: bold;
+}
+
+.selected_region_arrow_down {
+  padding-left: 5pt;
+  font-size: 11px;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  width: 100%;
+  justify-content: end;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+
+
+/* region navbar */
+#regional-navigation li h4 {
+    text-align: left !important;
 }
