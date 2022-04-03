@@ -100,12 +100,12 @@ $(document).on('click', function (e){
             $( "#Regional-Li-area" ).removeClass("activeMenuState");
     }
     
-    /* regional-navigation__abroviral_disease data  */
-    var regional_menu_opened = $('#regional-navigation__abroviral_disease').hasClass('in');
-    if(!$(e.target).closest('#regional-navigation__abroviral_disease').length &&
-        !$(e.target).is('#regional-navigation__abroviral_disease') &&
+    /* regional-navigation-arboviral-disease data  */
+    var regional_menu_opened = $('#regional-navigation-arboviral-disease').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-arboviral-disease').length &&
+        !$(e.target).is('#regional-navigation-arboviral-disease') &&
         regional_menu_opened === true) {
-            $('#regional-navigation__abroviral_disease').collapse('toggle');
+            $('#regional-navigation-arboviral-disease').collapse('toggle');
     }
     
     /* regional-navigation__arbrovirus_lab_capacity data  */
