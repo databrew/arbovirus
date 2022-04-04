@@ -193,8 +193,8 @@ a:link, a:visited, a:hover, a:active {
   padding: 10px 0;
 }
 
-/* Regional sub menu | regional-navigation__abroviral_disease*/
-#regional-navigation__abroviral_disease {
+/* Regional sub menu | regional-navigation-arboviral-disease*/
+#regional-navigation-arboviral-disease {
   background: #21313b;
   color:#fff;
   position: absolute;
@@ -204,24 +204,24 @@ a:link, a:visited, a:hover, a:active {
   z-index: 99999;
 }
 
-#regional-navigation__abroviral_disease a{
+#regional-navigation-arboviral-disease a{
   color: #fff;
   font-weight: bold;
   margin-top: 50px;
 }
-#regional-navigation__abroviral_disease a:hover,
-#regional-navigation__abroviral_disease a:active{
+#regional-navigation-arboviral-disease a:hover,
+#regional-navigation-arboviral-disease a:active{
   text-decoration: none;
 }
 
-#regional-navigation__abroviral_disease ul{
+#regional-navigation-arboviral-disease ul{
   margin:40px 0;
   padding:0;
   list-style-type:none;
   text-align: center;
 }
 
-#regional-navigation__abroviral_disease li{
+#regional-navigation-arboviral-disease li{
   padding: 10px 0;
 }
 
