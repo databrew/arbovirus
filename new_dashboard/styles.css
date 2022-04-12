@@ -134,7 +134,7 @@ a:link, a:visited, a:hover, a:active {
   background: #21313b;
   color:#fff;
   position: absolute;
-  width: 100%;
+  width: 50%;
   /*top:50px;*/
   z-index: 99999;
   

@@ -17,15 +17,9 @@ opts_chunk$set(comment = NA,
                warning = FALSE, 
                message = FALSE, 
                error = TRUE, 
-               cache = FALSE,
-               fig.width = 9.64,
-               fig.height = 5.9,
-               fig.path = 'figures/')
-ggplot2::theme_set(ggplot2::theme_bw())
-
-# options(scipen = '999')
+               cache = FALSE)
+# ggplot2::theme_set(ggplot2::theme_bw())
 ```
-
 
 ```{js}
 // Region dropdown
@@ -181,9 +175,7 @@ $(document).on('click', function (e){
 
 });
 
-
 ```
-
 
 ```{css, echo=FALSE}
 h4 {
@@ -191,13 +183,11 @@ h4 {
 }
 ```
 
-
 ```{r, echo = FALSE}
 source('functions.R')
 dict <- load_dict()
 data <- load_data()
 ```
-
 
 ```{r}
 data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
