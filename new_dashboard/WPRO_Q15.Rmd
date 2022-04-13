@@ -192,3 +192,64 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+### Cases for which arbovirus laboratory testing is performed
+
+<br>
+
+#### Cases for which laboratory testing is performed by transmission period (ref Q15)
+
+```{r}
+responses <- get_responses("15")
+periods <- colnames(responses)
+colnames(responses)=c("Outbreak","Non")
+responses <- cbind(Country = data$SI01, responses) %>% 
+  mutate( Outbreak = recode_factor(Outbreak,
+                                   "All suspect cases tested"="A",
+                                   "Subset of suspect cases tested"="S",
+                                   "No suspect cases tested"="N")) %>%
+  mutate( Non = recode_factor(Non,
+                                   "All suspect cases tested"="A",
+                                   "Subset of suspect cases tested"="S",
+                                   "No suspect cases tested"="N")) 
+  
+colnames(responses) <- c("Country",periods)
+responses %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
+```
+
+<center>
+
+* A = all suspect cases ; S = subset of suspect cases ; N = none
+
+</center>
+
+<br>
+
+### Viruses for which the national laboratory confirmed cases
+
+<br>
+
+#### Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)
+
+```{r}
+responses <- get_responses("16")
+colnames(responses) <- c("Response","Arbovirus(es)")
+responses <- responses %>%
+  mutate(Response = recode_factor(Response,
+                                  "Yes, for all arboviral infections. Please specify them:"="Yes",
+                                  "Yes, but only for some arboviral infections. Please specify them:"="Yes",
+                                  "No"="No"))
+cbind(Country = data$SI01, responses) %>% 
+  filter( Response == "Yes") %>%
+  select(-Response) %>%
+  replace_na( list("Arbovirus(es)"="Not specified")) %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
+```
+

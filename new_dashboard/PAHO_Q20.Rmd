@@ -192,3 +192,18 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+### Laboratory staff perceptions
+
+<br>
+
+#### Laboratory staff perception of factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections (ref Q20)
+
+```{r}
+responses <- get_responses("20")
+cbind(Country=data$SI01, responses) %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
+```

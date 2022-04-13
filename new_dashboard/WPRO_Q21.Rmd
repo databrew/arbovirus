@@ -192,3 +192,39 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+#### Countries with clinical guidelines for healthcare workers on diagnosis and clinical management of cases and severe cases of _Aedes_-borne arboviral diseases (ref Q21)
+
+```{r}
+responses <- get_responses("21")
+responses <- cbind(Country=data$SI01, responses) 
+
+available <- responses$Country[which(responses$Response == "Yes")]
+no_answer <- responses$Country[which(is.na(responses$Response))]
+no_guidelines <- responses$Country[which(responses$Response == "No")]
+
+```
+
+The following countries indicated availability of clinical guidelines: `r available`.
+
+`r no_answer` did not answer the question and `r no_guidelines` indicated no guidelines. 
+
+<br> 
+
+#### Training for healthcare workers on clinical diagnosis and management of _Aedes_-borne arboviral diseases (ref Q24)
+
+```{r}
+responses <- get_responses("24")
+colnames(responses) <- c("Response","Training")
+cbind(Country=data$SI01, responses) %>%
+  mutate( Response = recode_factor(.x = Response,
+                                   "Yes, specific training is provided. If so, please specify:"="X",
+                                   "No"=" ")) %>%
+  filter(Response=="X") %>% 
+  select(-Response) %>%
+  replace_na( list(Training="Not specified")) %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
+```

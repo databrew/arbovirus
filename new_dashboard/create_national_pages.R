@@ -1,7 +1,8 @@
 library(readr)
 library(dplyr)
 
-regions <- c("ALL","EMRO","EURO","PAHO","SEARO","WPRO")
+# regions <- c("ALL","EMRO","EURO","PAHO","SEARO","WPRO")
+regions <- c("EMRO","EURO","PAHO","SEARO","WPRO")
 
 load("../data/data.RData")
 
@@ -19,7 +20,8 @@ submenu_start <- function(){
 }
 
 submenu_href_title <- function( region, suffix, text ){
-  return( paste0("<li><h4><a href='", region, "_", suffix, ".html'>", text, "</a></h4></li>\n") )
+  # return( paste0("<li><h4><a href='", region, "_", suffix, ".html'>", text, "</a></h4></li>\n") )
+  return( paste0("<li><a href='", region, "_", suffix, ".html'>", text, "</a></li>\n") )
 }
 
 submenu_title <- function( text ){
@@ -75,6 +77,7 @@ header_content <- function( region, page ){
                     "<li id='whiteLogoPosition'>\n<img id='white_WHO_logo' src='img/WHO_LOGO_white.png'>\n</li>\n",
                     "<li id='Overview-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#overview-navigation' aria-expanded='false' aria-controls='overview-navigation'>Arbovirus survey overview</a>\n",
+                    "</li>\n<li>\n<a href=''>Global arbovirus survey results</a>\n",
                     "</li>\n<li id='Regional-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
                     "</li>\n<li>\n<a href='", region, "_national.html'>National arbovirus survey results</a>\n",
@@ -194,15 +197,15 @@ for(j in 1:length( regions )){
   yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", "national", "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
   frontmatter <- read_file("chunk_frontmatter.Rmd")
   
-  if( region == "ALL"){
-    countries <- data %>% droplevels() %>% drop_na(Region) %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 ) %>% pull(SI01)
-    for( k in 1:length(countries)){
-      country <- countries[k]
-      content <- paste0(content, "<li><a href=\"country_reports/", country, ".pdf\" style=\"color:#048eca;\">", country, "</a></li>\n")
-    }
-  } else if(region == "PAHO" ){
+  # if( region == "ALL"){
+  #   countries <- data %>% droplevels() %>% drop_na(Region) %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 ) %>% pull(SI01)
+  #   for( k in 1:length(countries)){
+  #     country <- countries[k]
+  #     content <- paste0(content, "<li><a href=\"country_reports/", country, ".pdf\" style=\"color:#048eca;\">", country, "</a></li>\n")
+  #   }
+  # } else 
+  if(region != "PAHO" ){
     # need to create PAHO reports!!
-  } else{
     countries <- data %>% filter(Region==region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 ) %>% pull(SI01)
     for( k in 1:length(countries)){
       country <- countries[k]

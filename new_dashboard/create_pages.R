@@ -1,6 +1,7 @@
 library(readr)
 
-regions <- c("ALL","EMRO","EURO","PAHO","SEARO","WPRO")
+# regions <- c("ALL","EMRO","EURO","PAHO","SEARO","WPRO")
+regions <- c("EMRO","EURO","PAHO","SEARO","WPRO")
 
 # for simplicity, use first question per page as filename
 pages <- c("5","6","11","14",              # Section 2
@@ -33,7 +34,8 @@ submenu_start <- function(){
 }
 
 submenu_href_title <- function( region, suffix, text ){
-  return( paste0("<li><h4><a href='", region, "_", suffix, ".html'>", text, "</a></h4></li>\n") )
+  # return( paste0("<li><h4><a href='", region, "_", suffix, ".html'>", text, "</a></h4></li>\n") )
+  return( paste0("<li><a href='", region, "_", suffix, ".html'>", text, "</a></li>\n") )
 }
 
 submenu_title <- function( text ){
@@ -89,6 +91,7 @@ header_content <- function( region, page ){
                     "<li id='whiteLogoPosition'>\n<img id='white_WHO_logo' src='img/WHO_LOGO_white.png'>\n</li>\n",
                     "<li id='Overview-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#overview-navigation' aria-expanded='false' aria-controls='overview-navigation'>Arbovirus survey overview</a>\n",
+                    "</li>\n<li>\n<a href=''>Global arbovirus survey results</a>\n",
                     "</li>\n<li id='Regional-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
                     "</li>\n<li>\n<a href='", region, "_national.html'>National arbovirus survey results</a>\n",
@@ -203,16 +206,16 @@ for(j in 1:length( regions )){
     header_path <- paste0(region, "_", pages[k], "_header.html")
     write_file( header_content( region, pages[k] ), header_path, append=FALSE )
     
-    # make RMD file:
-    rmd_path <- paste0(region, "_", pages[k], ".Rmd")
-    yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", pages[k], "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
-    frontmatter <- read_file("chunk_frontmatter.Rmd")
-    if( region != "ALL"){
-      filter <- "\n```{r}\ndata <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
-    } else{
-      filter <- "\n```{r}\ndata <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
-    }
-    write_file( paste0(yaml,frontmatter,filter), rmd_path, append=FALSE )
+    # UNCOMMENT to make RMD file:
+    # rmd_path <- paste0(region, "_", pages[k], ".Rmd")
+    # yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", pages[k], "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
+    # frontmatter <- read_file("chunk_frontmatter.Rmd")
+    # if( region != "ALL"){
+    #   filter <- "\n```{r}\ndata <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
+    # } else{
+    #   filter <- "\n```{r}\ndata <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
+    # }
+    # write_file( paste0(yaml,frontmatter,filter), rmd_path, append=FALSE )
   }
 }
 
