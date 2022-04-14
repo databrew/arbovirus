@@ -20,12 +20,11 @@ submenu_start <- function(){
 }
 
 submenu_href_title <- function( region, suffix, text ){
-  # return( paste0("<li><h4><a href='", region, "_", suffix, ".html'>", text, "</a></h4></li>\n") )
   return( paste0("<li><a href='", region, "_", suffix, ".html'>", text, "</a></li>\n") )
 }
 
 submenu_title <- function( text ){
-  return( paste0("<li><h4><a>", text, "</a></h4></li>\n") )
+  return( paste0("<li><a>", text, "</a></li>\n") )
 }
 
 submenu_item <- function( region, suffix, text ){
@@ -33,7 +32,7 @@ submenu_item <- function( region, suffix, text ){
 }
 
 submenu_dropdown <- function( child, submenu, text ){
-  return( paste0("<li><h4>\n",
+  return( paste0("<li>\n",
                  "<a role='button' data-toggle='collapse' href='#",
                  child,
                  "' aria-expanded='false' aria-controls='",
@@ -41,7 +40,7 @@ submenu_dropdown <- function( child, submenu, text ){
                  "'>",
                  text,
                  "</a>\n",
-                 "</h4></li>\n"))
+                 "</li>\n"))
 }
 
 submenu_end <- function(){
@@ -80,8 +79,8 @@ header_content <- function( region, page ){
                     "</li>\n<li>\n<a href=''>Global arbovirus survey results</a>\n",
                     "</li>\n<li id='Regional-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
-                    "</li>\n<li>\n<a href='", region, "_national.html'>National arbovirus survey results</a>\n",
-                    "</li>\n<li>\n<a href='", region, "_about.html'>About</a>\n</li>\n</ul>\n\n")
+                    "</li>\n<li>\n<a href='", region, "_national.html'>National arbovirus survey results</a>\n</li>\n</ul>\n\n")
+                    # "</li>\n<li>\n<a href='", region, "_about.html'>About</a>\n</li>\n</ul>\n\n")
   
   # drop-down menus
   # Overview NAV
