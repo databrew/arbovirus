@@ -1,3 +1,13 @@
+---
+title: ' '
+pagetitle: 'SEARO national'
+output:
+  html_document:
+    includes:
+      in_header: SEARO_national_header.html
+params:
+  region: SEARO
+---
 
 ```{r, include=FALSE, echo = FALSE}
 # Basic knitr options
@@ -59,11 +69,11 @@ function scrollFunction() {
 }
 
 $(document).on('click', function (e){
-    /* Global data  */
-    var global_menu_opened = $('#overview-navigation').hasClass('in');
+    /* Overview of data  */
+    var overview_menu_opened = $('#overview-navigation').hasClass('in');
     if(!$(e.target).closest('#overview-navigation').length &&
         !$(e.target).is('#overview-navigation') &&
-        global_menu_opened === true){
+        overview_menu_opened === true){
             $('#overview-navigation').collapse('toggle');
             $( "#Overview-Li-area" ).removeClass("activeMenuState");
     }
@@ -73,6 +83,22 @@ $(document).on('click', function (e){
     }
     if ($('#overview-navigation').attr('aria-expanded') === "true") {
       $( "#Overview-Li-area" ).addClass("activeMenuState");
+    }
+    
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
     }
 
      /* Regional data  */
@@ -178,3 +204,16 @@ source('functions.R')
 dict <- load_dict()
 data <- load_data()
 ```
+
+Available reports: 
+
+<ul>
+<li><a href="country_reports/Bangladesh.pdf" style="color:#048eca;">Bangladesh</a></li>
+<li><a href="country_reports/Bhutan.pdf" style="color:#048eca;">Bhutan</a></li>
+<li><a href="country_reports/India.pdf" style="color:#048eca;">India</a></li>
+<li><a href="country_reports/Indonesia.pdf" style="color:#048eca;">Indonesia</a></li>
+<li><a href="country_reports/Maldives.pdf" style="color:#048eca;">Maldives</a></li>
+<li><a href="country_reports/Myanmar.pdf" style="color:#048eca;">Myanmar</a></li>
+<li><a href="country_reports/Nepal.pdf" style="color:#048eca;">Nepal</a></li>
+<li><a href="country_reports/Thailand.pdf" style="color:#048eca;">Thailand</a></li>
+</ul>

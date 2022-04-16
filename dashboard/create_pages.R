@@ -33,16 +33,12 @@ submenu_start <- function(){
   return("<div class='col-sm-6 text-left'>\n<ul class='submenu-text-formatting'>\n")
 }
 
-submenu_href_title <- function( region, suffix, text ){
-  return( paste0("<li><a href='", region, "_", suffix, ".html'>", text, "</a></li>\n") )
-}
-
 submenu_title <- function( text ){
   return( paste0("<li><a>", text, "</a></li>\n") )
 }
 
-submenu_item <- function( region, suffix, text ){
-  return( paste0("<li><a href='", region, "_", suffix, ".html'>", text, "</a></li>\n") )
+submenu_item <- function( prefix, suffix, text ){
+  return( paste0("<li><a href='", prefix, "_", suffix, ".html'>", text, "</a></li>\n") )
 }
 
 submenu_dropdown <- function( child, submenu, text ){
@@ -90,7 +86,8 @@ header_content <- function( region, page ){
                     "<li id='whiteLogoPosition'>\n<img id='white_WHO_logo' src='img/WHO_LOGO_white.png'>\n</li>\n",
                     "<li id='Overview-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#overview-navigation' aria-expanded='false' aria-controls='overview-navigation'>Arbovirus survey overview</a>\n",
-                    "</li>\n<li>\n<a href=''>Global arbovirus survey results</a>\n",
+                    "<li id='Global-Li-area'>\n",
+                    "<a role='button' data-toggle='collapse' href='#global-navigation' aria-expanded='false' aria-controls='global-navigation'>Global arbovirus survey results</a>\n",
                     "</li>\n<li id='Regional-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
                     "</li>\n<li>\n<a href='", region, "_national.html'>National arbovirus survey results</a>\n</li>\n</ul>\n\n")
@@ -101,8 +98,23 @@ header_content <- function( region, page ){
   content <- paste0( content,
                      menu_start("overview-navigation"), 
                      submenu_start(), 
-                     submenu_href_title(region, "context", "Survey context"),
-                     submenu_href_title(region, "participation", "Participating countries"), 
+                     submenu_item(region, "context", "Survey context"),
+                     submenu_item(region, "participation", "Participating countries"), 
+                     submenu_end(),
+                     menu_end() )
+  
+  # Global NAV
+  content <- paste0( content,
+                     menu_start("global-navigation"), 
+                     submenu_start(),
+                     submenu_item(region, "participation", "Survey response"),
+                     submenu_item(region, "Q5_global", "Autochthonous arbovirus transmission status"),
+                     submenu_item(region, "Q12_global", "Arbovirus disease surveillance planning and practice"), 
+                     submenu_item(region, "Q17_global", "Arbovirus laboratory capacity"),
+                     submenu_item(region, "Q21_global", "Management of arboviral disease cases"),
+                     submenu_item(region, "Q29_global", "Vector surveillance and control"),
+                     submenu_item(region, "Q43_global", "Community sensitization and participation"),
+                     submenu_item(region, "Q47_global", "Preparedness for arboviral outbreaks/epidemics"),
                      submenu_end(),
                      menu_end() )
   
@@ -122,7 +134,7 @@ header_content <- function( region, page ){
                      submenu_dropdown("regional-navigation-vector-surveillance",
                                       "regional-navigation",
                                       "Routine vector surveillance and control"),
-                     submenu_href_title(region, "Q41", "Animal surveillance"),
+                     submenu_item(region, "Q41", "Animal surveillance"),
                      submenu_dropdown("regional-navigation-community",
                                       "regional-navigation",
                                       "Community sensitization and participation"),

@@ -1,12 +1,12 @@
 ---
 title: ' '
-pagetitle: 'PAHO national'
+pagetitle: 'WPRO national'
 output:
   html_document:
     includes:
-      in_header: PAHO_national_header.html
+      in_header: WPRO_national_header.html
 params:
-  region: PAHO
+  region: WPRO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -69,11 +69,11 @@ function scrollFunction() {
 }
 
 $(document).on('click', function (e){
-    /* Global data  */
-    var global_menu_opened = $('#overview-navigation').hasClass('in');
+    /* Overview of data  */
+    var overview_menu_opened = $('#overview-navigation').hasClass('in');
     if(!$(e.target).closest('#overview-navigation').length &&
         !$(e.target).is('#overview-navigation') &&
-        global_menu_opened === true){
+        overview_menu_opened === true){
             $('#overview-navigation').collapse('toggle');
             $( "#Overview-Li-area" ).removeClass("activeMenuState");
     }
@@ -83,6 +83,22 @@ $(document).on('click', function (e){
     }
     if ($('#overview-navigation').attr('aria-expanded') === "true") {
       $( "#Overview-Li-area" ).addClass("activeMenuState");
+    }
+    
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
     }
 
      /* Regional data  */
@@ -192,4 +208,15 @@ data <- load_data()
 Available reports: 
 
 <ul>
+<li><a href="country_reports/Cambodia.pdf" style="color:#048eca;">Cambodia</a></li>
+<li><a href="country_reports/China.pdf" style="color:#048eca;">China</a></li>
+<li><a href="country_reports/Kiribati.pdf" style="color:#048eca;">Kiribati</a></li>
+<li><a href="country_reports/Lao People's Democratic Republic.pdf" style="color:#048eca;">Lao People's Democratic Republic</a></li>
+<li><a href="country_reports/Malaysia.pdf" style="color:#048eca;">Malaysia</a></li>
+<li><a href="country_reports/Nauru.pdf" style="color:#048eca;">Nauru</a></li>
+<li><a href="country_reports/Papua New Guinea.pdf" style="color:#048eca;">Papua New Guinea</a></li>
+<li><a href="country_reports/Philippines.pdf" style="color:#048eca;">Philippines</a></li>
+<li><a href="country_reports/Singapore.pdf" style="color:#048eca;">Singapore</a></li>
+<li><a href="country_reports/Vanuatu.pdf" style="color:#048eca;">Vanuatu</a></li>
+<li><a href="country_reports/Viet Nam.pdf" style="color:#048eca;">Viet Nam</a></li>
 </ul>

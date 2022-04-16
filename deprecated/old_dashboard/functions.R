@@ -1,14 +1,12 @@
 library(tidyverse)
 library(stringr)
 library(pander)
-panderOptions( 'p.wrap', "")
 library(knitr)
 library(kableExtra)
 library(flextable)
 library(lubridate)
 library(RColorBrewer)
 library(janitor)
-library(english)
 
 make_colors <- function(n, seed = 123){
   pal <- RColorBrewer::brewer.pal(n = 9, name = 'Set1')
@@ -19,23 +17,17 @@ make_colors <- function(n, seed = 123){
 }
 
 load_dict <- function(){
-  if( file.exists("../data/Data_dictionary_Survey375147.csv")){
-    dict <- read_csv("../data/Data_dictionary_Survey375147.csv")
+  owd <- getwd()
+  setwd('../')
+  if( file.exists("data/Data_dictionary_Survey375147.csv")){
+    dict <- read_csv("data/Data_dictionary_Survey375147.csv")
   } else{
     message("You need the data dictionary!")
   }
+  setwd(owd)
+  
   return( dict )
 }
-
-load_regions_countries <- function(){
-  if( file.exists("../data/Regions_Countries.csv")){
-    regions_countries <- read_csv("../data/Regions_Countries.csv")
-  } else{
-    message("You need the regions/countries data!")
-  }
-  return( regions_countries )
-}
-
 
 # Function to simplify variable names
 simplify_data <- function(data,
@@ -133,50 +125,32 @@ simplify_data <- function(data,
 }
 
 #' @param modify_variable_names If TRUE, then variable names will be overwritten / modified to be more meaningful
-load_data <- function(combined = TRUE, modify_variable_names = FALSE, complete=TRUE){
-  
-  if( combined ){
-    path = "../data/combined_data.RData"
-  } else{
-    path = "../data/data.RData"
-  }
-  
-  if( file.exists( path )){
-    load( path )
+load_data <- function(modify_variable_names = FALSE){
+  # Read in data
+  owd <- getwd()
+  setwd('../')
+  if( file.exists("data/data.RData")){
+    load("data/data.RData")
   } else{
     message("You need the data!")
   }
 
+  setwd(owd)
+  
   # Read in data dictionary
   dict <- load_dict()
+  
   
   # Modify variable names
   if(modify_variable_names){
    df <- simplify_data(data = data,
                        dict = dict)
   } else {
-    if(complete){
-      q5_start <- min( which( dict$`Question number` == "5") )
-      incomplete_surveys <- c()
-      for( i in 1:nrow(data)){
-        if( all( is.na( data[i, q5_start:nrow( dict )]))){
-          incomplete_surveys <- c( incomplete_surveys, i)
-        }
-      }
-      if( length( incomplete_surveys) > 0){
-        df <- data[-incomplete_surveys,]
-      } else{
-        df <- data
-      }
-    } else{
-      # in this case, include incomplete survey results (for participation summary)
-      df <- data
-    }
+    df <- data
   }
   
   return(df)
 }
-
 # simple <- load_data(modify_variable_names = TRUE)
 # write_excel_csv(simple, '~/Desktop/simplified_dataset.csv')
 
@@ -187,7 +161,7 @@ get_responses <- function( question_number ){
   # question <- dict$Description[ idx[1] ] #
   # cat( paste("Question", question_number, ":", question) ) #
   var_names <- dict$`Variable name`[idx]
-  responses <- data %>% select( all_of(var_names) )
+  responses <- df %>% select( all_of(var_names) )
   if( !is.na(dict$Subquestion[ idx[1] ]) ){
     # remove square brackets at beginning and end, then rename columns:
     colnames( responses ) <- str_extract( dict$Subquestion[idx], '(?<=\\[)[^{}]+(?=\\])')
