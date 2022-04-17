@@ -1,12 +1,12 @@
 ---
 title: ' '
-pagetitle: 'EMRO Q5'
+pagetitle: 'SEARO Q20'
 output:
   html_document:
     includes:
-      in_header: EMRO_Q5_header.html
+      in_header: SEARO_participation_global_header.html
 params:
-  region: EMRO
+  region: SEARO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -69,11 +69,11 @@ function scrollFunction() {
 }
 
 $(document).on('click', function (e){
-    /* Global data  */
-    var global_menu_opened = $('#overview-navigation').hasClass('in');
+    /* Overview of data  */
+    var overview_menu_opened = $('#overview-navigation').hasClass('in');
     if(!$(e.target).closest('#overview-navigation').length &&
         !$(e.target).is('#overview-navigation') &&
-        global_menu_opened === true){
+        overview_menu_opened === true){
             $('#overview-navigation').collapse('toggle');
             $( "#Overview-Li-area" ).removeClass("activeMenuState");
     }
@@ -83,6 +83,22 @@ $(document).on('click', function (e){
     }
     if ($('#overview-navigation').attr('aria-expanded') === "true") {
       $( "#Overview-Li-area" ).addClass("activeMenuState");
+    }
+    
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
     }
 
      /* Regional data  */
@@ -190,40 +206,5 @@ data <- load_data()
 ```
 
 ```{r}
-data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
-
-### Documented arbovirus circulation
-
-<br>
-
-#### Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)
-
-```{r}
-responses <- get_responses("5") 
-other <- responses %>% select(Other)
-responses <- responses %>% select(-Other)
-
-responses <- cbind(Country = data$SI01, responses) %>% 
-  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
-  mutate( Arbovirus = recode_factor(.x = Arbovirus,
-                                    "Chikungunya"="CHIKV",
-                                    "Dengue"="DENV",
-                                    "Yellow fever"="YFV",
-                                    "Zika"="ZIKV")) %>% 
-  mutate( Response = na_if(Response, "Not selected")) %>%
-  mutate( Response = recode_factor(.x = Response, 
-                                   "Yes"="X")) %>%
-  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
-  mutate( Other = other$Other ) # %>%
-  # filter( if_any(CHIKV:Other, ~ !is.na(.x)))
-
-responses %>%
-  regulartable() %>% 
-  align( j = 2:5, align="center") %>% 
-  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
-  color( color="#FFFFFF", part="header" ) %>% autofit() 
-
-```
-
-<br>

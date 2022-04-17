@@ -205,7 +205,7 @@ dict <- load_dict()
 data <- load_data()
 ```
 
-Available reports: 
+Available reports (PDF) : 
 
 <ul>
 <li><a href="country_reports/Bangladesh.pdf" style="color:#048eca;">Bangladesh</a></li>

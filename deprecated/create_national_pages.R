@@ -1,7 +1,6 @@
 library(readr)
 library(dplyr)
 
-# regions <- c("ALL","EMRO","EURO","PAHO","SEARO","WPRO")
 regions <- c("EMRO","EURO","PAHO","SEARO","WPRO")
 
 load("../data/data.RData")
@@ -77,8 +76,7 @@ header_content <- function( region, page ){
                     "</li>\n<li id='Regional-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
                     "</li>\n<li>\n<a href='", region, "_national.html'>National arbovirus survey results</a>\n</li>\n</ul>\n\n")
-  # "</li>\n<li>\n<a href='", region, "_about.html'>About</a>\n</li>\n</ul>\n\n")
-  
+
   # drop-down menus
   # Overview NAV
   content <- paste0( content,

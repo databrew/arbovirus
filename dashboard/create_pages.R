@@ -1,9 +1,10 @@
 library(readr)
 
-# regions <- c("ALL","EMRO","EURO","PAHO","SEARO","WPRO")
 regions <- c("EMRO","EURO","PAHO","SEARO","WPRO")
 
-# for simplicity, use first question per page as filename
+load("../data/data.RData")
+
+# for simplicity, use first question per page in filename
 pages <- c("5","6","11","14",              # Section 2
            "15","17","19","20",            # Section 3
            "21","25",                      # Section 4
@@ -17,8 +18,10 @@ pages <- paste0("Q",pages)
 pages <- c( pages, 
             "context", 
             "participation", 
-            # "national", 
             "about" )
+
+global_pages <- paste0( "Q", c("5", "12", "17", "21", "29","43","47") )
+global_pages <- c( global_pages, "participation")
 
 menu_start <- function( id ){
   html <- paste0("<div id='", 
@@ -61,7 +64,7 @@ menu_end <- function(){
   return("</div>\n</div>\n</div>\n")
 }
 
-header_content <- function( region, page ){
+header_content <- function( region, page, global=FALSE ){
   
   # region selection and navigation
   content <- "<div class='flex-container'>\n"
@@ -75,7 +78,11 @@ header_content <- function( region, page ){
                     "<div id='myDropdown' class='dropdown-content'>\n")
   for(i in 1:length(regions)){
     if( regions[i]!=region){
-      content <- paste0(content, "<a href='", regions[i], "_", page, ".html'>", regions[i], "</a>\n")
+      if( global ){
+        content <- paste0(content, "<a href='", regions[i], "_", page, "_global.html'>", regions[i], "</a>\n")
+      } else{
+        content <- paste0(content, "<a href='", regions[i], "_", page, ".html'>", regions[i], "</a>\n")
+      }
     }
   }
   content <- paste0( content, "</div>\n</div>\n</div>\n\n" )
@@ -91,15 +98,14 @@ header_content <- function( region, page ){
                     "</li>\n<li id='Regional-Li-area'>\n",
                     "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
                     "</li>\n<li>\n<a href='", region, "_national.html'>National arbovirus survey results</a>\n</li>\n</ul>\n\n")
-                    # "</li>\n<li>\n<a href='", region, "_about.html'>About</a>\n</li>\n</ul>\n\n")
-  
+
   # drop-down menus
   # Overview NAV
   content <- paste0( content,
                      menu_start("overview-navigation"), 
                      submenu_start(), 
-                     submenu_item(region, "context", "Survey context"),
-                     submenu_item(region, "participation", "Participating countries"), 
+                     submenu_item(region, "context", "Original survey & context"),
+                     # submenu_item(region, "participation", "Participating countries"), 
                      submenu_end(),
                      menu_end() )
   
@@ -107,7 +113,7 @@ header_content <- function( region, page ){
   content <- paste0( content,
                      menu_start("global-navigation"), 
                      submenu_start(),
-                     submenu_item(region, "participation", "Survey response"),
+                     submenu_item(region, "participation_global", "Survey response"),
                      submenu_item(region, "Q5_global", "Autochthonous arbovirus transmission status"),
                      submenu_item(region, "Q12_global", "Arbovirus disease surveillance planning and practice"), 
                      submenu_item(region, "Q17_global", "Arbovirus laboratory capacity"),
@@ -122,6 +128,7 @@ header_content <- function( region, page ){
   content <- paste0( content,
                      menu_start("regional-navigation"),
                      submenu_start(), 
+                     submenu_item(region, "participation", "Participating countries"), 
                      submenu_dropdown("regional-navigation-disease-surveillance",
                                       "regional-navigation",
                                       "Arboviral disease surveillance system"),
@@ -207,10 +214,12 @@ header_content <- function( region, page ){
   return( content )
 }
 
-# create html headers for pages (one per question per region) AND create RMD files
+# create html headers and RMD files
 
 for(j in 1:length( regions )){
   region <- regions[j]
+  
+  # make regional pages :
   for(k in 1:length(pages)){
     
     # make header file to be included in RMD file:
@@ -228,5 +237,43 @@ for(j in 1:length( regions )){
     # }
     # write_file( paste0(yaml,frontmatter,filter), rmd_path, append=FALSE )
   }
+  
+  # make national page :
+  content <- "\nAvailable reports (PDF) : \n\n<ul>\n"
+
+  # make header file to be included in RMD file:
+  header_path <- paste0(region, "_national_header.html")
+  write_file( header_content( region, "national" ), header_path, append=FALSE )
+  
+  # make RMD file:
+  rmd_path <- paste0(region, "_national.Rmd")
+  yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", "national", "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
+  frontmatter <- read_file("chunk_frontmatter.Rmd")
+  
+  if(region != "PAHO" ){
+    # need to create PAHO reports!!
+    countries <- data %>% filter(Region==region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 ) %>% pull(SI01)
+    for( k in 1:length(countries)){
+      country <- countries[k]
+      content <- paste0(content, "<li><a href=\"country_reports/", country, ".pdf\" style=\"color:#048eca;\">", country, "</a></li>\n")
+    }
+  }
+  content <- paste0( content, "</ul>\n")
+  write_file( paste0(yaml,frontmatter,content), rmd_path, append=FALSE )
+  
+  # make  global pages :
+  for( k in 1:length( global_pages )){
+    # make header file to be included in RMD file:
+    header_path <- paste0(region, "_", global_pages[k], "_global_header.html")
+    write_file( header_content( region, global_pages[k], global=TRUE ), header_path, append=FALSE )
+    
+    # UNCOMMENT to make RMD file:
+    # rmd_path <- paste0(region, "_", global_pages[k], "_global.Rmd")
+    # yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", pages[k], "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
+    # frontmatter <- read_file("chunk_frontmatter.Rmd")
+    # filter <- "\n```{r}\ndata <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
+    # write_file( paste0(yaml,frontmatter,filter), rmd_path, append=FALSE )
+  }
+  
 }
 

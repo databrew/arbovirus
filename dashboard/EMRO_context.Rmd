@@ -192,3 +192,11 @@ data <- load_data()
 ```{r}
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+<a href="survey.pdf" style="color:#048eca;">Click here for a PDF of the original survey.</a>
+
+<br> 
+
+#### Context
+
+Stay tuned!

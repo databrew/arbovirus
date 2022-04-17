@@ -215,8 +215,8 @@ responses <- cbind(Country = data$SI01, responses) %>%
   mutate( Response = recode_factor(.x = Response, 
                                    "Yes"="X")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
-  mutate( Other = other$Other ) %>%
-  filter( if_any(CHIKV:Other, ~ !is.na(.x)))
+  mutate( Other = other$Other ) # %>%
+  # filter( if_any(CHIKV:Other, ~ !is.na(.x)))
 
 responses %>%
   regulartable() %>% 
@@ -226,3 +226,4 @@ responses %>%
 
 ```
 
+<br>
