@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'EMRO Q20'
+pagetitle: 'EMRO participation global'
 output:
   html_document:
     includes:

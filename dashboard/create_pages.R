@@ -269,7 +269,7 @@ for(j in 1:length( regions )){
     
     # UNCOMMENT to make RMD file:
     # rmd_path <- paste0(region, "_", global_pages[k], "_global.Rmd")
-    # yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", pages[k], "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
+    # yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", global_pages[k], " global'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
     # frontmatter <- read_file("chunk_frontmatter.Rmd")
     # filter <- "\n```{r}\ndata <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
     # write_file( paste0(yaml,frontmatter,filter), rmd_path, append=FALSE )

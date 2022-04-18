@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'EURO Q14'
+pagetitle: 'EURO Q21 global'
 output:
   html_document:
     includes:

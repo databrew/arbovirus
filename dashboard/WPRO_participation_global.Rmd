@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'WPRO Q20'
+pagetitle: 'WPRO participation global'
 output:
   html_document:
     includes:

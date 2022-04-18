@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'SEARO Q5'
+pagetitle: 'SEARO Q5 global'
 output:
   html_document:
     includes:
@@ -227,7 +227,7 @@ other <- cbind( Region = data$Region, other) %>%
   group_by( Region ) %>%
   summarize( Other = paste0(Other, collapse = ", ")) %>%
   ungroup()
-responses <- responses %>% select(-Other)
+responses <- responses %>% select(-Other) 
 qdf <- cbind( Region = data$Region, responses) %>% 
   drop_na(Region) 
 nums <- qdf %>% 

@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'PAHO Q6'
+pagetitle: 'PAHO Q12 global'
 output:
   html_document:
     includes:
@@ -247,7 +247,7 @@ responses_12b <- responses_12b %>%
   mutate( Percentage = paste0(100*round(n/n_countries, 3), "%") ) %>%
   select( Region, Frequency, Percentage ) %>%
   group_by(Region) %>% 
-  summarize( Frequency = paste0(Frequency, collapse = "\n\n"),
+  summarize( "Surveillance frequency" = paste0(Frequency, collapse = "\n\n"),
              "Frequency %" = paste0(Percentage, collapse = "\n\n"))
 
 responses_12c <- get_responses("12c")
@@ -261,7 +261,7 @@ responses_12c <- cbind( Region = data$Region, responses_12c ) %>%
   mutate( Percentage = paste0(100*round(n/n_countries, 3), "%") ) %>%
   select( Region, Type, Percentage ) %>%
   group_by(Region) %>% 
-  summarize( Type = paste0(Type, collapse = "\n\n"),
+  summarize( "Surveillance type" = paste0(Type, collapse = "\n\n"),
              "Type %" = paste0(Percentage, collapse = "\n\n"))
 
 responses_12 <- left_join( responses_12, responses_12b, by="Region") %>%

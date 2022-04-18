@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'SEARO Q20'
+pagetitle: 'SEARO participation global'
 output:
   html_document:
     includes:

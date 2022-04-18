@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'EURO Q20'
+pagetitle: 'EURO participation global'
 output:
   html_document:
     includes:

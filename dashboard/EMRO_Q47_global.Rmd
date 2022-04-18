@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'EMRO Q19'
+pagetitle: 'EMRO Q47 global'
 output:
   html_document:
     includes:

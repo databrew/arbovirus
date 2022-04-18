@@ -1,6 +1,6 @@
 ---
 title: ' '
-pagetitle: 'PAHO Q14'
+pagetitle: 'PAHO Q21 global'
 output:
   html_document:
     includes:
