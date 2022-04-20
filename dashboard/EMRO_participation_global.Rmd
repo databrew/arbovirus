@@ -203,8 +203,18 @@ h4 {
 source('functions.R')
 dict <- load_dict()
 data <- load_data()
+region_countries <- load_regions_countries()
 ```
 
 ```{r}
 data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+```
+
+```{r}
+respondents <- data %>% 
+  group_by(Region) %>% 
+  tally( name = "n_respondents") %>%
+  right_join( region_countries %>% group_by(Region) %>% tally( name="n_countries"), by="Region") %>%
+  mutate(response_rate = paste0(100*( round(n_respondents / n_countries, 3) ), "%") )
+
 ```
