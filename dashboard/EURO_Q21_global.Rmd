@@ -208,3 +208,29 @@ data <- load_data()
 ```{r}
 data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+### Management of arboviral disease cases
+
+<br> 
+
+#### Availability of clinical guidelines and training of healthcare workers on clinical daignosis and management of _Aedes_-borne arboviral diseases
+
+```{r}
+responses <- get_responses("21")
+responses <- cbind( Region = data$Region, responses) %>% 
+  drop_na(Region) 
+nums <- responses %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+responses %>% 
+  group_by(Region) %>%
+  filter(Response == "Yes") %>% 
+  tally() %>%
+  left_join( nums, by="Region") %>%
+  mutate( "Percentage of countries with clinical guidelines available" = paste0( 100*round(n/n_countries,3), "%")) %>%
+  select(-n, -n_countries) %>%
+  regulartable %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit() 
+```
