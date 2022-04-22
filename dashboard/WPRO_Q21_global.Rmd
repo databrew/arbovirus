@@ -213,7 +213,7 @@ data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 
 <br> 
 
-#### Availability of clinical guidelines and training of healthcare workers on clinical daignosis and management of _Aedes_-borne arboviral diseases
+#### Availability of clinical guidelines and training of healthcare workers on clinical diagnosis and management of _Aedes_-borne arboviral diseases
 
 ```{r}
 responses <- get_responses("21")
