@@ -214,7 +214,7 @@ data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 
 <br>
 
-#### Responding countries and response rate by WHO region 
+#### Responding countries and response rate by WHO regional office
 
 ```{r}
 data %>% 
@@ -223,14 +223,17 @@ data %>%
              n_respondents = n() ) %>%
   # tally( name = "n_respondents") %>%
   right_join( region_countries %>% group_by(Region) %>% tally( name="n_countries"), by="Region") %>%
-  mutate( response_rate = paste0(100*( round(n_respondents / n_countries, 3) ), "%") ) %>%
+  mutate( response_rate = paste0(round(100*n_respondents / n_countries), "%") ) %>%
   select( Region, n_respondents, n_countries, response_rate, respondents ) %>%
-  rename("Countries that responded" = respondents,
+  rename("Regional office" = Region, 
+         "Countries that responded" = respondents,
          "Response rate" = response_rate,
          "Number of countries invited" = n_countries,
          "Number of countries that responded" = n_respondents) %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:4, align="center", part="all" ) %>%
   autofit() 
 ```
+

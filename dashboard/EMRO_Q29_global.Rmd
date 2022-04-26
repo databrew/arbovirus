@@ -208,3 +208,65 @@ data <- load_data()
 ```{r}
 data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
+
+### Vector surveillance and control
+
+<br> 
+
+#### Countries conducting mosquito surveillance, by stage and species identification (ref Q29, 30, 31)
+
+```{r}
+q29 <- get_responses("29")
+q29 <- cbind( Region = data$Region, q29 )
+nums <- q29 %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+q29 <- q29 %>% 
+  filter( Response == "Yes" ) %>% 
+  group_by( Region)  %>%
+  tally() %>%
+  right_join( nums, by="Region") %>%
+  replace_na( list(n = 0)) %>%
+  mutate( Percentage = paste0( "(", round( 100*n/n_countries), "%)" )) %>%
+  select(Region, n, Percentage) %>%
+  unite( "Adult surveillance", n:Percentage, sep=" " )
+
+q30 <- get_responses("30")
+q30 <- cbind( Region = data$Region, q30 )
+nums <- q30 %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+q30 <- q30 %>% 
+  filter( Response == "Yes" ) %>% 
+  group_by( Region)  %>%
+  tally() %>%
+  right_join( nums, by="Region") %>%
+  replace_na( list(n = 0)) %>%
+  mutate( Percentage = paste0( "(", round( 100*n/n_countries), "%)" )) %>%
+  select(Region, n, Percentage) %>%
+  unite( "Larval/pupal surveillance", n:Percentage, sep=" " )
+
+q31 <- get_responses("31")
+q31 <- cbind( Region = data$Region, q31 )
+nums <- q31 %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+q31 <- q31 %>% 
+  filter( Response == "Yes" ) %>% 
+  group_by( Region)  %>%
+  tally() %>%
+  right_join( nums, by="Region") %>%
+  replace_na( list(n = 0)) %>%
+  mutate( Percentage = paste0( "(", round( 100*n/n_countries), "%)" )) %>%
+  select(Region, n, Percentage) %>%
+  unite( "Trapped mosquitoes identified to species", n:Percentage, sep=" " )
+
+left_join( q29, q30, by="Region") %>%
+  left_join( q31, by="Region") %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:4, align="center", part="all" ) %>%
+  autofit()
+
+```

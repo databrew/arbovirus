@@ -227,8 +227,10 @@ responses %>%
   filter(Response == "Yes") %>% 
   tally() %>%
   left_join( nums, by="Region") %>%
-  mutate( "Percentage of countries with clinical guidelines available" = paste0( 100*round(n/n_countries,3), "%")) %>%
-  select(-n, -n_countries) %>%
+  # mutate( "Countries with clinical guidelines available" = paste0( round(100*n/n_countries), "%")) %>%
+  mutate( Percentage = paste0( "(", round(100*n/n_countries), "%)")) %>%
+  select(-n_countries) %>%
+  unite( "Countries with clinical guidelines available", n:Percentage, sep=" ") %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
