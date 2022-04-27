@@ -283,32 +283,19 @@ nums <- responses %>%
   group_by( Region ) %>%
   tally(name = "n_countries")
 other <- responses %>% select(Other)
-responses <- responses %>% 
-  select(-Other) %>%
-  rename("Adulticiding"="Adulticiding (insecticide application against adult mosquitoes)",
-         "Regulators" = "Insect growth regulators (eg , pyriproxyfen)",
-         "Wolbachia" = "Wolbachia method",
-         "Sterile" = "Sterile insect release")
 
 responses %>% 
+  select(-Other) %>% 
+  mutate( across(!Region, ~ ifelse(.x == "Yes", 1, 0))) %>%
   group_by(Region) %>%
-  summarize( Adulticiding = length( which( Adulticiding == "Yes")),
-             Larviciding = length( which( Larviciding == "Yes")),
-             Regulators = length( which( Regulators == "Yes")),
-             Wolbachia = length( which( Wolbachia == "Yes")),
-             Sterile = length( which( Sterile == "Yes")),
-             None = length( which( None == "Yes")) ) %>%
+  summarize( across(everything(), ~ sum(.x, na.rm=TRUE))) %>%
+  ungroup() %>%
   left_join( nums, by="Region") %>%
-  mutate( Adulticiding = paste0( Adulticiding, " (", round(100*Adulticiding/n_countries), "%)"),
-          Larviciding = paste0( Larviciding, " (", round(100*Larviciding/n_countries), "%)"),
-          Regulators = paste0( Regulators, " (", round(100*Regulators/n_countries), "%)"),
-          Wolbachia = paste0( Wolbachia, " (", round(100*Wolbachia/n_countries), "%)"),
-          Sterile = paste0( Sterile, " (", round(100*Sterile/n_countries), "%)"),
-          None = paste0( None, " (", round(100*None/n_countries), "%)") ) %>%
+  group_by(Region) %>%
+  mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
   select(-n_countries) %>%
-  rename("Insect growth regulators" = "Regulators",
-         "Wolbachia method" = "Wolbachia",
-         "Sterile insect release" = "Sterile") %>% 
+  rename("Adulticiding"="Adulticiding (insecticide application against adult mosquitoes)",
+         "Insect growth regulators" = "Insect growth regulators (eg , pyriproxyfen)") %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
@@ -316,3 +303,30 @@ responses %>%
 
 ```
 
+<br>
+
+#### Vector indices measured and calculation of infection rates (ref Q37b)
+
+```{r}
+responses <- get_responses("37b")
+responses <- cbind( Region = data$Region, responses) %>% 
+  drop_na(Region) 
+nums <- responses %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+other <- responses %>% select(Other)
+responses %>% 
+  select(-Other) %>% 
+  mutate( across(!Region, ~ ifelse(.x == "Yes", 1, 0))) %>%
+  group_by(Region) %>%
+  summarize( across(everything(), ~ sum(.x, na.rm=TRUE))) %>%
+  ungroup() %>%
+  left_join( nums, by="Region") %>%
+  group_by(Region) %>%
+  mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
+  select(-n_countries) %>%
+  regulartable %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit() 
+```
