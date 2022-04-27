@@ -293,12 +293,14 @@ responses <- responses %>%
 responses %>% 
   group_by(Region) %>%
   summarize( Adulticiding = length( which( Adulticiding == "Yes")),
+             Larviciding = length( which( Larviciding == "Yes")),
              Regulators = length( which( Regulators == "Yes")),
              Wolbachia = length( which( Wolbachia == "Yes")),
              Sterile = length( which( Sterile == "Yes")),
              None = length( which( None == "Yes")) ) %>%
   left_join( nums, by="Region") %>%
   mutate( Adulticiding = paste0( Adulticiding, " (", round(100*Adulticiding/n_countries), "%)"),
+          Larviciding = paste0( Larviciding, " (", round(100*Larviciding/n_countries), "%)"),
           Regulators = paste0( Regulators, " (", round(100*Regulators/n_countries), "%)"),
           Wolbachia = paste0( Wolbachia, " (", round(100*Wolbachia/n_countries), "%)"),
           Sterile = paste0( Sterile, " (", round(100*Sterile/n_countries), "%)"),
@@ -313,3 +315,4 @@ responses %>%
   autofit() 
 
 ```
+
