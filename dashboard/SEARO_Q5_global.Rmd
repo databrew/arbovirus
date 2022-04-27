@@ -225,7 +225,7 @@ other <- cbind( Region = data$Region, other) %>%
   drop_na(Region) %>%
   drop_na( Other ) %>%
   group_by( Region ) %>%
-  summarize( Other = paste0(Other, collapse = ", ")) %>%
+  summarize( Other = paste0( unique( unlist( strsplit( paste0(Other, collapse = ", "), ", ", fixed=TRUE))), collapse = ", ")) %>%
   ungroup()
 responses <- responses %>% select(-Other) 
 qdf <- cbind( Region = data$Region, responses) %>% 
