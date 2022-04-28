@@ -193,7 +193,7 @@ data <- load_data()
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-#### Outbreak committee presence, staff training, contingency plan and emergency funding (ref Q47, 48, 52, 53)
+#### Outbreak committee presence, staff training, contingency hospital service plan and emergency funding (ref Q47, 48, 52, 53)
 
 ```{r}
 q47 <- get_responses("47") %>%
