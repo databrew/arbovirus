@@ -181,6 +181,10 @@ $(document).on('click', function (e){
 h4 {
   text-align: center;
 }
+
+ul {
+  margin-left: 30px; 
+}
 ```
 
 ```{r, echo = FALSE}
@@ -195,8 +199,36 @@ data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 
 
 <a href="survey.pdf" style="color:#048eca;">Click here for a PDF of the original survey.</a>
 
-<br>
+<br> 
 
-#### Context
+#### Survey context
 
-Stay tuned!
+In 2021, the World Health Organization (WHO) conducted a baseline survey to get an overview of 
+Member State capacities for arboviral diseases surveillance (epidemiological and entomological) and 
+control. Survey responses were compiled and analyzed to identify common gaps and to serve as a baseline 
+survey for guiding planning activities for arboviral diseases surveillance and control at country, regional, 
+and global levels.
+
+The survey covered:
+
+<ul>
+<li>Surveillance,</li>
+<li>Case Management,</li>
+<li>Vector Control,</li>
+<li>Community Sensitization,</li>
+<li>Outbreak Preparedness,</li>
+<li>Arboviral disease surveillance data, and</li>
+<li>Staffing</li>
+</ul>
+
+The survey was administered in the African Region by the Regional Office together with WHO Special Programme 
+for Research and Training in Tropical Diseases (TDR) and WHO Neglected Tropical Diseases department, and in 
+the remaining regions by the respective Regional Offices and the WHO Health Emergencies Programme. 
+
+ 
+At the time of the survey the COVID-19 pandemic was exacting a particularly heavy toll on countries within 
+the Region of the Americas.  It was apparent that the full survey could not feasibly be circulated in the 
+region given the deficit of available time for completion and because many personnel ordinarily engaged 
+in arbovirus-related work were redirected to engage in pandemic response activities. WHO headquarters and 
+AMRO/PAHO regional focal points agreed on an abbreviated dataset that could be populated by the Regional Office 
+for the purpose of completion of the global survey with respect to key variables.
