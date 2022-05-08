@@ -267,6 +267,8 @@ left_join( q29, q30, by="Region") %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:4, align="center", part="all" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 
 ```
@@ -295,10 +297,14 @@ responses %>%
   mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
   select(-n_countries) %>%
   rename("Adulticiding"="Adulticiding (insecticide application against adult mosquitoes)",
-         "Insect growth regulators" = "Insect growth regulators (eg , pyriproxyfen)") %>%
+         "Insect growth regulators" = "Insect growth regulators (eg , pyriproxyfen)",
+         "<em>Wolbachia</em> method" = "Wolbachia method") %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:7, align="center", part="all" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit() 
 
 ```
@@ -328,5 +334,8 @@ responses %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:7, align="center", part="all" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit() 
 ```

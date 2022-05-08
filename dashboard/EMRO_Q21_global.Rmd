@@ -213,7 +213,7 @@ data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 
 <br> 
 
-#### Availability of clinical guidelines and training of healthcare workers on clinical diagnosis and management of _Aedes_-borne arboviral diseases
+#### Availability of clinical guidelines and training of healthcare workers on clinical diagnosis and management of _Aedes_-borne arboviral diseases (ref Q21)
 
 ```{r}
 responses <- get_responses("21")
@@ -234,5 +234,7 @@ responses %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit() 
 ```

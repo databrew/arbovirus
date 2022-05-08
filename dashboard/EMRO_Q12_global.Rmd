@@ -278,6 +278,8 @@ responses_12 %>%
   # merge_v( j=1:2 ) %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 
 ```
