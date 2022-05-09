@@ -193,12 +193,6 @@ $(document).on('click', function (e){
 
 ```
 
-```{css, echo=FALSE}
-h4 {
-  text-align: center;
-}
-```
-
 ```{r, echo = FALSE}
 source('functions.R')
 dict <- load_dict()
@@ -210,8 +204,6 @@ data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
 ### Vector surveillance and control
-
-<br> 
 
 #### Countries conducting mosquito surveillance, by stage and species identification (ref Q29, 30, 31)
 
@@ -297,12 +289,12 @@ responses %>%
   mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
   select(-n_countries) %>%
   rename("Adulticiding"="Adulticiding (insecticide application against adult mosquitoes)",
-         "Insect growth regulators" = "Insect growth regulators (eg , pyriproxyfen)",
-         "<em>Wolbachia</em> method" = "Wolbachia method") %>%
+         "Insect growth regulators" = "Insect growth regulators (eg , pyriproxyfen)") %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:7, align="center", part="all" ) %>%
+  compose( j=5, part="header", value = as_paragraph(as_i("Wolbachia"), " method")) %>%
   padding( padding.top = 10, part="all") %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit() 

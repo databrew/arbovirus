@@ -193,12 +193,6 @@ $(document).on('click', function (e){
 
 ```
 
-```{css, echo=FALSE}
-h4 {
-  text-align: center;
-}
-```
-
 ```{r, echo = FALSE}
 source('functions.R')
 dict <- load_dict()
@@ -211,8 +205,6 @@ data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
 ### Survey response
-
-<br>
 
 #### Responding countries and response rate by WHO regional office
 

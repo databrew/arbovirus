@@ -193,12 +193,6 @@ $(document).on('click', function (e){
 
 ```
 
-```{css, echo=FALSE}
-h4 {
-  text-align: center;
-}
-```
-
 ```{r, echo = FALSE}
 source('functions.R')
 dict <- load_dict()
@@ -263,5 +257,3 @@ qdf %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit() 
 ```
-
-<br>
