@@ -18,7 +18,6 @@ opts_chunk$set(comment = NA,
                message = FALSE, 
                error = TRUE, 
                cache = FALSE)
-# ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
 ```{js}
@@ -69,11 +68,11 @@ function scrollFunction() {
 }
 
 $(document).on('click', function (e){
-    /* Global data  */
-    var global_menu_opened = $('#overview-navigation').hasClass('in');
+    /* Overview of data  */
+    var overview_menu_opened = $('#overview-navigation').hasClass('in');
     if(!$(e.target).closest('#overview-navigation').length &&
         !$(e.target).is('#overview-navigation') &&
-        global_menu_opened === true){
+        overview_menu_opened === true){
             $('#overview-navigation').collapse('toggle');
             $( "#Overview-Li-area" ).removeClass("activeMenuState");
     }
@@ -83,6 +82,22 @@ $(document).on('click', function (e){
     }
     if ($('#overview-navigation').attr('aria-expanded') === "true") {
       $( "#Overview-Li-area" ).addClass("activeMenuState");
+    }
+    
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
     }
 
      /* Regional data  */
@@ -177,16 +192,11 @@ $(document).on('click', function (e){
 
 ```
 
-```{css, echo=FALSE}
-h4 {
-  text-align: center;
-}
-```
-
 ```{r, echo = FALSE}
 source('functions.R')
 dict <- load_dict()
 data <- load_data()
+region_countries <- load_regions_countries()
 ```
 
 ```{r}
@@ -196,22 +206,17 @@ data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 
 #### Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)
 
 ```{r}
+successes_barriers <- read_csv("../data/Country_level_summarized_responses.csv")
+successes_barriers <- successes_barriers %>%
+  filter(Region == params$region ) %>%
+  droplevels() %>%
+  select( Country, Successes = Q46_successes, Barriers = Q46_barriers) 
+
 responses <- get_responses("46")
 cbind(Country=data$SI01, responses) %>%
+  select( -Response ) %>% 
+  left_join( successes_barriers, by="Country") %>%
   regulartable() %>%
-  # hline( part="all") %>% 
-  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
-  color( color="#FFFFFF", part="header" ) %>% 
-  autofit()
-```
-
-#### Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)
-
-```{r}
-responses <- get_responses("46")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  # hline( part="all") %>% autofit()
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
   autofit()

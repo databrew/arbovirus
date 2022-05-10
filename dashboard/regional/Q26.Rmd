@@ -1,0 +1,43 @@
+
+### Disease programme, agency, or service in charge of arbovirus vector surveillance
+
+#### Agency in charge of arbovirus vector surveillance (ref Q26)
+
+```{r}
+responses <- get_responses("26")
+colnames(responses) <- c("Response","Programme")
+responses <- responses %>% select( "Programme")
+cbind(Country=data$SI01, responses) %>%
+  mutate( Programme = factor( replace_na( as.character(Programme), "None"))) %>%
+  rename( "Programme/Agency" = Programme) %>% 
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
+```
+
+<br> 
+
+### Reporting of entomologic surveillance data
+
+<br>
+
+#### Institution/department in charge of reporting entomologic surveillance data to the national ministry of health/health department (ref Q27)
+
+```{r}
+responses <- get_responses("27")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+cbind(Country=data$SI01, responses) %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
+```

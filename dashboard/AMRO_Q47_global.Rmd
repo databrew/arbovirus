@@ -1,0 +1,262 @@
+---
+title: ' '
+pagetitle: 'AMRO Q47 global'
+output:
+  html_document:
+    includes:
+      in_header: AMRO_Q47_global_header.html
+params:
+  region: AMRO
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE)
+```
+
+```{js}
+// Region dropdown
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+// end region dropdown
+
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Overview of data  */
+    var overview_menu_opened = $('#overview-navigation').hasClass('in');
+    if(!$(e.target).closest('#overview-navigation').length &&
+        !$(e.target).is('#overview-navigation') &&
+        overview_menu_opened === true){
+            $('#overview-navigation').collapse('toggle');
+            $( "#Overview-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#overview-navigation').attr('aria-expanded') === "false") {
+      $( "#Overview-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#overview-navigation').attr('aria-expanded') === "true") {
+      $( "#Overview-Li-area" ).addClass("activeMenuState");
+    }
+    
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    /* #regional-navigation-disease-surveillance  */
+    var regional_menu_opened = $('#regional-navigation-disease-surveillance').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-disease-surveillance').length &&
+        !$(e.target).is('#regional-navigation-disease-surveillance') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-disease-surveillance').collapse('toggle');
+    }
+    
+    /* #regional-navigation-lab-capacity  */
+    var regional_menu_opened = $('#regional-navigation-lab-capacity').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-lab-capacity').length &&
+        !$(e.target).is('#regional-navigation-lab-capacity') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-lab-capacity').collapse('toggle');
+    }
+    
+    /* #regional-navigation-management  */
+    var regional_menu_opened = $('#regional-navigation-management').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-management').length &&
+        !$(e.target).is('#regional-navigation-management') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-management').collapse('toggle');
+    }
+    
+    /* #regional-navigation-vector-surveillance  */
+    var regional_menu_opened = $('#regional-navigation-vector-surveillance').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-vector-surveillance').length &&
+        !$(e.target).is('#regional-navigation-vector-surveillance') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-vector-surveillance').collapse('toggle');
+    }
+    
+    /* #regional-navigation-community  */
+    var regional_menu_opened = $('#regional-navigation-community').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-community').length &&
+        !$(e.target).is('#regional-navigation-community') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-community').collapse('toggle');
+    }
+    
+    /* #regional-navigation-preparedness  */
+    var regional_menu_opened = $('#regional-navigation-preparedness').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-preparedness').length &&
+        !$(e.target).is('#regional-navigation-preparedness') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-preparedness').collapse('toggle');
+    }
+    
+    /* #regional-navigation-surveillance-staffing  */
+    var regional_menu_opened = $('#regional-navigation-surveillance-staffing').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-surveillance-staffing').length &&
+        !$(e.target).is('#regional-navigation-surveillance-staffing') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-surveillance-staffing').collapse('toggle');
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+});
+
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+data <- load_data()
+region_countries <- load_regions_countries()
+```
+
+```{r}
+data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+```
+
+#### Outbreak committee presence, staff training, contingency hospital service plan and emergency funding (ref Q47, 48, 50, 52, 53)
+
+```{r}
+q47 <- get_responses("47") 
+q47 <- cbind( Region = data$Region, q47 )
+
+nums <- q47 %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+
+q47 <- q47 %>%
+  filter(Response == "Yes") %>% 
+  group_by(Region) %>%
+  tally( name="Outbreak committee in place")
+
+q48 <- get_responses("48") 
+q48 <- cbind( Region = data$Region, q48 ) %>%
+  filter( Response == "Yes" ) %>%
+  group_by(Region) %>%
+  tally( name = "Staff/committee training for outbreaks" )
+
+q52 <- get_responses("52") %>%
+  mutate( "Emergency fund" = ifelse( `National level`=="Yes" | `State/local level` == "Yes", 1, 0 ) ) %>%
+  select( `Emergency fund` )
+q52 <- cbind( Region = data$Region, q52 ) %>%
+  group_by(Region) %>%
+  summarize("Emergency fund" = sum(`Emergency fund`, na.rm=TRUE))
+
+q53 <- get_responses("53") 
+q53 <- cbind( Region = data$Region, q53 ) %>%
+  filter( Response == "Yes" ) %>%
+  group_by(Region) %>%
+  tally( name = "Contingency plan for healthcare services in emergencies" )
+
+q50 <- get_responses("50")
+colnames( q50 ) <- c("Response", "Institutions")
+q50$Response[ grep("Yes", q50$Response )] <- "Yes"
+q50 <- cbind( Region=data$Region, q50 ) %>%
+  filter(Response=="Yes" ) %>%
+  group_by(Region) %>%
+  tally( name = "Collaborating institutions (regional network)")
+
+list( nums, q47, q48, q53, q52, q50 ) %>%
+  reduce( left_join, by="Region") %>%
+  group_by( Region ) %>%
+  mutate( across( everything(), replace_na, 0)) %>% 
+  mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
+  select( -n_countries ) %>%
+  rename("Regional office" = Region ) %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:6, align="center", part="all") %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
+  autofit()
+```

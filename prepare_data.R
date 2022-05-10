@@ -11,7 +11,7 @@ library(readr)
 library(readxl)
 
 #############################################
-# WHO profided shapefiles
+# WHO provided shapefiles
 #############################################
 # Read in WHO shapefiles
 if('who_shp.RData' %in% dir("data")){
@@ -627,7 +627,7 @@ if('combined_data.RData' %in% dir("data")){
   paho <- paho[,!names(paho) %in% original_paho_names]
   
   # Add region
-  paho$Region <- 'PAHO'
+  paho$Region <- 'AMRO'
   
   # Combine 
   data <- bind_rows(

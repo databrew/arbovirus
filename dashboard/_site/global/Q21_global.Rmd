@@ -1,0 +1,29 @@
+
+### Management of arboviral disease cases
+
+#### Availability of clinical guidelines and training of healthcare workers on clinical diagnosis and management of _Aedes_-borne arboviral diseases (ref Q21)
+
+```{r}
+responses <- get_responses("21")
+responses <- cbind( Region = data$Region, responses) %>% 
+  drop_na(Region) 
+nums <- responses %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+responses %>% 
+  group_by(Region) %>%
+  filter(Response == "Yes") %>% 
+  tally() %>%
+  left_join( nums, by="Region") %>%
+  # mutate( "Countries with clinical guidelines available" = paste0( round(100*n/n_countries), "%")) %>%
+  mutate( Percentage = paste0( "(", round(100*n/n_countries), "%)")) %>%
+  select(-n_countries) %>%
+  unite( "Countries with clinical guidelines available", n:Percentage, sep=" ") %>%
+  rename("Regional office" = Region ) %>%
+  regulartable %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
+  autofit() 
+```

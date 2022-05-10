@@ -8,7 +8,6 @@ opts_chunk$set(comment = NA,
                message = FALSE, 
                error = TRUE, 
                cache = FALSE)
-# ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
 ```{js}
@@ -183,14 +182,9 @@ $(document).on('click', function (e){
 
 ```
 
-```{css, echo=FALSE}
-h4 {
-  text-align: center;
-}
-```
-
 ```{r, echo = FALSE}
 source('functions.R')
 dict <- load_dict()
 data <- load_data()
+region_countries <- load_regions_countries()
 ```

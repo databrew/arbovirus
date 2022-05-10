@@ -1,0 +1,6 @@
+name: "WHO-ARBO"
+output:
+  html_document:
+    includes:
+      # after_body: footer.html
+    css: styles.css

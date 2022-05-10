@@ -1,0 +1,36 @@
+
+```{r, echo = FALSE}
+region_countries <- load_regions_countries()
+n_unique_countries <- length( unique( data$SI01 ))
+region_countries <- region_countries %>%
+  filter(Region == params$region)
+n_region_countries <- length( region_countries$Country)
+```
+
+`r str_to_title(as.english(n_unique_countries))` of `r n_region_countries` `r params$region` countries (`r round(100*( n_unique_countries / n_region_countries))`%) responded:  
+
+`r pander( data$SI01 )`. 
+
+```{r}
+q5_start <- min(which(dict$`Question number` == "5"))
+incomplete_surveys <- c()
+for (i in 1:nrow(data)) {
+  if (all(is.na(data[i, q5_start:nrow(dict)]))) {
+    incomplete_surveys <- c(incomplete_surveys, i)
+  }
+}
+incompletes <- FALSE
+if( length( incomplete_surveys) > 0){
+  incompletes <- TRUE
+  excluded_countries <- paste( data$SI01[ incomplete_surveys ], "only provided initial demographic information; their responses are henceforth excluded.\n Non-responding countries are of concern in terms of arbovirus emergence and endemic transmission.")
+} 
+```
+
+```{r eval=incompletes, results="asis"}
+pander(excluded_countries)
+```
+
+```{r}
+map_path <- paste0("img/", params$region, ".png")
+knitr::include_graphics( map_path )
+```

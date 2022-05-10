@@ -1,0 +1,33 @@
+
+### Documented arbovirus circulation
+
+#### Arboviruses that have circulated autochthonously in the country at any time since 2000 (ref Q5)
+
+```{r}
+responses <- get_responses("5") 
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- cbind(Country = data$SI01, responses) %>% 
+  pivot_longer(!Country, names_to="Arbovirus", values_to="Response") %>% 
+  mutate( Arbovirus = recode_factor(.x = Arbovirus,
+                                    "Chikungunya"="CHIKV",
+                                    "Dengue"="DENV",
+                                    "Yellow fever"="YFV",
+                                    "Zika"="ZIKV")) %>% 
+  mutate( Response = na_if(Response, "Not selected")) %>%
+  mutate( Response = recode_factor(.x = Response, 
+                                   "Yes"="X")) %>%
+  pivot_wider( names_from=Arbovirus, values_from=Response) %>%
+  mutate( Other = other$Other ) # %>%
+  # filter( if_any(CHIKV:Other, ~ !is.na(.x)))
+
+responses %>%
+  regulartable() %>% 
+  align( j = 2:5, align="center") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit() 
+
+```
+
+<br>

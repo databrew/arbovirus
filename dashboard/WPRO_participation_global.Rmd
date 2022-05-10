@@ -18,7 +18,6 @@ opts_chunk$set(comment = NA,
                message = FALSE, 
                error = TRUE, 
                cache = FALSE)
-# ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
 ```{js}
@@ -230,4 +229,3 @@ data %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit() 
 ```
-

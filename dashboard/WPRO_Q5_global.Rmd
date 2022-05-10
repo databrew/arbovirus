@@ -18,7 +18,6 @@ opts_chunk$set(comment = NA,
                message = FALSE, 
                error = TRUE, 
                cache = FALSE)
-# ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
 ```{js}
@@ -197,6 +196,7 @@ $(document).on('click', function (e){
 source('functions.R')
 dict <- load_dict()
 data <- load_data()
+region_countries <- load_regions_countries()
 ```
 
 ```{r}
@@ -255,4 +255,3 @@ qdf %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit() 
 ```
-

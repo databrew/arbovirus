@@ -1,0 +1,21 @@
+
+### Arboviral disease surveillance staff perceptions 
+
+#### Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance (ref Q14)
+
+```{r}
+successes_barriers <- read_csv("../data/Country_level_summarized_responses.csv")
+successes_barriers <- successes_barriers %>%
+  filter(Region == params$region ) %>%
+  droplevels() %>%
+  select( Country, Successes = Q14_successes, Barriers = Q14_barriers) 
+
+responses <- get_responses("14") 
+cbind(Country = data$SI01, responses) %>% 
+  select( -Response ) %>% 
+  left_join( successes_barriers, by="Country") %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
+```
