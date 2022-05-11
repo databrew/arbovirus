@@ -203,4 +203,4 @@ region_countries <- load_regions_countries()
 data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-### Stay tuned!
+### &nbsp;
