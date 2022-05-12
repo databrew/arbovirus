@@ -7,7 +7,9 @@ ul {
 
 ```
 
-<a href="survey.pdf" style="color:#048eca;">Click here for a PDF of the original survey.</a>
+#### <a href="survey.pdf" style="color:#048eca;">Click here for a PDF of the original survey.</a>
+
+<br>
 
 #### Survey context
 
