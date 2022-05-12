@@ -8,6 +8,7 @@ library(flextable)
 library(lubridate)
 library(RColorBrewer)
 library(janitor)
+library(officer)
 library(english)
 
 make_colors <- function(n, seed = 123){
