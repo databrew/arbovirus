@@ -1,12 +1,12 @@
 ---
 title: ' '
-pagetitle: 'SEARO context'
+pagetitle: 'EURO description'
 output:
   html_document:
     includes:
-      in_header: SEARO_context_header.html
+      in_header: EURO_description_header.html
 params:
-  region: SEARO
+  region: EURO
 ---
 
 ```{r, include=FALSE, echo = FALSE}
@@ -211,7 +211,7 @@ ul {
 
 <br>
 
-#### Survey context
+#### Survey description
 
 In 2021, the World Health Organization (WHO) conducted a baseline survey to get an overview of 
 Member State capacities for arboviral diseases surveillance (epidemiological and entomological) and 

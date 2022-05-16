@@ -11,7 +11,7 @@ ul {
 
 <br>
 
-#### Survey context
+#### Survey description
 
 In 2021, the World Health Organization (WHO) conducted a baseline survey to get an overview of 
 Member State capacities for arboviral diseases surveillance (epidemiological and entomological) and 

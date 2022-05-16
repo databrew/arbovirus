@@ -17,7 +17,7 @@ pages <- c("5","6","11","14",              # Section 2
            )
 pages <- paste0("Q",pages)
 pages <- c( pages, 
-            # "context", 
+            # "description", 
             "participation")
 
 global_pages <- paste0( "Q", c("5", "12", "17", "21", "29","43","47") )
@@ -71,7 +71,7 @@ header_content <- function( region, page, global=FALSE ){
   content <- paste0(content, 
                     "<h1 class='logo'><img id='WHO_logo' src='img/WHO_Logo.png'></h1>\n",
                     "<div class='dropdown navigation'>\n",
-                    "<button onclick='myFunction()' class='dropbtn'>Selected region:\n",
+                    "<button onclick='myFunction()' class='dropbtn'>Selected regional office: &nbsp; \n",
                     "<span class='selected_region'>", region, "</span>\n",
                     "<span class='selected_region_arrow_down'>&#8681;</span>\n",
                     "</button>\n",
@@ -104,7 +104,7 @@ header_content <- function( region, page, global=FALSE ){
   content <- paste0( content,
                      menu_start("overview-navigation"), 
                      submenu_start(), 
-                     submenu_item(region, "context", "Original survey & context"),
+                     submenu_item(region, "description", "Original survey & description"),
                      # submenu_item(region, "participation", "Participating countries"), 
                      submenu_end(),
                      menu_end() )
@@ -235,17 +235,17 @@ for(j in 1:length( regions )){
     write_file( paste0(yaml,frontmatter,filter,chunks), rmd_path, append=FALSE )
   }
   
-  # make overview/context pages -----
+  # make overview/description pages -----
   
   # make header file to be included in RMD file:
-  header_path <- paste0(region, "_context_header.html")
-  write_file( header_content( region, "context" ), header_path, append=FALSE )
+  header_path <- paste0(region, "_description_header.html")
+  write_file( header_content( region, "description" ), header_path, append=FALSE )
   
   # make RMD file:
-  rmd_path <- paste0(region, "_context.Rmd")
-  yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", "context", "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
+  rmd_path <- paste0(region, "_description.Rmd")
+  yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", "description", "'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
   frontmatter <- read_file("chunk_frontmatter.Rmd")
-  content <- read_file("overview/context.Rmd")
+  content <- read_file("overview/description.Rmd")
   write_file( paste0(yaml,frontmatter,content), rmd_path, append=FALSE )
   
   # make national pages -----

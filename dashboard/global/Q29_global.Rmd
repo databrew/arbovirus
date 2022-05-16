@@ -56,6 +56,7 @@ left_join( q29, q30, by="Region") %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:4, align="center", part="all" ) %>%
+  valign( valign = "top", part="header" ) %>%
   padding( padding.top = 10, part="all") %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit()
@@ -93,6 +94,7 @@ responses %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:7, align="center", part="all" ) %>%
   compose( j=5, part="header", value = as_paragraph(as_i("Wolbachia"), " method")) %>%
+  valign( valign = "top", part="header" ) %>%
   padding( padding.top = 10, part="all") %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit() 
@@ -126,6 +128,7 @@ responses %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:7, align="center", part="all" ) %>%
+  valign( valign = "top", part="header" ) %>%
   padding( padding.top = 10, part="all") %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit() 
