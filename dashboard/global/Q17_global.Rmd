@@ -3,14 +3,24 @@
 
 #### Testing capacity by virus and assay type (ref Q17)
 
-<div style="float: left; width: 20%; vertical-align: middle;">
-Assay types: &emsp; &emsp;
-</div>
-<div style="float: right; width: 80%;">
-A : Antigen testing &emsp; &emsp; M : IgM antibody testing &emsp; &emsp; G : IgG antibody testing 
-<p>
-N : Neutralizing antibody testing &emsp; &emsp; P : RT-PCR or other nucleic acid amplification test
-</div>
+```{r}
+df <- data.frame( "Assay types" = "Assay types", 
+                  A = c("A","Antigen testing"), 
+                  M = c("M","IgM antibody testing"), 
+                  G = c("G","IgG antibody testing"), 
+                  N = c("N","Neutralizing antibody testing"), 
+                  P = c("P","RT-PCR or other nucleic acid amplification test"))
+
+regulartable(df) %>% 
+  merge_v(j=1, part="body") %>% 
+  theme_zebra(odd_body = "#048ECA") %>% 
+  delete_part(part = "header") %>%
+  color( i=1, color="#FFFFFF", part="body" ) %>% 
+  autofit()
+
+```
+
+<br>
 
 ```{r}
 

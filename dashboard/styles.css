@@ -73,12 +73,15 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .main-container {
-  padding-top: 60px;
+    padding-top: 60px;
+    min-height: 1000px !important;
 }
 
+/* 
 .main-container {
     margin-bottom: value000px !important;
 }
+*/
 
 /* White navbar */
 * {padding: 0; margin: 0;}

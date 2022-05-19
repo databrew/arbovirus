@@ -1,12 +1,4 @@
 
-```{css, echo=FALSE}
-
-ul {
-  margin-left: 40px; 
-}
-
-```
-
 #### <a href="survey.pdf" style="color:#048eca;">Click here for a PDF of the original survey.</a>
 
 <br>
@@ -21,7 +13,7 @@ and global levels.
 
 The survey covered:
 
-<ul>
+<ul style="margin-left: 40px;">
 <li>Surveillance,</li>
 <li>Case Management,</li>
 <li>Vector Control,</li>

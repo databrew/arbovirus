@@ -27,9 +27,10 @@ cbind(Country=data$SI01, q41, q41b, q41c) %>%
 #### Countries conducting sentinel surveillance in animals -- the viruses tested for and species under surveillance (ref Q42, 42b)
 
 ```{r}
-q42 <- get_responses("42")
+q42 <- get_responses("42") 
 
-responses <- get_responses("42b")
+responses <- get_responses("42b") %>%
+  mutate( across(everything(), as.character, ""))
 idx <- which( grepl("Virus name",colnames(responses)))
 
 arboviruses <- responses[,idx] %>%
