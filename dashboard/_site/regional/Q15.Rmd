@@ -22,20 +22,20 @@ responses %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
 
-<center>
-
-* A = all suspect cases ; S = subset of suspect cases ; N = none
-
-</center>
+<ul style="margin-left: 40px;">
+<li> 
+<strong>Cases tested</strong>: A = all suspect cases ; S = subset of suspect cases ; N = none
+</li>
+</ul>
 
 <br>
 
 ### Viruses for which the national laboratory confirmed cases
-
-<br>
 
 #### Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)
 
@@ -54,6 +54,7 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
-

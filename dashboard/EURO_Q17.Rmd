@@ -203,17 +203,6 @@ region_countries <- load_regions_countries()
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
-### Arboviral testing capacity by country
-
-#### Testing capacity by virus and assay type (ref Q17)
-
-<br>
-
-<center>
-<img src="img/q17_legend.png">
-</center>
-
-<br>
 
 ```{r fig.width=3, fig.height=1, eval=TRUE}
 responses <- get_responses("17")
@@ -284,7 +273,7 @@ df <- tibble( Country = levels( responses$Country),
                   ZIKV = zika )
                   # Other = other )
 
-flextable( df ) %>% 
+ft17 <- flextable( df ) %>% 
   colformat_image(j="CHIKV", width=2.25, height=0.75) %>% 
   colformat_image(j="DENV", width=2.25, height=0.75) %>% 
   colformat_image(j="YFV", width=2.25, height=0.75) %>% 
@@ -295,15 +284,6 @@ flextable( df ) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( align = "center", part = "header" ) %>% autofit()
 
-```
-
-<br>
-
-### Additional resources most needed for your country to perform adequate testing for arboviral diseases
-
-#### Additional resources required for adequate arboviral disease testing (ref Q18)
-
-```{r}
 responses <- get_responses("18")
 colnames(responses) <- c(
   "Personnel needed",
@@ -315,7 +295,7 @@ colnames(responses) <- c(
   "Capacity needs",
   "Other capacity needs"
 )
-cbind(Country = data$SI01, responses) %>%
+ft18 <- cbind(Country = data$SI01, responses) %>%
   select(
     Country,
     "Additional personnel needed",
@@ -331,5 +311,35 @@ cbind(Country = data$SI01, responses) %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit()
 
+ft_width <- max( c( flextable_dim(ft17)$widths, flextable_dim(ft18)$widths ))
+
+ft17 <- ft17 %>% width( width=ft_width)
+ft18 <- ft18 %>% width( width=ft_width)
+```
+
+### Arboviral testing capacity by country
+
+#### Testing capacity by virus and assay type (ref Q17)
+
+<br>
+
+<center>
+<img src="img/q17_legend.png">
+</center>
+
+<br>
+
+```{r}
+ft17
+```
+
+<br>
+
+### Additional resources most needed for your country to perform adequate testing for arboviral diseases
+
+#### Additional resources required for adequate arboviral disease testing (ref Q18)
+
+```{r}
+ft18
 ```
 

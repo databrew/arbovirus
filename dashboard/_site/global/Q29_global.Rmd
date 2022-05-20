@@ -1,7 +1,4 @@
 
-### Vector surveillance and control
-
-#### Countries conducting mosquito surveillance, by stage and species identification (ref Q29, 30, 31)
 
 ```{r}
 q29 <- get_responses("29")
@@ -49,7 +46,7 @@ q31 <- q31 %>%
   select(Region, n, Percentage) %>%
   unite( "Trapped mosquitoes identified to species", n:Percentage, sep=" " )
 
-left_join( q29, q30, by="Region") %>%
+ft29_30_31 <- left_join( q29, q30, by="Region") %>%
   left_join( q31, by="Region") %>%
   rename("Regional office" = Region ) %>%
   regulartable() %>% 
@@ -58,16 +55,9 @@ left_join( q29, q30, by="Region") %>%
   align( j=2:4, align="center", part="all" ) %>%
   valign( valign = "top", part="header" ) %>%
   padding( padding.top = 10, part="all") %>%
-  padding( padding.bottom = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>% 
   autofit()
 
-```
-
-<br>
-
-#### Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)
-
-```{r}
 responses <- get_responses("35")
 responses <- cbind( Region = data$Region, responses) %>% 
   drop_na(Region) 
@@ -76,7 +66,7 @@ nums <- responses %>%
   tally(name = "n_countries")
 other <- responses %>% select(Other)
 
-responses %>% 
+ft35 <- responses %>% 
   select(-Other) %>% 
   mutate( across(!Region, ~ ifelse(.x == "Yes", 1, 0))) %>%
   group_by(Region) %>%
@@ -96,16 +86,9 @@ responses %>%
   compose( j=5, part="header", value = as_paragraph(as_i("Wolbachia"), " method")) %>%
   valign( valign = "top", part="header" ) %>%
   padding( padding.top = 10, part="all") %>%
-  padding( padding.bottom = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>% 
   autofit() 
 
-```
-
-<br>
-
-#### Vector indices measured and calculation of infection rates (ref Q37b)
-
-```{r}
 responses <- get_responses("37b")
 responses <- cbind( Region = data$Region, responses) %>% 
   drop_na(Region) 
@@ -113,7 +96,7 @@ nums <- responses %>%
   group_by( Region ) %>%
   tally(name = "n_countries")
 other <- responses %>% select(Other)
-responses %>% 
+ft37b <- responses %>% 
   select(-Other) %>% 
   mutate( across(!Region, ~ ifelse(.x == "Yes", 1, 0))) %>%
   group_by(Region) %>%
@@ -130,6 +113,36 @@ responses %>%
   align( j=2:7, align="center", part="all" ) %>%
   valign( valign = "top", part="header" ) %>%
   padding( padding.top = 10, part="all") %>%
-  padding( padding.bottom = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>% 
   autofit() 
+
+ft_width <- max( c( flextable_dim(ft29_30_31)$widths, flextable_dim(ft35)$widths, flextable_dim(ft37b)$widths ))
+
+ft29_30_31 <- ft29_30_31 %>% width( width=ft_width)
+ft35 <- ft35 %>% width( width=ft_width)
+ft37b <- ft37b %>% width( width=ft_width)
+```
+
+### Vector surveillance and control
+
+#### Countries conducting mosquito surveillance, by stage and species identification (ref Q29, 30, 31)
+
+```{r}
+ft29_30_31
+```
+
+<br>
+
+#### Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)
+
+```{r}
+ft35
+```
+
+<br>
+
+#### Vector indices measured and calculation of infection rates (ref Q37b)
+
+```{r}
+ft37b
 ```

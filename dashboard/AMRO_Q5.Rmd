@@ -228,10 +228,17 @@ responses <- cbind(Country = data$SI01, responses) %>%
 
 responses %>%
   regulartable() %>% 
-  align( j = 2:5, align="center") %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
-  color( color="#FFFFFF", part="header" ) %>% autofit() 
+  color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:5, align="center", part="all" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
+  autofit() 
 
 ```
 
-<br>
+<ul style="margin-left: 40px;">
+<li>
+<strong>Acronyms</strong>: CCHFV = Crimean Congo haemorrhagic fever virus; CHIKV = chikungunya virus; DENV = dengue virus; EEEV = Eastern equine encephalitis virus; MAYV = Mayaro virus; OROV = Oropouche virus; RVFV = Rift Valley fever virus; SFFV = Sand fly fever virus (Naples, Sicilian); TBEV = Tick-borne encephalitis virus; TOSV = Toscana virus; VEEV = Venezuelan equine encephalitis virus; WNV = West Nile virus; YFV = yellow fever virus
+</li>
+</ul>
