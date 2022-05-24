@@ -1,26 +1,16 @@
 
-### Plan for mosquito-borne disease control including threshold that would result in a recommendation for mosquito adulticiding/other mosquito reduction measures
-
-#### Mosquito control plan and threshold (ref Q37)
 
 ```{r}
 responses <- get_responses("37")
-cbind(Country=data$SI01, responses) %>%
+ft37 <- cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
-```
 
-<br> 
-
-### Entomological indices measured
-
-<br>
-
-#### Outbreak risk factors data collected routinely and analysed (ref Q37b)
-
-```{r}
 responses <- get_responses("37b")
 other <- responses %>% select(Other) 
 responses <- responses %>% select(-Other)
@@ -42,11 +32,39 @@ if( any(!is.na(other$Other))){
   keep_cols <- c( keep_cols, "Other")
 }
 
-cbind(Country=data$SI01, responses) %>%
+ft37b <- cbind(Country=data$SI01, responses) %>%
   select( c("Country", keep_cols )) %>%
   filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  align( align="center", part="all" ) %>%
+  align( j=1, align="left", part="all") %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
+
+ft_width <- max( c( flextable_dim(ft37)$widths, flextable_dim(ft37b)$widths ))
+
+ft37 <- ft37 %>% width( width=ft_width)
+ft37b <- ft37b %>% width( width=ft_width)
+```
+
+### Plan for mosquito-borne disease control including threshold that would result in a recommendation for mosquito adulticiding/other mosquito reduction measures
+
+#### Mosquito control plan and threshold (ref Q37)
+
+```{r}
+ft37
+```
+
+<br> 
+
+### Entomological indices measured
+
+#### Outbreak risk factors data collected routinely and analysed (ref Q37b)
+
+```{r}
+ft37b
 ```

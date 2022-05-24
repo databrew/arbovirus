@@ -13,14 +13,14 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
 
 <br> 
 
 ### Reporting of entomologic surveillance data
-
-<br>
 
 #### Institution/department in charge of reporting entomologic surveillance data to the national ministry of health/health department (ref Q27)
 
@@ -39,5 +39,8 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:7, align="center", part="all" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```

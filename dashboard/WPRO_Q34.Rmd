@@ -221,7 +221,7 @@ had only identified _Aedes aegypti_.
 
 <br>
 
-#### Potential public health threat from Aedes species by country (ref Q34b, 34c)
+#### Potential public health threat from _Aedes_ species by country (ref Q34b, 34c)
 
 ```{r}
 q34b <- get_responses("34b")
@@ -243,5 +243,8 @@ cbind( Country = data$SI01, q34b, q34c) %>%
   regulartable( ) %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```

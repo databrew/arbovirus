@@ -58,3 +58,9 @@ cbind(Country = data$SI01, responses) %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
+
+<ul style="margin-left: 40px;">
+<li>
+<strong>Virus acronyms</strong>: CCHFV = Crimean Congo haemorrhagic fever virus; CHIKV = chikungunya virus; DENV = dengue virus; EEEV = Eastern equine encephalitis virus; MAYV = Mayaro virus; OROV = Oropouche virus; RVFV = Rift Valley fever virus; SFFV = Sand fly fever virus (Naples, Sicilian); TBEV = Tick-borne encephalitis virus; TOSV = Toscana virus; VEEV = Venezuelan equine encephalitis virus; WNV = West Nile virus; YFV = yellow fever virus
+</li>
+</ul>

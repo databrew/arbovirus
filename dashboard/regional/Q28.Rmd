@@ -48,6 +48,9 @@ left_join( responses, q28d, by="Country") %>%
   regulartable( ) %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
 
@@ -82,6 +85,10 @@ cbind(Country=data$SI01, q29, q30, q31) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:4, align="center", part="all" ) %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
 
@@ -96,6 +103,9 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
 
@@ -109,16 +119,18 @@ responses <- get_responses("33")
 # responses <- responses %>% select(-Other)
 
 responses <- responses %>%
-  mutate_at( .vars=vars(colnames(responses)),
-             .funs = forcats::fct_recode,
-             "X" = "Yes",
-             " " = "Not selected") 
+  mutate( across(everything(),
+                 ~replace_na(.x, " "))) %>%
+  mutate( across(everything(), 
+                 recode_factor, 
+                 "Yes" = "X", 
+                 "Not selected" = " ")) %>%
+  mutate( across(everything(),
+                 as.character))
 
 empty_cols = c()
 for(i in 1:ncol(responses)){
-  responses[,i] <- as.character( responses[,i] )
-  responses[ which( is.na( responses[,i])) ,i] <- " "
-  if( all(responses[,i] != "X" )){
+  if( all(responses[,i] == " " )){
     empty_cols = c(empty_cols, colnames(responses)[i])
   }
 }
@@ -128,5 +140,21 @@ cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  valign( valign = "top", part="header" ) %>%
+  align( align="center", part="all" ) %>%
+  align( j=1, align="left", part="all") %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
+
+empty_cols <- empty_cols[ which(empty_cols != "None")]
+
+if( length(empty_cols) > 0 ){
+  empty_cols <- paste0("No countries reported testing at _", paste0(empty_cols, collapse="_, _"), "_.")
+} else{
+  empty_cols <- " "
+}
+
 ```
+
+`r empty_cols`
