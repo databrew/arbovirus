@@ -1,6 +1,13 @@
 
 ### Survey response
 
+```{r}
+library(leaflet)
+load('../data/world_shp.rda')
+make_map(df = data %>% dplyr::select(country = SI01) %>% mutate(value = 'Participated'))
+```
+
+
 #### Responding countries and response rate by WHO regional office
 
 ```{r}
