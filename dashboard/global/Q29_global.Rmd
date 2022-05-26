@@ -2,7 +2,8 @@
 
 ```{r}
 q29 <- get_responses("29")
-q29 <- cbind( Region = data$Region, q29 )
+q29 <- cbind( Region = data$Region, q29 ) %>%
+  drop_na( Response )
 nums <- q29 %>% 
   group_by( Region ) %>%
   tally(name = "n_countries")
@@ -17,7 +18,8 @@ q29 <- q29 %>%
   unite( "Adult surveillance", n:Percentage, sep=" " )
 
 q30 <- get_responses("30")
-q30 <- cbind( Region = data$Region, q30 )
+q30 <- cbind( Region = data$Region, q30 ) %>%
+  drop_na( Response )
 nums <- q30 %>% 
   group_by( Region ) %>%
   tally(name = "n_countries")
@@ -32,7 +34,8 @@ q30 <- q30 %>%
   unite( "Larval/pupal surveillance", n:Percentage, sep=" " )
 
 q31 <- get_responses("31")
-q31 <- cbind( Region = data$Region, q31 )
+q31 <- cbind( Region = data$Region, q31 ) %>%
+  drop_na( Response )
 nums <- q31 %>% 
   group_by( Region ) %>%
   tally(name = "n_countries")
@@ -60,7 +63,8 @@ ft29_30_31 <- left_join( q29, q30, by="Region") %>%
 
 responses <- get_responses("35")
 responses <- cbind( Region = data$Region, responses) %>% 
-  drop_na(Region) 
+  drop_na(Region) %>%
+  filter( if_any(!Region, ~ !is.na(.x)) )
 nums <- responses %>% 
   group_by( Region ) %>%
   tally(name = "n_countries")
@@ -91,7 +95,8 @@ ft35 <- responses %>%
 
 responses <- get_responses("37b")
 responses <- cbind( Region = data$Region, responses) %>% 
-  drop_na(Region) 
+  drop_na(Region) %>%
+  filter( if_any(!Region, ~ !is.na(.x)) )
 nums <- responses %>% 
   group_by( Region ) %>%
   tally(name = "n_countries")

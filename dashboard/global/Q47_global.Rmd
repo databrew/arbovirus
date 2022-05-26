@@ -4,7 +4,8 @@
 #### Outbreak committee presence, staff training, contingency hospital service plan and emergency funding (ref Q47, 48, 50, 52, 53)
 
 ```{r}
-q47 <- get_responses("47") 
+q47 <- get_responses("47") %>%
+  drop_na( Response )
 q47 <- cbind( Region = data$Region, q47 )
 
 nums <- q47 %>% 
@@ -16,20 +17,23 @@ q47 <- q47 %>%
   group_by(Region) %>%
   tally( name="Outbreak committee in place")
 
-q48 <- get_responses("48") 
+q48 <- get_responses("48") %>%
+  drop_na( Response )
 q48 <- cbind( Region = data$Region, q48 ) %>%
   filter( Response == "Yes" ) %>%
   group_by(Region) %>%
   tally( name = "Staff/committee training for outbreaks" )
 
 q52 <- get_responses("52") %>%
+  filter( if_any( everything(), ~ !is.na(.x))) %>% 
   mutate( "Emergency fund" = ifelse( `National level`=="Yes" | `State/local level` == "Yes", 1, 0 ) ) %>%
   select( `Emergency fund` )
 q52 <- cbind( Region = data$Region, q52 ) %>%
   group_by(Region) %>%
   summarize("Emergency fund" = sum(`Emergency fund`, na.rm=TRUE))
 
-q53 <- get_responses("53") 
+q53 <- get_responses("53") %>%
+  drop_na( Response )
 q53 <- cbind( Region = data$Region, q53 ) %>%
   filter( Response == "Yes" ) %>%
   group_by(Region) %>%
@@ -37,9 +41,11 @@ q53 <- cbind( Region = data$Region, q53 ) %>%
 
 q50 <- get_responses("50")
 colnames( q50 ) <- c("Response", "Institutions")
+q50 <- q50 %>%
+  filter( if_any( everything(), ~ !is.na(.x))) 
 q50$Response[ grep("Yes", q50$Response )] <- "Yes"
 q50 <- cbind( Region=data$Region, q50 ) %>%
-  filter(Response=="Yes" ) %>%
+  filter(Response=="Yes") %>%
   group_by(Region) %>%
   tally( name = "Collaborating institutions (regional network)")
 

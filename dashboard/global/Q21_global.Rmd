@@ -6,7 +6,8 @@
 ```{r}
 responses <- get_responses("21")
 responses <- cbind( Region = data$Region, responses) %>% 
-  drop_na(Region) 
+  drop_na(Region) %>% 
+  drop_na( Response )
 nums <- responses %>% 
   group_by( Region ) %>%
   tally(name = "n_countries")
