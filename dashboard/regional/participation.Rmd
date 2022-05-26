@@ -35,8 +35,8 @@ pander(excluded_countries)
 # knitr::include_graphics( map_path )
 load("../data/world_shp.rda")
 library( leaflet )
-rshape <- world_shp[ !is.na( world_shp@data$region), ]
-rshape <- rshape[ rshape@data$region == params$region,  ]
+rshape <- world_shp[ !is.na( world_shp@data$region ), ]
+rshape <- rshape[ rshape@data$region == params$region, ] 
 ll <- apply( coordinates(rshape), 2, mean )
 make_map(df = data %>% dplyr::select(country = SI01) %>% mutate(value = 'Participated'),
          pal = 'Set2', qualitative = TRUE, rev = FALSE, opacity = 0.95) %>%

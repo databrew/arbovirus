@@ -71,6 +71,14 @@ chikv_denv %>%
   merge_h( part="header") %>%
   merge_v( j=1, part="header") %>%
   theme_zebra(odd_header="#048ECA", even_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( i = 1, j=c(3:7,9:13), 
+            part = "header", 
+            value = as_paragraph("Percentages are based on the number of countries from each region that responded to Q17"),
+            ref_symbols = "a") %>%
+  footnote( i = 2, j=c(3:7,9:13),
+            part = "header",
+            value = as_paragraph(c("Antigen testing", "IgM antibody testing", "IgG antibody testing", "Neutralizing antibody testing", "RT-PCR or other nucleic acid amplification test")),
+            ref_symbols = c("b","c","d","e","f"), inline = TRUE ) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( align="center", part="all") %>%
   align( align="left", j=1, part="all" ) %>%
@@ -82,12 +90,7 @@ chikv_denv %>%
   autofit()
 ```
 
-
-<ul style="margin-left: 40px;">
-<li>
-<strong>Assay types</strong>: A = Antigen testing; M = IgM antibody testing;  G = IgG antibody testing; N = Neutralizing antibody testing; P = RT-PCR or other nucleic acid amplification test
-</li>
-</ul>
+<br>
 
 
 ```{r}
@@ -121,6 +124,14 @@ yfv_zikv %>%
   merge_h( part="header") %>%
   merge_v( j=1, part="header") %>%
   theme_zebra(odd_header="#048ECA", even_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( i = 1, j=c(3:7,9:13), 
+            part = "header", 
+            value = as_paragraph("Percentages are based on the number of countries from each region that responded to Q17"),
+            ref_symbols = "a") %>%
+  footnote( i = 2, j=c(3:7,9:13),
+            part = "header",
+            value = as_paragraph(c("Antigen testing", "IgM antibody testing", "IgG antibody testing", "Neutralizing antibody testing", "RT-PCR or other nucleic acid amplification test")),
+            ref_symbols = c("b","c","d","e","f"), inline = TRUE ) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( align="center", part="all") %>%
   align( align="left", j=1, part="all" ) %>%

@@ -251,6 +251,14 @@ left_join( q11b, q11c) %>%
   regulartable() %>%
   merge_v(j = ~Country ) %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( j=2:6,
+            part="header",
+            value = as_paragraph("S = All suspect cases; C = Confirmed cases only; N = Not reportable"),
+            ref_symbols = "a") %>%
+  footnote( j=7,
+            part="header",
+            value = as_paragraph("CCHFV = Crimean Congo haemorrhagic fever virus; CHIKV = chikungunya virus; DENV = dengue virus; EEEV = Eastern equine encephalitis virus; MAYV = Mayaro virus; OROV = Oropouche virus; RVFV = Rift Valley fever virus; SFFV = Sand fly fever virus (Naples, Sicilian); TBEV = Tick-borne encephalitis virus; TOSV = Toscana virus; VEEV = Venezuelan equine encephalitis virus; WNV = West Nile virus; YFV = yellow fever virus"),
+            ref_symbols = "b", inline = FALSE) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:6, align="center", part="all" ) %>%
   padding( padding.top = 10, part="all") %>%
@@ -258,15 +266,6 @@ left_join( q11b, q11c) %>%
   autofit()
 
 ```
-
-<ul style="margin-left: 40px;">
-<li> 
-<strong>Case classification status</strong>: S = All suspect cases; C = Confirmed cases only; N = Not reportable
-</li>
-<li>
-<strong>Acronyms</strong>: CCHFV = Crimean Congo haemorrhagic fever virus; CHIKV = chikungunya virus; DENV = dengue virus; EEEV = Eastern equine encephalitis virus; MAYV = Mayaro virus; OROV = Oropouche virus; RVFV = Rift Valley fever virus; SFFV = Sand fly fever virus (Naples, Sicilian); TBEV = Tick-borne encephalitis virus; TOSV = Toscana virus; VEEV = Venezuelan equine encephalitis virus; WNV = West Nile virus; YFV = yellow fever virus
-</li>
-</ul>
 
 <br>
 

@@ -23,21 +23,20 @@ responses <- responses %>%
                       "RT-PCR or other nucleic acid amplification test")) %>%
   droplevels() 
 
-# colors = c("pink", "gainsboro", "lemonchiffon3", "lavenderblush3", "slategray1")
 # a colorblind-friendly palette:
 colors <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#CC79A7")
 letters = c("A", "M", "G", "N", "P")
 base_path <- paste0("img/q17/", params$region, "/")
 for(country in levels(responses$Country)) {
-  df <- responses %>% filter(Country == country)
+  df <- responses %>% filter(Country == country) %>% replace_na( list(value = 0))
   for (virus in levels(df$Level)) {
     fn <- paste0(base_path, country, "_", virus, ".png")
     if (!file.exists(fn)) {
-      values <- df %>% filter(Level==virus) %>% pull(value)
+      values <- df %>% filter(Level==virus) %>% pull(value) 
       
       g <- ggplot() + 
         geom_rect( aes(xmin=0:4, xmax=1:5,ymin=0,ymax=1), fill=colors, alpha=values ) +
-        annotate("text", x=0.5+ 0:4, y=0.5, label=letters,size=8, alpha=values ) +
+        annotate("text", x=0.5+ 0:4, y=0.5, label=letters, size=8, alpha=values ) +
         annotate("text", x=0.5+ 0:4, y=0.5, label="-",size=8, alpha= 1-values ) +
         coord_equal() +
         labs(x = "", y = "") +

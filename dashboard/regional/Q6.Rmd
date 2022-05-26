@@ -44,6 +44,10 @@ ft <- left_join( q6, q6b, by="Country") %>%
   compose( i=1, j=3:6, part="header", value = as_paragraph(as_i("Aedes"), "-borne viruses covered in plans")) %>%
   merge_h( part = "header" ) %>% 
   theme_zebra(odd_header="#048ECA", even_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( i=2, j=7,
+            part = "header",
+            value = as_paragraph("CCHFV = Crimean Congo haemorrhagic fever virus; CHIKV = chikungunya virus; DENV = dengue virus; EEEV = Eastern equine encephalitis virus; MAYV = Mayaro virus; OROV = Oropouche virus; RVFV = Rift Valley fever virus; SFFV = Sand fly fever virus (Naples, Sicilian); TBEV = Tick-borne encephalitis virus; TOSV = Toscana virus; VEEV = Venezuelan equine encephalitis virus; WNV = West Nile virus; YFV = yellow fever virus"),
+            ref_symbols = "a" ) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=3:6, align="center", part="all" ) %>%
   valign( valign = "top", part="header" ) %>%
@@ -56,12 +60,6 @@ virus_width <- dim(ft)$widths[["DENV"]]
 ft <- ft %>% width( j=3:6, width=virus_width)
 ft
 ```
-
-<ul style="margin-left: 40px;">
-<li>
-<strong>Virus acronyms</strong>: CCHFV = Crimean Congo haemorrhagic fever virus; CHIKV = chikungunya virus; DENV = dengue virus; EEEV = Eastern equine encephalitis virus; MAYV = Mayaro virus; OROV = Oropouche virus; RVFV = Rift Valley fever virus; SFFV = Sand fly fever virus (Naples, Sicilian); TBEV = Tick-borne encephalitis virus; TOSV = Toscana virus; VEEV = Venezuelan equine encephalitis virus; WNV = West Nile virus; YFV = yellow fever virus
-</li>
-</ul>
 
 <br>
 
@@ -109,6 +107,14 @@ df <- cbind(Country = data$SI01, responses) %>%
 
 regulartable(df) %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( j=2:3, 
+            part="header",
+            value = as_paragraph("Data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)"),
+            ref_symbols = "a") %>%
+  footnote( j=4:5, 
+            part="header",
+            value = as_paragraph("Statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc.) and GIS"),
+            ref_symbols = "b", inline = FALSE) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:6, align="center", part="all" ) %>%
   valign( valign = "top", part="header" ) %>%
@@ -118,11 +124,3 @@ regulartable(df) %>%
 
 ```
 
-<ul style="margin-left: 40px;">
-<li> 
-<strong>Basic training</strong>:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS) 
-</li>
-<li> 
-<strong>Advanced training</strong>: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc.) and GIS 
-</li>
-</ul>

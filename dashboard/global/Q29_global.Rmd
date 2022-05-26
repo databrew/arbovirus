@@ -54,6 +54,10 @@ ft29_30_31 <- left_join( q29, q30, by="Region") %>%
   rename("Regional office" = Region ) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( j=2:4, 
+            part = "header", 
+            value = as_paragraph( c( "Percentages are based on the number of countries from each region that responded to Q29","Q30","Q31") ),
+            ref_symbols = c("a","b","c"), inline = TRUE) %>% 
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:4, align="center", part="all" ) %>%
   valign( valign = "top", part="header" ) %>%
@@ -85,6 +89,10 @@ ft35 <- responses %>%
          "Insect growth regulators" = "Insect growth regulators (eg , pyriproxyfen)") %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( j=2:7, 
+            part = "header", 
+            value = as_paragraph("Percentages are based on the number of countries from each region that responded to Q35"),
+            ref_symbols = "a") %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:7, align="center", part="all" ) %>%
   compose( j=5, part="header", value = as_paragraph(as_i("Wolbachia"), " method")) %>%
@@ -114,6 +122,10 @@ ft37b <- responses %>%
   rename("Regional office" = Region ) %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( j=2:7, 
+            part = "header", 
+            value = as_paragraph("Percentages are based on the number of countries from each region that responded to Q37b"),
+            ref_symbols = "a") %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:7, align="center", part="all" ) %>%
   valign( valign = "top", part="header" ) %>%
