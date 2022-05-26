@@ -4,12 +4,13 @@
 #### Testing capacity by virus and assay type (ref Q17)
 
 ```{r}
-
-nums <- data.frame( Region = data$Region, Country = data$SI01) %>% 
-  group_by(Region) %>% 
-  tally( name = "n_countries")
 responses <- get_responses("17")
 responses <- cbind(Region = data$Region, responses) %>%
+  filter( if_any(!Region, ~ !is.na(.x))) 
+nums <- responses %>% 
+  group_by(Region) %>% 
+  tally( name = "n_countries")
+responses <- responses %>% 
   pivot_longer(!Region)
 
 new_cols <- matrix(unlist(strsplit(responses$name, "\\]\\[")), ncol = 2, byrow = T)
@@ -132,4 +133,3 @@ yfv_zikv %>%
 
 ```
 
-                  
