@@ -44,7 +44,7 @@ nums %>%
   select( -n_countries ) %>%
   mutate( Countrywide = paste0("Countrywide: ", Countrywide),
           Limited = paste0("Limited areas: ", Limited)) %>%
-  unite( "Coverage", Countrywide:Limited, sep="\n\n" ) %>%
+  unite( "Coverage (N)", Countrywide:Limited, sep="\n\n" ) %>%
   rename("Regional office" = Region ) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 

@@ -77,8 +77,8 @@ chikv_denv %>%
             ref_symbols = "a") %>%
   footnote( i = 2, j=c(3:7,9:13),
             part = "header",
-            value = as_paragraph(c("Antigen testing", "IgM antibody testing", "IgG antibody testing", "Neutralizing antibody testing", "RT-PCR or other nucleic acid amplification test")),
-            ref_symbols = c("b","c","d","e","f"), inline = TRUE ) %>%
+            value = as_paragraph("A = Antigen testing; M = IgM antibody testing; G = IgG antibody testing; N = Neutralizing antibody testing; P = RT-PCR or other nucleic acid amplification test"),
+            ref_symbols = "b" ) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( align="center", part="all") %>%
   align( align="left", j=1, part="all" ) %>%
@@ -130,8 +130,8 @@ yfv_zikv %>%
             ref_symbols = "a") %>%
   footnote( i = 2, j=c(3:7,9:13),
             part = "header",
-            value = as_paragraph(c("Antigen testing", "IgM antibody testing", "IgG antibody testing", "Neutralizing antibody testing", "RT-PCR or other nucleic acid amplification test")),
-            ref_symbols = c("b","c","d","e","f"), inline = TRUE ) %>%
+            value = as_paragraph("A = Antigen testing; M = IgM antibody testing; G = IgG antibody testing; N = Neutralizing antibody testing; P = RT-PCR or other nucleic acid amplification test"),
+            ref_symbols = "b" ) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( align="center", part="all") %>%
   align( align="left", j=1, part="all" ) %>%

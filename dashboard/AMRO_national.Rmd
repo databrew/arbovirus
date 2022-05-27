@@ -199,6 +199,4 @@ data <- load_data()
 region_countries <- load_regions_countries()
 ```
 
-
-Individual country reports are not available for AMRO nations. Please see the Arbovirus Survey Overview for more information. 
-
+Individual country reports are not available for AMRO nations. Please see the Arbovirus Survey Overview for more information.

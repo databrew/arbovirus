@@ -249,8 +249,6 @@ for(j in 1:length( regions )){
   write_file( paste0(yaml,frontmatter,content), rmd_path, append=FALSE )
   
   # make national pages -----
-  
-  content <- "\nAvailable reports (PDF) : \n\n<ul>\n"
 
   # make header file to be included in RMD file:
   header_path <- paste0(region, "_national_header.html")
@@ -262,14 +260,17 @@ for(j in 1:length( regions )){
   frontmatter <- read_file("chunk_frontmatter.Rmd")
   
   if(region != "AMRO" ){
-    # need to create AMRO/PAHO reports!!
+    content <- "\nAvailable reports (PDF) : \n\n<ul>\n"
     countries <- data %>% filter(Region==region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 ) %>% pull(SI01)
     for( k in 1:length(countries)){
       country <- countries[k]
       content <- paste0(content, "<li><a href=\"country_reports/", country, ".pdf\" style=\"color:#048eca;\">", country, "</a></li>\n")
     }
+    content <- paste0( content, "</ul>\n")
+  } else{
+    content <- "\nIndividual country reports are not available for AMRO nations. Please see the Arbovirus Survey Overview for more information.\n"
   }
-  content <- paste0( content, "</ul>\n")
+  
   write_file( paste0(yaml,frontmatter,content), rmd_path, append=FALSE )
   
   # make  global pages -----

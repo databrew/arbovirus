@@ -3,7 +3,7 @@
 amro <- params$region == "AMRO"
 ```
 
-#### National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak (O) and non-outbreak (N) periods (ref Q44) 
+#### National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak and non-outbreak periods (ref Q44) 
 
 ```{r eval = !amro}
 responses <- get_responses("44")
@@ -45,11 +45,15 @@ for(i in 2:ncol(responses)){
 }
 
 responses %>%
-  select( c("Country",keep_cols) ) %>%
+  # select( c("Country",keep_cols) ) %>%
   # filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%  ## uncomment to remove empty rows!
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  footnote( j=2:5, 
+            part = "header",
+            value = as_paragraph("O = outbreak periods; N = non-outbreak periods"),
+            ref_symbols = "b" ) %>%
   valign( valign = "top", part="header" ) %>%
   padding( padding.top = 10, part="all") %>%
   padding( padding.bottom = 10, part="all") %>%

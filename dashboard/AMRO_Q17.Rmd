@@ -324,17 +324,15 @@ ft18 <- ft18 %>% width( width=ft_width)
 
 #### Testing capacity by virus and assay type (ref Q17)
 
+```{r}
+ft17
+```
+
 <br>
 
 <center>
 <img src="img/q17_legend.png">
 </center>
-
-<br>
-
-```{r}
-ft17
-```
 
 <br>
 

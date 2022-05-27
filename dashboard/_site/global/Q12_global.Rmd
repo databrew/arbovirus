@@ -45,7 +45,7 @@ responses_12b <- cbind( Region = data$Region, responses_12b ) %>%
   group_by(Region) %>% 
   summarize( Frequency = paste0(Frequency, collapse = "\n\n") ) %>%
   # mutate( Frequency = ifelse( Region == "PAHO", "Not asked", Frequency)) %>% 
-  rename( "Surveillance frequency" = Frequency )
+  rename( "Surveillance frequency (N)" = Frequency )
 
 responses_12c <- get_responses("12c")
 colnames(responses_12c) <- "Type"
@@ -66,7 +66,7 @@ responses_12c <- cbind( Region = data$Region, responses_12c ) %>%
   group_by(Region) %>% 
   summarize( Type = paste0(Type, collapse = "\n\n")) %>% 
   # mutate( Type = ifelse( Region == "PAHO", "Not asked", Type)) %>% 
-  rename( "Surveillance type" = Type )
+  rename( "Surveillance type (N)" = Type )
 
 responses_12 <- left_join( responses_12, responses_12b, by="Region") %>%
   left_join( responses_12c, by="Region")
