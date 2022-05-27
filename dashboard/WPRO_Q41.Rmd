@@ -203,6 +203,10 @@ region_countries <- load_regions_countries()
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
+```{r}
+amro <- params$region == "AMRO"
+```
+
 #### National epidemiological surveillance for arboviral disease in animals in the past two years (e.g., epizootic surveillance for yellow fever in endemic areas) (ref Q41, 41b, 41c)
 
 ```{r}
@@ -223,6 +227,9 @@ cbind(Country=data$SI01, q41, q41b, q41c) %>%
   regulartable() %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
 
@@ -230,7 +237,7 @@ cbind(Country=data$SI01, q41, q41b, q41c) %>%
 
 #### Countries conducting sentinel surveillance in animals -- the viruses tested for and species under surveillance (ref Q42, 42b)
 
-```{r}
+```{r eval = !amro}
 q42 <- get_responses("42") 
 
 responses <- get_responses("42b") %>%
@@ -252,5 +259,16 @@ cbind( Country = data$SI01, q42, arboviruses, species ) %>%
   merge_v(j = ~Country ) %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
+
+```{r eval = amro}
+disclaimer <- "#### Questions 42 and 42b were not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information."
+```
+
+<br>
+
+`r if(amro){ disclaimer }`

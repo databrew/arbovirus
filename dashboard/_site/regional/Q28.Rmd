@@ -1,23 +1,34 @@
 
+```{r}
+amro <- params$region == "AMRO"
+```
+
 #### Entomologic surveillance conducted for arboviral infections in mosquito vectors in the past two years (ref Q28)
 
-```{r}
+```{r eval = !amro}
 responses <- get_responses("28")
 responses <- cbind(Country = data$SI01, responses)
-conducted <- responses$Country[which(responses$Response == "Yes")]
-not_conducted <- responses$Country[which(responses$Response == "No")]
-no_response <- responses$Country[which(is.na(responses$Response))]
+conducted <- paste0( responses$Country[which(responses$Response == "Yes")], collapse = ", " )
+not_conducted <- paste0( responses$Country[which(responses$Response == "No")], collapse = ", " )
+no_response <- paste0( responses$Country[which(is.na(responses$Response))], collapse = ", " )
+
+ento <- paste0( "Countries that conducted entomologic surveillance included ",
+                conducted,
+                ". Countries that did not included ",
+                not_conducted,
+                ". ",
+                no_response,
+                " did not respond.")
 
 ```
 
-Countries that conducted entomologic surveillance included `r conducted`. Countries that did not included
-`r not_conducted`. `r no_response` did not respond. 
+`r if(!amro){ ento }`
 
 <br>
  
 #### Frequency and scope of entomologic surveillance (ref Q28c, 28d, 28e)
 
-```{r}
+```{r eval = !amro}
 q28e <- get_responses("28e")
 colnames( q28e ) <- c("How_often", "Other")
 q28e <- q28e %>%
@@ -62,7 +73,7 @@ left_join( responses, q28d, by="Country") %>%
 
 #### Mosquito surveillance and identification (ref Q29, 30, 31)
 
-```{r}
+```{r eval = !amro}
 q29 <- get_responses("29")
 q29 <- q29 %>% 
   mutate( Response = recode_factor(.x=Response,
@@ -96,7 +107,7 @@ cbind(Country=data$SI01, q29, q30, q31) %>%
  
 #### Minimum infection rate (MIR) calculations for any _Aedes_-borne arboviruses (ref Q32)
 
-```{r}
+```{r eval = !amro}
 responses <- get_responses("32")
 colnames( responses ) <- c("Response", "Comments")
 cbind(Country=data$SI01, responses) %>%
@@ -113,7 +124,7 @@ cbind(Country=data$SI01, responses) %>%
 
 #### Laboratories testing mosquito pools for arboviruses (ref Q33)
 
-```{r}
+```{r eval = !amro}
 responses <- get_responses("33") 
 # other <- responses %>% select(Other)
 # responses <- responses %>% select(-Other)
@@ -157,4 +168,13 @@ if( length(empty_cols) > 0 ){
 
 ```
 
-`r empty_cols`
+`r if(!amro){ empty_cols }`
+
+```{r eval = amro}
+disclaimer <- "#### These questions were not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information."
+```
+
+<br>
+
+`r if(amro){ disclaimer }`
+

@@ -73,7 +73,7 @@ chikv_denv %>%
   theme_zebra(odd_header="#048ECA", even_header="#048ECA", odd_body = "#D6EAF8") %>% 
   footnote( i = 1, j=c(3:7,9:13), 
             part = "header", 
-            value = as_paragraph("Percentages are based on the number of countries from each region that responded to Q17"),
+            value = as_paragraph("Only countries that responded to Q17 are included in the denominator when calculating these percentages"),
             ref_symbols = "a") %>%
   footnote( i = 2, j=c(3:7,9:13),
             part = "header",
@@ -126,7 +126,7 @@ yfv_zikv %>%
   theme_zebra(odd_header="#048ECA", even_header="#048ECA", odd_body = "#D6EAF8") %>% 
   footnote( i = 1, j=c(3:7,9:13), 
             part = "header", 
-            value = as_paragraph("Percentages are based on the number of countries from each region that responded to Q17"),
+            value = as_paragraph("Only countries that responded to Q17 are included in the denominator when calculating these percentages."),
             ref_symbols = "a") %>%
   footnote( i = 2, j=c(3:7,9:13),
             part = "header",

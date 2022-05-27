@@ -1,9 +1,13 @@
 
+```{r}
+amro <- params$region == "AMRO"
+```
+
 ### Arboviral disease surveillance staff perceptions 
 
 #### Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance (ref Q14)
 
-```{r}
+```{r eval = !amro}
 successes_barriers <- read_csv("../data/Country_level_summarized_responses.csv")
 successes_barriers <- successes_barriers %>%
   filter(Region == params$region ) %>%
@@ -21,3 +25,11 @@ cbind(Country = data$SI01, responses) %>%
   padding( padding.bottom = 10, part="all") %>%
   autofit()
 ```
+
+```{r eval = amro}
+disclaimer <- "#### Question 14 was not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information."
+```
+
+<br>
+
+`r if(amro){ disclaimer }`

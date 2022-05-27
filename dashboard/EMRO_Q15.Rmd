@@ -203,6 +203,10 @@ region_countries <- load_regions_countries()
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
+```{r}
+amro <- params$region == "AMRO"
+```
+
 ### Cases for which arbovirus laboratory testing is performed
 
 #### Cases for which laboratory testing is performed by transmission period (ref Q15)
@@ -241,7 +245,7 @@ responses %>%
 
 #### Virus diagnostic confirmatory testing performed by the national laboratory (ref Q16)
 
-```{r}
+```{r eval = !amro}
 responses <- get_responses("16")
 colnames(responses) <- c("Response","Arbovirus(es)")
 responses <- responses %>%
@@ -265,3 +269,10 @@ cbind(Country = data$SI01, responses) %>%
   autofit()
 ```
 
+```{r eval = amro}
+disclaimer <- "#### Question 16 was not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information."
+```
+
+<br> 
+
+`r if(amro){ disclaimer }`

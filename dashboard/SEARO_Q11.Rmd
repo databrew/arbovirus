@@ -203,6 +203,10 @@ region_countries <- load_regions_countries()
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
+```{r}
+amro <- params$region == "AMRO"
+```
+
 #### Reportable diseases by case classification status (ref Q11b, 11c)
 
 ```{r}
@@ -302,7 +306,7 @@ cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>%
 
 #### Training of healthcare workers on reporting _Aedes_-borne arboviral diseases (ref Q13)
 
-```{r}
+```{r eval = !amro}
 responses <- get_responses("13") 
 colnames(responses) <- c("Response","Description")
 responses <- responses %>%
@@ -323,3 +327,11 @@ cbind(Country = data$SI01, responses) %>%
   autofit()
 
 ```
+
+```{r eval = amro}
+disclaimer <- "#### Question 13 was not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information."
+```
+
+<br> 
+
+`r if(amro){ disclaimer }`

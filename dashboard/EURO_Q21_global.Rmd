@@ -229,7 +229,7 @@ responses %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   footnote( j=2, 
             part = "header", 
-            value = as_paragraph("Percentages are based on the number of countries from each region that responded to Q21"),
+            value = as_paragraph("Only countries that responded to Q21 are included in the denominator when calculating these percentages."),
             ref_symbols = "a") %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2, align="center", part="all" ) %>%

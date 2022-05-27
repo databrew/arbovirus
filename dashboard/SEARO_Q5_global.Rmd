@@ -213,9 +213,25 @@ data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 
 responses <- get_responses("5")
 other <- responses %>% select(Other)
-other <- cbind( Region = data$Region, other) %>% 
+# ugly hack to add other viruses from PAHO spreadsheet...
+other <- cbind( Region = data$Region, Country = data$SI01, other )
+idx <- which( other$Country == "United States of America" )
+other$Other[ idx ] <- "WNV, EEV"
+idx <- which( other$Country == "Panama" )
+other$Other[ idx ] <- "EEEV, VEEV"
+idx <- which( other$Country == "Colombia" )
+other$Other[ idx ] <- "VEEV"
+idx <- which( other$Country == "Ecuador" )
+other$Other[ idx ] <- "MAYV"
+idx <- which( other$Country == "Peru" )
+other$Other[ idx ] <- "OROV, MAYV"
+idx <- which( other$Country == "Brazil" )
+other$Other[ idx ] <- "OROV, MAYV, WNV"
+other <- other %>% 
+  select(-Country) %>%
   drop_na(Region) %>%
   drop_na( Other ) %>%
+  filter( Other != "None" ) %>%
   group_by( Region ) %>%
   summarize( Other = paste0( unique( unlist( strsplit( paste0(Other, collapse = ", "), ", ", fixed=TRUE))), collapse = ", ")) %>%
   ungroup()
@@ -252,7 +268,7 @@ responses %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   footnote( j = 2:5, 
             part = "header", 
-            value = as_paragraph("Percentages are based on the number of countries from each region that responded to Q5"),
+            value = as_paragraph("Only countries that responded to Q5 are included in the denominator when calculating these percentages."),
             ref_symbols = "a") %>%
   footnote( j = 6,
             part = "header",

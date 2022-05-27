@@ -1,9 +1,13 @@
 
+```{r}
+amro <- params$region == "AMRO"
+```
+
 ### Written arbovirus surveillance plans
 
 #### Surveillance plans and the viruses covered (ref Q6, 6b)
 
-```{r}
+```{r eval = !amro}
 responses <- get_responses("6")
 
 q6 <- cbind(Country = data$SI01, responses) %>% 
@@ -47,7 +51,7 @@ ft <- left_join( q6, q6b, by="Country") %>%
   footnote( i=2, j=7,
             part = "header",
             value = as_paragraph("CCHFV = Crimean Congo haemorrhagic fever virus; CHIKV = chikungunya virus; DENV = dengue virus; EEEV = Eastern equine encephalitis virus; MAYV = Mayaro virus; OROV = Oropouche virus; RVFV = Rift Valley fever virus; SFFV = Sand fly fever virus (Naples, Sicilian); TBEV = Tick-borne encephalitis virus; TOSV = Toscana virus; VEEV = Venezuelan equine encephalitis virus; WNV = West Nile virus; YFV = yellow fever virus"),
-            ref_symbols = "b" ) %>%
+            ref_symbols = "a" ) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=3:6, align="center", part="all" ) %>%
   valign( valign = "top", part="header" ) %>%
@@ -63,9 +67,9 @@ ft
 
 <br>
 
-#### National programme for arboviral diseases surveillance
+#### National programme for arboviral diseases surveillance (ref Q7)
 
-```{r}
+```{r eval=!amro}
 responses <- get_responses("7")
 
 responses <- cbind(Country = data$SI01, responses) 
@@ -75,16 +79,21 @@ no_programme <- paste( responses$Country[ which( responses$Response == "No progr
 
 no_programme <- ifelse( no_programme == "", "", paste0("No programme reported by ", no_programme, "."))
 
+q7 <- paste0(specific_programme, 
+             " reported having a specific arbovirus programme, whereas ",
+             another_programme,
+             " had arboviral disease surveillance integrated into another programme. ",
+             no_programme)
+
 ```
 
-`r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` 
-had arboviral disease surveillance integrated into another programme. `r no_programme`
+`r if(!amro){ q7 }`
 
 <br>
 
 #### Training provided to arboviral surveillance staff (ref Q10)
 
-```{r}
+```{r eval=!amro}
 responses <- get_responses("10") %>%
   select(-Other)
 # training <- colnames( responses )
@@ -124,3 +133,10 @@ regulartable(df) %>%
 
 ```
 
+```{r eval=amro}
+disclaimer <- "#### Questions 6, 6b, 7, and 10 were not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information."
+```
+
+<br> 
+
+`r if(amro){ disclaimer }`

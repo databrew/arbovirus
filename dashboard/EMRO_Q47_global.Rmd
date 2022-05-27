@@ -294,8 +294,8 @@ list( q47, q48, q53, q52, q50 ) %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   footnote( j=2:6, 
             part = "header", 
-            value = as_paragraph( c("Percentages are based on the number of countries from each region that responded to Q47", "Q48", "Q53", "Q52", "Q50") ),
-            ref_symbols = c("a", "b", "c", "d", "e"), inline = TRUE ) %>%
+            value = as_paragraph( c("Only countries that responded to Q47, Q48, Q53, Q52, and Q50, respectively, are included in the denominator when calculating these percentages. These questions were not included in the dataset shared with AMRO for completion; please see the Arbovirus Survey Overview for more information.") ),
+            ref_symbols = c("a") ) %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:6, align="center", part="all") %>%
   valign( valign = "top", part="header" ) %>%
@@ -304,3 +304,5 @@ list( q47, q48, q53, q52, q50 ) %>%
   autofit()
 
 ```
+
+Questions 47, 48, 50, 52, and 53 were not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information.

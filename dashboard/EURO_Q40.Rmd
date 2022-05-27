@@ -203,9 +203,13 @@ region_countries <- load_regions_countries()
 data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 ```
 
+```{r}
+amro <- params$region == "AMRO"
+```
+
 #### Vector surveillance staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control (ref Q40)
 
-```{r}
+```{r eval = !amro}
 successes_barriers <- read_csv("../data/Country_level_summarized_responses.csv")
 successes_barriers <- successes_barriers %>%
   filter(Region == params$region ) %>%
@@ -225,3 +229,10 @@ cbind(Country=data$SI01, responses) %>%
   autofit()
 ```
 
+```{r eval = amro}
+disclaimer <- "#### Question 40 was not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information."
+```
+
+<br>
+
+`r if(amro){ disclaimer }`
