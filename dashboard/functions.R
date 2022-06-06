@@ -382,3 +382,193 @@ make_map <- function(df,
   
   
 }
+
+
+
+
+###
+make_map_global <- function(df,
+                            pal = 'YlGnBu',
+                            line_color = 'white',
+                            qualitative = FALSE,
+                            opacity = 0.8,
+                            provider = providers$OpenStreetMap,
+                            rev = TRUE,
+                            add_base_layer = TRUE,
+                            label_string = NULL,
+                            legend_title = ' ',
+                            use_who_shp = FALSE,
+                            filter_region = NULL,
+                            static = FALSE,
+                            remove_some = FALSE,
+                            add_legend = TRUE){
+        
+  # load('../data/world_shp.rda')
+  # df <- tibble(country = c('France', 'Germany', 'Spain'),
+  #              value = c(1,2,3))
+  # df$value <- c('A', 'b', 'CCC')
+  
+  
+  # See if is regional or not
+  is_regional <- 'region' %in% names(df)
+  
+  # See if qualitative (override logic)
+  if(!qualitative){
+    if(!is.numeric(df$value)){
+      qualitative <- TRUE
+    }
+  }
+  
+  if(is_regional){
+    # Remove duplicates
+    df <- df %>% filter(!duplicated(region))
+    if(qualitative){
+      # regional, qualitative
+      df <- df %>%
+        group_by(region) %>%
+        summarise(value = length(which(value == 'Yes')))
+    } else {
+      # regional, quantitative
+      df <- df %>%
+        group_by(region) %>%
+        summarise(value = mean(value, na.rm = TRUE))
+    }
+  } else {
+    # Remove duplicates
+    df <- df %>% filter(!duplicated(country))
+  }
+  
+  if(!is.null(filter_region)){
+    keep_countries <- who_shp$adm0$adm0_viz_n[who_shp$adm0$who_region == filter_region]
+    df <- df %>%
+      filter(country %in% keep_countries)
+  }
+  
+  # Join shapefile and map data
+  if(use_who_shp){
+    if(is_regional){
+      shp <- who_shp$adm0
+      shp <- sf::as_Spatial(shp)
+      shpx <- rgeos::gUnaryUnion(shp, id = shp@data$who_region)
+      x <- SpatialPolygonsDataFrame(Sr = shpx, data = data.frame(who_region = names(shpx)), match.ID = FALSE)
+      shp@data$ID <- shp@data$who_region
+    } else {
+      shp <- who_shp$adm0
+      shp <- sf::as_Spatial(shp)
+      shp@data$country <- shp@data$adm0_viz_n
+      if(!is.null(filter_region)){
+        shp <- shp[ shp@data$country %in% keep_countries,]
+      }
+      if(remove_some){
+        shp <- shp[!shp@data$country %in% c('Russian Federation',
+                                            'Greenland'),]
+      }
+    }
+    
+  } else {
+    if(is_regional){
+      shp <- region_shp
+    } else {
+      shp <- world_shp
+      if(!is.null(filter_region)){
+        shp <- shp[ shp@data$country %in% keep_countries,]
+      }
+      if(remove_some){
+        shp <- shp[!shp@data$country %in% c('Russian Federation',
+                                            'Greenland'),]
+      }
+    }
+  }
+  
+  shp@data <- left_join(shp@data, df) %>%
+    mutate(value = ifelse(value == 'Participated', ifelse(region == 'EMRO' | region == 'AMRO', 
+                                                          'The survey was carried out in the African region by the Special Programme for Research and Training in Tropical Diseases (TDR).', 
+                                                          'Participated'), 
+                                                          NA
+                          )
+           )
+  # print(shp@data)
+  
+  
+  # Define color palette and values to show in tooltip
+  if(qualitative){
+    # pal <- 'Set3'
+    pal_fun <- colorFactor(palette = pal, domain=shp@data$value, na.color="transparent", reverse = rev)
+    vals <- shp@data$value
+    
+  } else {
+    pal_fun <- colorNumeric(palette=pal, domain=shp@data$value, na.color="transparent", reverse = rev)
+    vals <- round(shp@data$value, 2)
+  }
+  
+  if(static){
+    shp_fortified <- fortify(shp, region = 'adm0_viz_n')
+    shp_fortified <- left_join(shp_fortified, shp@data, by = c('id' = 'adm0_viz_n'))
+    g <- ggplot(data = shp_fortified,
+                aes(x = long,
+                    y = lat,
+                    group = group)) +
+      geom_polygon(fill = 'black', color = line_color, size = 0.4) +
+      geom_polygon(color = line_color, size = 0.2,
+                   aes(fill = value))
+    g
+  } else {
+    # Prepare the text for tooltips:
+    if(is_regional){
+      part1 <- 'Region: '
+      part2 <- shp@data$region
+    } else {
+      part1 <- 'Country: '
+      part2 <- shp@data$country
+    }
+    tool_tip <- paste(
+      part1,
+      part2, 
+      "<br/>", 
+      "Value: ", vals, 
+      sep="") %>%
+      lapply(htmltools::HTML)
+    if(!is.null(label_string)){
+      # overwrite the labels
+      tool_tip <- paste0(part1, part2,     
+                         "<br/>", 
+                         label_string, ": ", 
+                         vals, sep = "")  %>%
+        lapply(htmltools::HTML)
+    }
+    
+    
+    m <- leaflet(shp)
+    if(add_base_layer){
+      m <- m %>%
+        addProviderTiles(provider = provider) 
+    }
+    
+    # m %>% View()
+    
+    m <- m %>%
+      addPolygons(
+        fillColor = ~pal_fun(value), 
+        color = 'black',
+        stroke=TRUE, 
+        fillOpacity = opacity, 
+        # color="white", 
+        weight=1.3,
+        label = tool_tip,
+        labelOptions = labelOptions( 
+          style = list("font-weight" = "normal", padding = "3px 8px"), 
+          textsize = "13px", 
+          direction = "auto"
+        )
+      ) %>%
+      setView( lat=10, lng=0 , zoom=2) 
+    
+    if(add_legend){
+      m <- m %>%  addLegend( pal=pal_fun, values=~value, opacity=0.9, title = legend_title, position = "bottomleft" )
+    }
+    
+    m
+  }
+  
+  
+}

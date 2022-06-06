@@ -234,7 +234,7 @@ if( length( incomplete_surveys) > 0){
 pander(excluded_countries)
 ```
 
-```{r}
+```{r, out.width = '100%'}
 # map_path <- paste0("img/", params$region, ".png")
 # knitr::include_graphics( map_path )
 load("../data/world_shp.rda")
@@ -244,5 +244,5 @@ rshape <- rshape[ rshape@data$region == params$region, ]
 ll <- apply( coordinates(rshape), 2, mean )
 make_map(df = data %>% dplyr::select(country = SI01) %>% mutate(value = 'Participated'),
          pal = 'Set2', qualitative = TRUE, rev = FALSE, opacity = 0.95) %>%
-  setView( lng = ll[1], lat = ll[2], zoom=3 )
+  setView( lng = ll[1], lat = ll[2], zoom=2 )
 ```

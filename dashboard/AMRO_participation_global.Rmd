@@ -205,10 +205,10 @@ data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
 
 ### Survey response
 
-```{r}
+```{r, out.width = '100%'}
 library(leaflet)
 load('../data/world_shp.rda')
-make_map(df = data %>% dplyr::select(country = SI01) %>% mutate(value = 'Participated'))
+make_map_global(df = data %>% dplyr::select(country = SI01) %>% mutate(value = 'Participated'), pal = 'Set2')
 ```
 
 
