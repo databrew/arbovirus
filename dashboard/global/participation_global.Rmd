@@ -1,12 +1,24 @@
 
 ### Survey response
 
-```{r}
+```{r, out.width = '100%'}
 library(leaflet)
 load('../data/world_shp.rda')
-make_map(df = data %>% dplyr::select(country = SI01) %>% mutate(value = 'Participated'))
+make_map(df = data %>% 
+           dplyr::select(country = SI01) %>% 
+           mutate( country = recode_factor(.x=country,
+                                           "Bolivia (Plurinational State of)" = "Bolivia",
+                                           "Saint Barthélemy" = "Saint Barthelemy",
+                                           "United States of America" = "United States",
+                                           "Venezuela (Bolivarian Republic of)" = "Venezuela") ) %>% 
+           mutate(value = 'WHO') %>% 
+           bind_rows( read_csv("../data/who_afro.csv") ), 
+         pal = 'Set2')
 ```
 
+As shown above, the WHO conducted the arbovirus survey in 106 countries; the Special Programme for Research and Training in Tropical Diseases (TDR) conducted the arbovirus survey in the African region. Also note that AMRO provided data on an abbreviated set of key variables from the survey on behalf of its member states, as circulation of the survey was not feasible because of the overwhelming COVID-19 burden in the region.
+
+<br>
 
 #### Responding countries and response rate by WHO regional office
 
