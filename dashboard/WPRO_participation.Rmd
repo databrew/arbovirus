@@ -234,15 +234,29 @@ if( length( incomplete_surveys) > 0){
 pander(excluded_countries)
 ```
 
-```{r}
-# map_path <- paste0("img/", params$region, ".png")
-# knitr::include_graphics( map_path )
+```{r, out.width = '100%'}
 load("../data/world_shp.rda")
 library( leaflet )
 rshape <- world_shp[ !is.na( world_shp@data$region ), ]
 rshape <- rshape[ rshape@data$region == params$region, ] 
-ll <- apply( coordinates(rshape), 2, mean )
-make_map(df = data %>% dplyr::select(country = SI01) %>% mutate(value = 'Participated'),
+if( params$region != "WPRO" ){
+  ll <- apply( coordinates(rshape), 2, mean )
+} else{
+  ll <- c( rshape@data$LON[ which( rshape@data$country == "Cambodia") ],
+           rshape@data$LAT[ which( rshape@data$country == "Cambodia") ])
+}
+make_map(df = data %>% 
+           dplyr::select(country = SI01) %>% 
+           mutate( country = recode_factor(.x=country,
+                                           "Bolivia (Plurinational State of)" = "Bolivia",
+                                           "Saint Barthélemy" = "Saint Barthelemy",
+                                           "United States of America" = "United States",
+                                           "Venezuela (Bolivarian Republic of)" = "Venezuela") ) %>% 
+           mutate(value = 'Participated'),
          pal = 'Set2', qualitative = TRUE, rev = FALSE, opacity = 0.95) %>%
-  setView( lng = ll[1], lat = ll[2], zoom=3 )
+  setView( lng = ll[1], lat = ll[2], zoom = case_when( params$region == "AMRO" ~ 2,
+                                                       params$region == "EMRO" ~ 3,
+                                                       params$region == "EURO" ~ 4,
+                                                       params$region == "SEARO" ~ 3,
+                                                       params$region == "WPRO" ~ 3) )
 ```

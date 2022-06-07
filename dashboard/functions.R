@@ -340,7 +340,7 @@ make_map <- function(df,
       part1,
       part2, 
       "<br/>", 
-      "Value: ", vals, 
+      "Survey: ", vals, 
       sep="") %>%
       lapply(htmltools::HTML)
     if(!is.null(label_string)){
