@@ -4,8 +4,8 @@ library(dplyr)
 # use all regions for a dashboard with a global tab,
 # use just one region for a region-only dashboard
 
-# regions <- "WPRO"
-regions <- c("AMRO","EMRO","EURO","SEARO","WPRO")
+regions <- "EMRO"
+# regions <- c("AMRO","EMRO","EURO","SEARO","WPRO")
 
 # create _site.yml and render dashboard into appropriate directory:
 

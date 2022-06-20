@@ -1,5 +1,5 @@
 name: 'WHO-ARBO' 
-output_dir: '_WHOA' 
+output_dir: '_EMRO' 
 output:
   html_document: 
     includes: 
