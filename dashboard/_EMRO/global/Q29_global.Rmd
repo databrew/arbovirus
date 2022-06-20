@@ -1,0 +1,165 @@
+
+
+```{r}
+q29 <- get_responses("29")
+q29 <- cbind( Region = data$Region, q29 ) %>%
+  drop_na( Response )
+nums <- q29 %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+q29 <- q29 %>% 
+  filter( Response == "Yes" ) %>% 
+  group_by( Region)  %>%
+  tally() %>%
+  right_join( nums, by="Region") %>%
+  replace_na( list(n = 0)) %>%
+  mutate( Percentage = paste0( "(", round( 100*n/n_countries), "%)" )) %>%
+  select(Region, n, Percentage) %>%
+  unite( "Adult surveillance", n:Percentage, sep=" " )
+
+q30 <- get_responses("30")
+q30 <- cbind( Region = data$Region, q30 ) %>%
+  drop_na( Response )
+nums <- q30 %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+q30 <- q30 %>% 
+  filter( Response == "Yes" ) %>% 
+  group_by( Region)  %>%
+  tally() %>%
+  right_join( nums, by="Region") %>%
+  replace_na( list(n = 0)) %>%
+  mutate( Percentage = paste0( "(", round( 100*n/n_countries), "%)" )) %>%
+  select(Region, n, Percentage) %>%
+  unite( "Larval/pupal surveillance", n:Percentage, sep=" " )
+
+q31 <- get_responses("31")
+q31 <- cbind( Region = data$Region, q31 ) %>%
+  drop_na( Response )
+nums <- q31 %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+q31 <- q31 %>% 
+  filter( Response == "Yes" ) %>% 
+  group_by( Region)  %>%
+  tally() %>%
+  right_join( nums, by="Region") %>%
+  replace_na( list(n = 0)) %>%
+  mutate( Percentage = paste0( "(", round( 100*n/n_countries), "%)" )) %>%
+  select(Region, n, Percentage) %>%
+  unite( "Trapped mosquitoes identified to species", n:Percentage, sep=" " )
+
+ft29_30_31 <- left_join( q29, q30, by="Region") %>%
+  left_join( q31, by="Region") %>%
+  rename("Regional office" = Region ) %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( j=2:4, 
+            part = "header", 
+            value = as_paragraph( c( "Only countries that responded to Q29, Q30, and Q31, respectively, are included in the denominators when calculating these percentages. These questions were not included in the dataset shared with AMRO for completion; please see the Arbovirus Survey Overview for more information.") ),
+            ref_symbols = c("a") ) %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:4, align="center", part="all" ) %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>% 
+  autofit()
+
+responses <- get_responses("35")
+responses <- cbind( Region = data$Region, responses) %>% 
+  drop_na(Region) %>%
+  filter( if_any(!Region, ~ !is.na(.x)) )
+nums <- responses %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+other <- responses %>% select(Other)
+
+ft35 <- responses %>% 
+  select(-Other) %>% 
+  mutate( across(!Region, ~ ifelse(.x == "Yes", 1, 0))) %>%
+  group_by(Region) %>%
+  summarize( across(everything(), ~ sum(.x, na.rm=TRUE))) %>%
+  ungroup() %>%
+  left_join( nums, by="Region") %>%
+  group_by(Region) %>%
+  mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
+  select(-n_countries) %>%
+  rename("Regional office" = Region,
+         "Adulticiding"="Adulticiding (insecticide application against adult mosquitoes)",
+         "Insect growth regulators" = "Insect growth regulators (eg , pyriproxyfen)") %>%
+  regulartable %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( j=2:7, 
+            part = "header", 
+            value = as_paragraph("Only countries that responded to Q35 are included in the denominator when calculating these percentages."),
+            ref_symbols = "a") %>%
+  color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:7, align="center", part="all" ) %>%
+  compose( j=5, part="header", value = as_paragraph(as_i("Wolbachia"), " method")) %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>% 
+  autofit() 
+
+responses <- get_responses("37b")
+responses <- cbind( Region = data$Region, responses) %>% 
+  drop_na(Region) %>%
+  filter( if_any(!Region, ~ !is.na(.x)) )
+nums <- responses %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+other <- responses %>% select(Other)
+ft37b <- responses %>% 
+  select(-Other) %>% 
+  mutate( across(!Region, ~ ifelse(.x == "Yes", 1, 0))) %>%
+  group_by(Region) %>%
+  summarize( across(everything(), ~ sum(.x, na.rm=TRUE))) %>%
+  ungroup() %>%
+  left_join( nums, by="Region") %>%
+  group_by(Region) %>%
+  mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
+  select(-n_countries) %>%
+  rename("Regional office" = Region ) %>%
+  regulartable %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  footnote( j=2:7, 
+            part = "header", 
+            value = as_paragraph("Only countries that responded to Q37b are included in the denominator when calculating these percentages."),
+            ref_symbols = "a") %>%
+  color( color="#FFFFFF", part="header" ) %>% 
+  align( j=2:7, align="center", part="all" ) %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>% 
+  autofit() 
+
+ft_width <- max( c( flextable_dim(ft29_30_31)$widths, flextable_dim(ft35)$widths, flextable_dim(ft37b)$widths ))
+
+ft29_30_31 <- ft29_30_31 %>% width( width=ft_width)
+ft35 <- ft35 %>% width( width=ft_width)
+ft37b <- ft37b %>% width( width=ft_width)
+```
+
+### Vector surveillance and control
+
+#### Countries conducting mosquito surveillance, by stage and species identification (ref Q29, 30, 31)
+
+```{r}
+ft29_30_31
+```
+
+<br>
+
+#### Vector control methods used in local jurisdictions in the past two years (either using government staff and resources, or subcontracting to a different entity to do so) (ref Q35)
+
+```{r}
+ft35
+```
+
+<br>
+
+#### Vector indices measured and calculation of infection rates (ref Q37b)
+
+```{r}
+ft37b
+```

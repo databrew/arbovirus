@@ -1,7 +1,36 @@
 library(readr)
 library(dplyr)
 
-regions <- c("AMRO","EMRO","EURO","SEARO","WPRO")
+# for a dashboard for a single region, comment out all of the other regions;
+# leave all of them in for a dashboard with a global tab
+
+regions <- c("AMRO",
+             "EMRO",
+             "EURO", 
+             "SEARO", 
+             "WPRO")
+
+# create _site.yml and render dashboard into appropriate directory:
+
+site_yml <- paste0( "name: 'WHO-ARBO' \n" )
+if( length( regions) == 1 ){
+  site_yml <- paste0( site_yml, 
+                      "output_dir: '_",
+                      regions[1],
+                      "' \n" )
+} else{
+  site_yml <- paste0( site_yml, 
+                      "output_dir: '_WHOA' ",
+                      "\n" )
+}
+site_yml <- paste0( site_yml,
+                    "output:\n",
+                    "  html_document: \n",
+                    "    includes: \n",
+                    "      after_body: footer.html \n",
+                    "    css: styles.css",
+                    "\n" )
+write_file( site_yml, "_site.yml", append=FALSE )
 
 load("../data/data.RData")
 
@@ -17,7 +46,6 @@ pages <- c("5","6","11","14",              # Section 2
            )
 pages <- paste0("Q",pages)
 pages <- c( pages, 
-            # "description", 
             "participation")
 
 global_pages <- paste0( "Q", c("5", "12", "17", "21", "29","43","47") )
@@ -87,17 +115,31 @@ header_content <- function( region, page, global=FALSE ){
   }
   content <- paste0( content, "</div>\n</div>\n</div>\n\n" )
   
-  # navbar 
-  content <- paste0(content, 
-                    "<ul id='navbar' class='blue-sub-nav'>\n",
-                    "<li id='whiteLogoPosition'>\n<img id='white_WHO_logo' src='img/WHO_LOGO_white.png'>\n</li>\n",
-                    "<li id='Overview-Li-area'>\n",
-                    "<a role='button' data-toggle='collapse' href='#overview-navigation' aria-expanded='false' aria-controls='overview-navigation'>Arbovirus survey overview</a>\n",
-                    "<li id='Global-Li-area'>\n",
-                    "<a role='button' data-toggle='collapse' href='#global-navigation' aria-expanded='false' aria-controls='global-navigation'>Global arbovirus survey results</a>\n",
-                    "</li>\n<li id='Regional-Li-area'>\n",
-                    "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
-                    "</li>\n<li>\n<a href='", region, "_national.html'>National arbovirus survey results</a>\n</li>\n</ul>\n\n")
+  # navbar (exclude global tab if only one region)
+  content <- paste0(
+    content,
+    "<ul id='navbar' class='blue-sub-nav'>\n",
+    "<li id='whiteLogoPosition'>\n<img id='white_WHO_logo' src='img/WHO_LOGO_white.png'>\n</li>\n",
+    "<li id='Overview-Li-area'>\n",
+    "<a role='button' data-toggle='collapse' href='#overview-navigation' aria-expanded='false' aria-controls='overview-navigation'>Arbovirus survey overview</a>\n"
+  )
+  
+  if(length(regions) > 1) {
+    content <- paste0(
+      content,
+      "<li id='Global-Li-area'>\n",
+      "<a role='button' data-toggle='collapse' href='#global-navigation' aria-expanded='false' aria-controls='global-navigation'>Global arbovirus survey results</a>\n"
+    )
+  }
+  
+  content <- paste0(
+    content,
+    "</li>\n<li id='Regional-Li-area'>\n",
+    "<a role='button' data-toggle='collapse' href='#regional-navigation' aria-expanded='false' aria-controls='regional-navigation'>Regional arbovirus survey results</a>\n",
+    "</li>\n<li>\n<a href='",
+    region,
+    "_national.html'>National arbovirus survey results</a>\n</li>\n</ul>\n\n"
+  )
 
   # drop-down menus
   # Overview NAV
@@ -110,19 +152,21 @@ header_content <- function( region, page, global=FALSE ){
                      menu_end() )
   
   # Global NAV
-  content <- paste0( content,
-                     menu_start("global-navigation"), 
-                     submenu_start(),
-                     submenu_item(region, "participation_global", "Survey response"),
-                     submenu_item(region, "Q5_global", "Autochthonous arbovirus transmission status"),
-                     submenu_item(region, "Q12_global", "Arbovirus disease surveillance planning and practice"), 
-                     submenu_item(region, "Q17_global", "Arbovirus laboratory capacity"),
-                     submenu_item(region, "Q21_global", "Management of arboviral disease cases"),
-                     submenu_item(region, "Q29_global", "Vector surveillance and control"),
-                     submenu_item(region, "Q43_global", "Community sensitization and participation"),
-                     submenu_item(region, "Q47_global", "Preparedness for arboviral outbreaks/epidemics"),
-                     submenu_end(),
-                     menu_end() )
+  if( length( regions ) > 1 ){
+    content <- paste0( content,
+                       menu_start("global-navigation"), 
+                       submenu_start(),
+                       submenu_item(region, "participation_global", "Survey response"),
+                       submenu_item(region, "Q5_global", "Autochthonous arbovirus transmission status"),
+                       submenu_item(region, "Q12_global", "Arbovirus disease surveillance planning and practice"), 
+                       submenu_item(region, "Q17_global", "Arbovirus laboratory capacity"),
+                       submenu_item(region, "Q21_global", "Management of arboviral disease cases"),
+                       submenu_item(region, "Q29_global", "Vector surveillance and control"),
+                       submenu_item(region, "Q43_global", "Community sensitization and participation"),
+                       submenu_item(region, "Q47_global", "Preparedness for arboviral outbreaks/epidemics"),
+                       submenu_end(),
+                       menu_end() )
+  }
   
   # Regional drop-down parent menus
   content <- paste0( content,
@@ -275,17 +319,19 @@ for(j in 1:length( regions )){
   
   # make  global pages -----
   
-  for( k in 1:length( global_pages )){
-    # make header file to be included in RMD file:
-    header_path <- paste0(region, "_", global_pages[k], "_global_header.html")
-    write_file( header_content( region, global_pages[k], global=TRUE ), header_path, append=FALSE )
+  if( length( regions ) > 1 ){
+    for( k in 1:length( global_pages )){
+      # make header file to be included in RMD file:
+      header_path <- paste0(region, "_", global_pages[k], "_global_header.html")
+      write_file( header_content( region, global_pages[k], global=TRUE ), header_path, append=FALSE )
     
-    rmd_path <- paste0(region, "_", global_pages[k], "_global.Rmd")
-    yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", global_pages[k], " global'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
-    frontmatter <- read_file("chunk_frontmatter.Rmd")
-    filter <- "\n```{r}\ndata <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
-    chunks <- read_file( paste0("global/", global_pages[k], "_global.Rmd") )
-    write_file( paste0(yaml,frontmatter,filter,chunks), rmd_path, append=FALSE )
+      rmd_path <- paste0(region, "_", global_pages[k], "_global.Rmd")
+      yaml <- paste0("---\ntitle: ' '\npagetitle: '", region, " ", global_pages[k], " global'\noutput:\n  html_document:\n    includes:\n      in_header: ", header_path, "\nparams:\n  region: ",region,"\n---\n")
+      frontmatter <- read_file("chunk_frontmatter.Rmd")
+      filter <- "\n```{r}\ndata <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )\n```\n"
+      chunks <- read_file( paste0("global/", global_pages[k], "_global.Rmd") )
+      write_file( paste0(yaml,frontmatter,filter,chunks), rmd_path, append=FALSE )
+    }
   }
   
 }

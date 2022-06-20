@@ -1,6 +1,7 @@
-name: "WHO-ARBO"
+name: 'WHO-ARBO' 
+output_dir: '_WHOA' 
 output:
-  html_document:
-    includes:
-      after_body: footer.html
+  html_document: 
+    includes: 
+      after_body: footer.html 
     css: styles.css
