@@ -1,14 +1,11 @@
 library(readr)
 library(dplyr)
 
-# for a dashboard for a single region, comment out all of the other regions;
-# leave all of them in for a dashboard with a global tab
+# use all regions for a dashboard with a global tab,
+# use just one region for a region-only dashboard
 
-regions <- c("AMRO",
-             "EMRO",
-             "EURO", 
-             "SEARO", 
-             "WPRO")
+# regions <- "WPRO"
+regions <- c("AMRO","EMRO","EURO","SEARO","WPRO")
 
 # create _site.yml and render dashboard into appropriate directory:
 
