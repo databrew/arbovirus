@@ -56,9 +56,11 @@ monitoring.
     ├── who_shp.RData
     └── world_shp.rda
 
-## Generating a global dashboard
+## Generating the global dashboard
 
--   Open `dashboard/create_pages.R` in RStudio
+-   Change to the directory `dashboard` and set it as your working
+    directory.
+-   Open `create_pages.R` in RStudio.
 -   Make sure that line 7 is commented out and that line 8 is *not*
     commented out:
 
@@ -70,15 +72,16 @@ monitoring.
 (Line 7 might show a region other than “EMRO”, but it should be
 commented out.)
 
--   Source `dashboard/create_pages.R`.
--   Change into the directory `dashboard/_WHOA`.
+-   Source `create_pages.R`.
 -   Run `rmarkdown::render_site`.
--   Open any of the `.html` pages in `dashboard/_WHOA` to launch the
-    global dashboard.
+-   Using a web browser, open any of the `.html` pages in
+    `dashboard/_WHOA` to launch the global dashboard.
 
 ## Generating a regional dashboard
 
--   Open `dashboard/create_pages.R` in RStudio
+-   Change to the directory `dashboard` and set it as your working
+    directory.
+-   Open `create_pages.R` in RStudio.
 -   Make sure that line 8 is commented out and that line 7 is *not*
     commented out:
 
@@ -89,13 +92,12 @@ commented out.)
 
 -   Change line 7 to specify the desired region; “EMRO” is shown here as
     an example.
--   Source `dashboard/create_pages.R`.
--   Change into the directory determined by the desired region:
-    `dashboard/_AMRO`, `dashboard/_EMRO`, `dashboard/_EURO`,
-    `dashboard/_SEARO`, or `dashboard/_WPRO`.
+-   Source `create_pages.R`.
 -   Run `rmarkdown::render_site`.
--   Open any of the `.html` pages in the chosen directory to launch the
-    regional dashboard.
+-   Using a web browser, open any of the `.html` pages in the directory
+    determined by the desired region (`dashboard/_AMRO`,
+    `dashboard/_EMRO`, `dashboard/_EURO`, `dashboard/_SEARO`, or
+    `dashboard/_WPRO`) to launch the regional dashboard.
 
 ## Generating missingness reports
 
