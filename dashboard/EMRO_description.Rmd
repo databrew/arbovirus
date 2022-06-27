@@ -1,0 +1,237 @@
+---
+title: ' '
+pagetitle: 'EMRO description'
+output:
+  html_document:
+    includes:
+      in_header: EMRO_description_header.html
+params:
+  region: EMRO
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE)
+```
+
+```{js}
+// Region dropdown
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+// end region dropdown
+
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Overview of data  */
+    var overview_menu_opened = $('#overview-navigation').hasClass('in');
+    if(!$(e.target).closest('#overview-navigation').length &&
+        !$(e.target).is('#overview-navigation') &&
+        overview_menu_opened === true){
+            $('#overview-navigation').collapse('toggle');
+            $( "#Overview-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#overview-navigation').attr('aria-expanded') === "false") {
+      $( "#Overview-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#overview-navigation').attr('aria-expanded') === "true") {
+      $( "#Overview-Li-area" ).addClass("activeMenuState");
+    }
+    
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    /* #regional-navigation-disease-surveillance  */
+    var regional_menu_opened = $('#regional-navigation-disease-surveillance').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-disease-surveillance').length &&
+        !$(e.target).is('#regional-navigation-disease-surveillance') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-disease-surveillance').collapse('toggle');
+    }
+    
+    /* #regional-navigation-lab-capacity  */
+    var regional_menu_opened = $('#regional-navigation-lab-capacity').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-lab-capacity').length &&
+        !$(e.target).is('#regional-navigation-lab-capacity') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-lab-capacity').collapse('toggle');
+    }
+    
+    /* #regional-navigation-management  */
+    var regional_menu_opened = $('#regional-navigation-management').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-management').length &&
+        !$(e.target).is('#regional-navigation-management') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-management').collapse('toggle');
+    }
+    
+    /* #regional-navigation-vector-surveillance  */
+    var regional_menu_opened = $('#regional-navigation-vector-surveillance').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-vector-surveillance').length &&
+        !$(e.target).is('#regional-navigation-vector-surveillance') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-vector-surveillance').collapse('toggle');
+    }
+    
+    /* #regional-navigation-community  */
+    var regional_menu_opened = $('#regional-navigation-community').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-community').length &&
+        !$(e.target).is('#regional-navigation-community') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-community').collapse('toggle');
+    }
+    
+    /* #regional-navigation-preparedness  */
+    var regional_menu_opened = $('#regional-navigation-preparedness').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-preparedness').length &&
+        !$(e.target).is('#regional-navigation-preparedness') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-preparedness').collapse('toggle');
+    }
+    
+    /* #regional-navigation-surveillance-staffing  */
+    var regional_menu_opened = $('#regional-navigation-surveillance-staffing').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-surveillance-staffing').length &&
+        !$(e.target).is('#regional-navigation-surveillance-staffing') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-surveillance-staffing').collapse('toggle');
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+});
+
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+data <- load_data()
+region_countries <- load_regions_countries()
+```
+
+#### Survey description
+
+In 2021, the World Health Organization (WHO) conducted a baseline survey to get an overview of 
+Member State capacities for arboviral diseases surveillance (epidemiological and entomological) and 
+control. Survey responses were compiled and analyzed to identify common gaps and to serve as a baseline 
+survey for guiding planning activities for arboviral diseases surveillance and control at country, regional, 
+and global levels.
+
+The survey covered:
+
+<ul style="margin-left: 40px;">
+<li>Surveillance,</li>
+<li>Case Management,</li>
+<li>Vector Control,</li>
+<li>Community Sensitization,</li>
+<li>Outbreak Preparedness,</li>
+<li>Arboviral disease surveillance data, and</li>
+<li>Staffing</li>
+</ul>
+
+The survey was administered in the African Region by the Regional Office together with WHO Special Programme 
+for Research and Training in Tropical Diseases (TDR) and WHO Neglected Tropical Diseases department, and in 
+the remaining regions by the respective Regional Offices and the WHO Health Emergencies Programme. 
+
+ 
+At the time of the survey the COVID-19 pandemic was exacting a particularly heavy toll on countries within 
+the Region of the Americas.  It was apparent that the full survey could not feasibly be circulated in the 
+region given the deficit of available time for completion and because many personnel ordinarily engaged 
+in arbovirus-related work were redirected to engage in pandemic response activities. WHO headquarters and 
+AMRO/PAHO regional focal points agreed on an abbreviated dataset that could be populated by the Regional Office 
+for the purpose of completion of the global survey with respect to key variables.
+
+<br>
+
+#### <a href="survey.pdf" style="color:#048eca;">Click here for a PDF of the original survey.</a>
+

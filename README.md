@@ -30,44 +30,72 @@ monitoring.
 -   Once you’ve got the repository on your local machine, in the main
     repo, create a folder named `data`. Populate it with the files in
     `data.zip` sent to you directly.
--   The contents of your `arbovirus` `data` folder should look like
+-   Source `prepare_data.R` to create `data.RData`,
+    `combined_data.RData`, and the simplified dataset
+    `simplified_dataset.csv`.
+-   The contents of your `arbovirus` `data` folder should now look like
     this:
 
 <!-- -->
 
     # tree
-    ├── data
-    │   ├── Data_dictionary_Survey375147.csv
-    │   ├── data.RData
-    │   ├── Regions_Countries.csv
-    │   ├── survey_375147_R_data_file.csv
-    │   └── survey_375147_R_syntax_file.R
+    data
+    ├── combined_data.RData
+    ├── Copia_de_PAHO_key_indicator_spreadsheet_19_Nov_2021-Completo.xlsx
+    ├── Country_level_summarized_responses.csv
+    ├── Data_dictionary_Survey375147.csv
+    ├── data.RData
+    ├── PAHO_countries.csv
+    ├── Regions_Countries.csv
+    ├── region_shp.rda
+    ├── results-survey375147.csv
+    ├── simplified_dataset.csv
+    ├── survey_375147_R_data_file.csv
+    ├── survey_375147_R_syntax_file.R
+    ├── who_afro.csv
+    ├── who_shp.RData
+    └── world_shp.rda
 
-## Generating a dashboard
+## Generating a global dashboard
 
--   Open `dashboard/index.Rmd` in Rstudio  
--   Click the “knit” button
--   A deploy-ready dashboard will be created in `dashboard/_site`. It
-    can be explored by opening `dashboard/_site/index.html` in a web
-    browswer
-
-## Generating a simplified dataset
-
--   `cd` into the `dashboard` directory, then source a suite of
-    functions/utilities by running:
-
-<!-- -->
-
-    source('app_functions.R')
-
--   Then, run the following in R:
+-   Open `dashboard/create_pages.R` in RStudio
+-   Make sure that line 7 is commented out and that line 8 is *not*
+    commented out:
 
 <!-- -->
 
-    simple <- load_data(modify_variable_names = TRUE)
-    readr::write_excel_csv(simple, '~/Desktop/simplified_dataset.csv')
+    # regions <- "EMRO"
+    regions <- c("AMRO","EMRO","EURO","SEARO","WPRO")
 
-The above will write a file to your desktop of “simplified” data.
+(Line 7 might show a region other than “EMRO”, but it should be
+commented out.)
+
+-   Source `dashboard/create_pages.R`.
+-   Change into the directory `dashboard/_WHOA`.
+-   Run `rmarkdown::render_site`.
+-   Open any of the `.html` pages in `dashboard/_WHOA` to launch the
+    global dashboard.
+
+## Generating a regional dashboard
+
+-   Open `dashboard/create_pages.R` in RStudio
+-   Make sure that line 8 is commented out and that line 7 is *not*
+    commented out:
+
+<!-- -->
+
+    regions <- "EMRO"
+    # regions <- c("AMRO","EMRO","EURO","SEARO","WPRO")
+
+-   Change line 7 to specify the desired region; “EMRO” is shown here as
+    an example.
+-   Source `dashboard/create_pages.R`.
+-   Change into the directory determined by the desired region:
+    `dashboard/_AMRO`, `dashboard/_EMRO`, `dashboard/_EURO`,
+    `dashboard/_SEARO`, or `dashboard/_WPRO`.
+-   Run `rmarkdown::render_site`.
+-   Open any of the `.html` pages in the chosen directory to launch the
+    regional dashboard.
 
 ## Generating missingness reports
 

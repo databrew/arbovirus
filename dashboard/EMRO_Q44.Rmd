@@ -1,0 +1,330 @@
+---
+title: ' '
+pagetitle: 'EMRO Q44'
+output:
+  html_document:
+    includes:
+      in_header: EMRO_Q44_header.html
+params:
+  region: EMRO
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE)
+```
+
+```{js}
+// Region dropdown
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+// end region dropdown
+
+element = document.getElementById('WHO_logo');
+console.log(element)
+
+$('#WHO_logo').click(function(e){
+    console.log("Exists!")
+});
+
+
+window.onscroll = function() { scrollFunction() };
+
+var navbar = document.getElementById("navbar");
+var logoWhiteElement = document.getElementById("whiteLogoPosition")
+var sticky = navbar.offsetTop;
+
+function scrollFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+    logoWhiteElement.classList.add("white_logo_appear");
+  } else {
+    navbar.classList.remove("sticky");
+    logoWhiteElement.classList.remove("white_logo_appear");
+  }
+}
+
+$(document).on('click', function (e){
+    /* Overview of data  */
+    var overview_menu_opened = $('#overview-navigation').hasClass('in');
+    if(!$(e.target).closest('#overview-navigation').length &&
+        !$(e.target).is('#overview-navigation') &&
+        overview_menu_opened === true){
+            $('#overview-navigation').collapse('toggle');
+            $( "#Overview-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#overview-navigation').attr('aria-expanded') === "false") {
+      $( "#Overview-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#overview-navigation').attr('aria-expanded') === "true") {
+      $( "#Overview-Li-area" ).addClass("activeMenuState");
+    }
+    
+    /* Global data  */
+    var global_menu_opened = $('#global-navigation').hasClass('in');
+    if(!$(e.target).closest('#global-navigation').length &&
+        !$(e.target).is('#global-navigation') &&
+        global_menu_opened === true){
+            $('#global-navigation').collapse('toggle');
+            $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#global-navigation').attr('aria-expanded') === "false") {
+      $( "#Global-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#global-navigation').attr('aria-expanded') === "true") {
+      $( "#Global-Li-area" ).addClass("activeMenuState");
+    }
+
+     /* Regional data  */
+    var regional_menu_opened = $('#regional-navigation').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation').length &&
+        !$(e.target).is('#regional-navigation') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation').collapse('toggle');
+            $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    /* #regional-navigation-disease-surveillance  */
+    var regional_menu_opened = $('#regional-navigation-disease-surveillance').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-disease-surveillance').length &&
+        !$(e.target).is('#regional-navigation-disease-surveillance') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-disease-surveillance').collapse('toggle');
+    }
+    
+    /* #regional-navigation-lab-capacity  */
+    var regional_menu_opened = $('#regional-navigation-lab-capacity').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-lab-capacity').length &&
+        !$(e.target).is('#regional-navigation-lab-capacity') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-lab-capacity').collapse('toggle');
+    }
+    
+    /* #regional-navigation-management  */
+    var regional_menu_opened = $('#regional-navigation-management').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-management').length &&
+        !$(e.target).is('#regional-navigation-management') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-management').collapse('toggle');
+    }
+    
+    /* #regional-navigation-vector-surveillance  */
+    var regional_menu_opened = $('#regional-navigation-vector-surveillance').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-vector-surveillance').length &&
+        !$(e.target).is('#regional-navigation-vector-surveillance') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-vector-surveillance').collapse('toggle');
+    }
+    
+    /* #regional-navigation-community  */
+    var regional_menu_opened = $('#regional-navigation-community').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-community').length &&
+        !$(e.target).is('#regional-navigation-community') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-community').collapse('toggle');
+    }
+    
+    /* #regional-navigation-preparedness  */
+    var regional_menu_opened = $('#regional-navigation-preparedness').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-preparedness').length &&
+        !$(e.target).is('#regional-navigation-preparedness') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-preparedness').collapse('toggle');
+    }
+    
+    /* #regional-navigation-surveillance-staffing  */
+    var regional_menu_opened = $('#regional-navigation-surveillance-staffing').hasClass('in');
+    if(!$(e.target).closest('#regional-navigation-surveillance-staffing').length &&
+        !$(e.target).is('#regional-navigation-surveillance-staffing') &&
+        regional_menu_opened === true) {
+            $('#regional-navigation-surveillance-staffing').collapse('toggle');
+    }
+    
+    if ($('#regional-navigation').attr('aria-expanded') === "false") {
+      $( "#Regional-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#regional-navigation').attr('aria-expanded') === "true") {
+      $( "#Regional-Li-area" ).addClass("activeMenuState");
+    }
+     
+     /* Country data  */
+    var country_menu_opened = $('#country-navigation').hasClass('in');
+    if(!$(e.target).closest('#country-navigation').length &&
+        !$(e.target).is('#country-navigation') &&
+        country_menu_opened === true){
+            $('#country-navigation').collapse('toggle');
+            $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    
+    if ($('#country-navigation').attr('aria-expanded') === "false") {
+      $( "#Country-Li-area" ).removeClass("activeMenuState");
+    }
+    if ($('#country-navigation').attr('aria-expanded') === "true") {
+      $( "#Country-Li-area" ).addClass("activeMenuState");
+    }
+
+});
+
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+data <- load_data()
+region_countries <- load_regions_countries()
+```
+
+```{r}
+data <- data %>% filter(Region==params$region) %>% droplevels() %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+```
+
+```{r}
+amro <- params$region == "AMRO"
+```
+
+#### National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities as a prevention message for arboviral diseases within the last 2 years during outbreak and non-outbreak periods (ref Q44) 
+
+```{r eval = !amro}
+responses <- get_responses("44")
+idx <- which( grepl("non-outbreak", colnames(responses)))
+
+outbreaks <- cbind( Country=data$SI01, responses[,-idx]) %>%
+  pivot_longer(!Country) 
+new_cols <- matrix( unlist( strsplit(outbreaks$name, "\\]\\[") ), ncol=2, byrow=T)
+outbreaks <- outbreaks %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "O", value == 0 ~ "", is.na(value) ~ "")) %>%
+	pivot_wider(names_from=Response, values_from=value) %>%
+  select(-Level) 
+
+non_outbreaks <- cbind( Country=data$SI01, responses[,idx]) %>%
+  pivot_longer(!Country) 
+new_cols <- matrix( unlist( strsplit(non_outbreaks$name, "\\]\\[") ), ncol=2, byrow=T)
+non_outbreaks <- non_outbreaks %>% 
+	mutate(Level = new_cols[,1], Response = new_cols[,2]) %>% 
+	select(-name) %>%
+	mutate( value = case_when( value == 1 ~ "N", value == 0 ~ "", is.na(value) ~ "")) %>%
+	pivot_wider(names_from=Response, values_from=value) %>%
+  select(-Level) 
+
+responses <- left_join( outbreaks, non_outbreaks, by="Country") %>%
+  unite( "Issued by national public health agency", c("Issued by national public health agency.x", "Issued by national public health agency.y"), sep="") %>%
+  unite( "Issued by state/local health agencies", c("Issued by state/local health agencies.x", "Issued by state/local health agencies.y"), sep="") %>%
+  unite( "No risk in the past two years", c("No risk in the past two years.x", "No risk in the past two years.y"), sep="" ) %>%
+  unite("No notifications even though risk was present", c("No notifications even though risk was present.x", "No notifications even though risk was present.y"), sep="") %>% 
+  mutate( across(everything(), str_replace, pattern="ON", replacement="O, N")) %>%
+  mutate( across( everything(), na_if, "" ))
+
+keep_cols = c()
+for(i in 2:ncol(responses)){
+  if( any( !is.na(responses[,i]) )){
+    keep_cols = c(keep_cols, colnames(responses)[i])
+  }
+}
+
+responses %>%
+  # select( c("Country",keep_cols) ) %>%
+  # filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%  ## uncomment to remove empty rows!
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  footnote( j=2:5, 
+            part = "header",
+            value = as_paragraph("O = outbreak periods; N = non-outbreak periods"),
+            ref_symbols = "b" ) %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
+  autofit()
+```
+
+<br>
+
+#### Media and other communication channels used for community sensitization, mobilisation and acceptance of interventions (ref Q44b)
+
+```{r eval = !amro}
+responses <- get_responses("44b")
+other <- responses %>% select(Other)
+responses <- responses %>% select(-Other)
+
+responses <- responses %>%
+  mutate_at( .vars=vars(colnames(responses)),
+             .funs = forcats::fct_recode,
+             "X" = "Yes",
+             " " = "Not selected")
+
+if( any(!is.na(other$Other))){
+  responses <- cbind( responses, other)
+}
+
+ft1 <- cbind(Country=data$SI01, responses[,1:5]) %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>%
+  align( j=2:6, align="center", part="all" ) %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
+  autofit()
+
+ft2 <- cbind(Country=data$SI01, responses[,6:ncol(responses)]) %>%
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  align( align="center", part="all" ) %>%
+  align( j=1, align="left", part="all") %>%
+  align( align="center", part="all" ) %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
+  autofit()
+  
+ft_width <- max( c( flextable_dim(ft1)$widths, 
+                    flextable_dim(ft2)$widths ))
+
+ft1 <- ft1 %>% width( width=ft_width)
+ft2 <- ft2 %>% width( width=ft_width)
+  
+ft1 
+```
+
+<br>
+
+```{r eval = !amro}
+ft2 
+```
+
+```{r eval = amro}
+disclaimer <- "#### These questions were not included in the dataset shared with AMRO for completion. Please see the Arbovirus Survey Overview for more information."
+```
+
+<br>
+
+`r if(amro){ disclaimer }`
+
