@@ -33,13 +33,18 @@ pander(excluded_countries)
 ```{r, out.width = '100%'}
 load("../data/world_shp.rda")
 library( leaflet )
+library( sp )
+
+# N.B. subsetting world_shp causes problems with certain versions of leaflet (?)
+# leaving the following 2 lines for now in case they're useful later...
 # rshape <- world_shp[ !is.na( world_shp@data$region ), ]
-rshape <- world_shp[ world_shp@data$region == params$region, ] 
+# rshape <- rshape[ rshape@data$region == params$region, ]
+
 if( params$region != "WPRO" ){
-  ll <- apply( coordinates(rshape), 2, mean )
+  ll <- apply( coordinates(world_shp[ !is.na( world_shp@data$region ) & world_shp@data$region == params$region, ]), 2, mean )
 } else{
-  ll <- c( rshape@data$LON[ which( rshape@data$country == "Cambodia") ],
-           rshape@data$LAT[ which( rshape@data$country == "Cambodia") ])
+  ll <- c( world_shp@data$LON[ which( world_shp@data$country == "Cambodia") ],
+           world_shp@data$LAT[ which( world_shp@data$country == "Cambodia") ])
 }
 make_map(df = data %>% 
            dplyr::select(country = SI01) %>% 

@@ -33,6 +33,7 @@ pander(excluded_countries)
 ```{r, out.width = '100%'}
 load("../data/world_shp.rda")
 library( leaflet )
+library( sp )
 
 # N.B. subsetting world_shp causes problems with certain versions of leaflet (?)
 # leaving the following 2 lines for now in case they're useful later...
