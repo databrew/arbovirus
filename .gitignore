@@ -9,6 +9,7 @@ tables/
 *.zip
 *.xlsx
 *.png
+*.log
 images/
 missingness/*.csv
 missingness/*.html

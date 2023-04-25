@@ -9,7 +9,7 @@ output:
     toc: no
     toc_depth: '2'
 params:
-  region: EURO
+  region: WPRO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -146,7 +146,8 @@ map_path <- paste0("img/", params$region, ".png")
 knitr::include_graphics( map_path )
 ```
 
-`r str_to_title(as.english(n_unique_countries))` (`r round(100*( n_unique_countries / n_region_countries))`%) of `r n_region_countries` countries responded, namely `r pander( as.character(data$SI01) )`. 
+`r str_to_title(as.english(n_unique_countries))` (`r round(100*( n_unique_countries / n_region_countries))`%) of `r n_region_countries` countries responded, 
+namely `r pander( as.character(data$SI01) )`. 
 
 ```{r}
 incompletes <- FALSE
@@ -201,8 +202,10 @@ responses %>%
   set_caption( caption )
 
 table_num <- table_num + 1
+
 ```
 
+<br>
 
 #### Written arbovirus surveillance plans
 
@@ -255,6 +258,8 @@ table_num <- table_num + 1
 
 ```
 
+<br>
+
 #### National programme for arboviral diseases surveillance
 
 ```{r}
@@ -270,6 +275,8 @@ no_programme <- paste( responses$Country[ which( responses$Response == "No progr
 `r specific_programme` reported having a specific arbovirus programme, whereas `r another_programme` 
 had arboviral disease surveillance integrated into another programme. No programme 
 reported by `r no_programme`.
+
+<br> 
 
 #### Training provided to arboviral surveillance staff
 
@@ -298,13 +305,17 @@ df <- cbind(Country = data$SI01, responses) %>%
 
 regulartable(df) %>%
   align(j = 2:6, align = "center") %>% 
+  footnote( i = 1, j = 2:3, value = as_paragraph("Data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)"), ref_symbols = "a", part = "header" ) %>%
+  footnote( i = 1, j = 4:5, value = as_paragraph("Statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS"), ref_symbols = "b", part = "header" ) %>%
   set_caption( caption ) %>% autofit()
 
 table_num = table_num + 1
 ```
 
-* _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)
-* _Advanced training_: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS
+<!-- * _Basic training_:  data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS) -->
+<!-- * _Advanced training_: statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS -->
+
+<br> 
 
 #### Mandatory reporting status of arboviral diseases
 
@@ -315,6 +326,7 @@ cbind(Country = data$SI01, responses) %>%
   regulartable() %>% autofit()
 ```
 
+<br>
 
 ```{r}
 
@@ -363,13 +375,16 @@ q11c <- q11c %>%
 left_join( q11b, q11c) %>%
   regulartable() %>%
   merge_v(j = ~Country ) %>% 
+  footnote( i=1, j=2:7, value = as_paragraph("S = All suspect cases, C = Confirmed cases only, N = Not reportable"), ref_symbols = "a", part="header" ) %>%
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
 
 ```
 
-* S=All suspect cases, C=Confirmed cases only, N=Not reportable
+<!-- * S=All suspect cases, C=Confirmed cases only, N=Not reportable -->
+
+<br> 
 
 #### Surveillance for human cases of arboviral disease
 
@@ -395,6 +410,8 @@ cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>%
 table_num <- table_num + 1
 ```
 
+<br>
+
 #### Training sessions for healthcare workers on notification of _Aedes_-borne arboviral diseases
 
 ```{r}
@@ -416,6 +433,8 @@ cbind(Country = data$SI01, responses) %>%
 
 table_num <- table_num + 1
 ```
+
+<br>
 
 #### Arboviral disease surveillance staff perceptions 
 
@@ -451,13 +470,16 @@ responses <- cbind(Country = data$SI01, responses) %>%
 colnames(responses) <- c("Country",periods)
 responses %>%
   regulartable() %>% 
+  footnote( i=1, j=2:3, value = as_paragraph("A = all suspect cases, S = subset of suspect cases, N = none"), ref_symbols = "a", part="header" ) %>%
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
 
 ```
 
-* A=all suspect cases; S=subset of suspect cases; N=none
+<!-- * A=all suspect cases; S=subset of suspect cases; N=none -->
+
+<br>
 
 #### Viruses for which the national laboratory confirmed cases
 
@@ -481,6 +503,8 @@ table_num <- table_num + 1
 
 ```
 
+<br>
+
 #### Arboviral testing capacity by country
 
 Testing methods:
@@ -499,7 +523,7 @@ responses <- responses %>%
   mutate(Level = new_cols[, 1], Test = new_cols[, 2]) %>%
   select(-name) %>%
   filter( Level != "Other") %>% 
-  mutate( value = as.character(value)) %>%
+  mutate( value = ifelse( as.numeric(value) == 2, 0, 1 ) ) %>%
   replace_na(list(value = 0)) %>%
   mutate( Country = as.factor(Country)) %>% 
   mutate( Level = recode_factor(.x = Level,
@@ -508,7 +532,6 @@ responses <- responses %>%
                                     "Yellow fever"="YFV",
                                     "Zika"="ZIKV")) %>%
   mutate( Test = as.factor(Test)) %>% 
-  mutate( value = as.numeric( value )) %>%
   filter( Test %in% c("Antigen testing",
                       "IgG antibody testing",
                       "IgM antibody testing",
@@ -635,6 +658,8 @@ table_num <- table_num + 1
 
 ```
 
+<br>
+
 #### Virological surveillance on humans, i.e., tracking of prevailing genotypes/serotypes
 
 ```{r}
@@ -670,6 +695,8 @@ cbind(Country=data$SI01, responses) %>%
 
 table_num <- table_num + 1
 ```
+
+<br>
 
 #### Laboratory staff perceptions
 
@@ -720,6 +747,8 @@ cbind(Country=data$SI01, responses) %>%
 table_num <- table_num + 1
 ```
 
+<br>
+
 #### Arboviral disease surveillance/clinical staff perceptions
 
 ```{r}
@@ -751,6 +780,8 @@ cbind(Country=data$SI01, responses) %>%
 table_num <- table_num + 1
 ```
 
+<br>
+
 #### Reporting of entomologic surveillance data
 
 ```{r}
@@ -771,6 +802,8 @@ cbind(Country=data$SI01, responses) %>%
 
 table_num <- table_num + 1
 ```
+
+<br>
 
 Other reporting of entomologic surveillance data:
 
@@ -856,6 +889,8 @@ cbind(Country=data$SI01, q29, q30, q31) %>%
 table_num <- table_num + 1
 ```
 
+<br>
+
 Minimum infection rate (MIR) calculations for any _Aedes_-borne arboviruses:
 
 ```{r}
@@ -897,6 +932,8 @@ cbind(Country=data$SI01, responses) %>%
 table_num <- table_num + 1
 ```
 
+<br>
+
 #### Presence _Aedes aegypti_ or _Aedes albopictus_ in the past 5 years (ref Q34)
 
 ```{r}
@@ -934,6 +971,8 @@ cbind( Country = data$SI01, q34b, q34c) %>%
 
 table_num <- table_num + 1
 ```
+
+<br>
 
 #### Vector control methods
 
@@ -975,6 +1014,8 @@ table_num <- table_num + 1
 
 No countries reported the use of `r (empty_cols)`.
 
+<br>
+
 ```{r}
 caption <- paste0("Table ", table_num, ". Adulticides and/or larvicides (brand and product name) used (ref Q35c)")
 responses <- get_responses("35c")
@@ -987,6 +1028,8 @@ cbind(Country=data$SI01, responses) %>%
 
 table_num <- table_num + 1
 ```
+
+<br>
 
 #### Surveillance system in place for monitoring _Aedes_ resistance to the insecticide(s) used (ref Q39)
 
@@ -1018,6 +1061,8 @@ cbind(Country=data$SI01, responses) %>%
 table_num <- table_num + 1
 ```
 
+<br>
+
 #### Entomological indices measured
 
 ```{r}
@@ -1027,9 +1072,9 @@ other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
 
 responses <- responses %>%
-  mutate( across(everything(), na_if, "Not selected") ) %>%
   mutate( across(everything(), as.character)) %>%
-  mutate( across(everything(), str_replace, pattern="Yes", replacement="X"))
+  mutate( across(everything(), str_replace, pattern="Yes", replacement="X")) 
+responses[ which( is.na(responses), arr.ind = TRUE ) ] <- "Not selected"
 
 keep_cols = c()
 for(i in 1:ncol(responses)){
@@ -1051,6 +1096,8 @@ cbind(Country=data$SI01, responses) %>%
 
 table_num <- table_num + 1
 ```
+
+<br>
 
 #### Vector surveillance staff perceptions
 
@@ -1090,6 +1137,8 @@ cbind(Country=data$SI01, q41, q41b, q41c) %>%
 
 table_num <- table_num + 1
 ```
+
+<br>
 
 #### Sentinel animal surveillance or epizootic surveillance
 
@@ -1148,6 +1197,8 @@ cbind(Country=data$SI01, q43, q43b, q43c) %>%
 table_num <- table_num + 1
 ```
 
+<br>
+
 #### Is the community outreach/social mobilization program sufficiently funded to cover staff time, prevention and outreach activities as needed? (ref Q43d)
 
 ```{r}
@@ -1166,9 +1217,9 @@ other <- responses %>% select(Other)
 responses <- responses %>% select(-Other)
 
 responses <- responses %>%
-  mutate( across(everything(), na_if, "Not selected") ) %>%
   mutate( across(everything(), as.character)) %>%
   mutate( across(everything(), str_replace, pattern="Yes", replacement="X"))
+responses[ which( is.na(responses), arr.ind = TRUE ) ] <- "Not selected"
 
 keep_cols = c()
 for(i in 1:ncol(responses)){
@@ -1192,6 +1243,8 @@ cbind(Country=data$SI01, responses) %>%
 table_num <- table_num + 1
 
 ```
+
+<br>
 
 #### National arboviral disease program notifications to the public about local transmission risk and/or possible vector-control activities 
 
@@ -1246,6 +1299,8 @@ table_num <- table_num + 1
 
 ```
 
+<br>
+
 #### Media/channels used for community sensitization, mobilisation and acceptance of interventions 
 
 ```{r}
@@ -1268,6 +1323,8 @@ cbind(Country=data$SI01, responses, other) %>%
 table_num <- table_num + 1
 
 ```
+
+<br>
 
 #### Regular training sessions for staff in charge of community sensitization, mobilisation and acceptance of interventions dedicated to control arboviral diseases (ref Q45)
 
@@ -1334,6 +1391,8 @@ table_num <- table_num + 1
 
 ```
 
+<br>
+
 #### Outbreak declaration and emergency response measures 
 
 ```{r}
@@ -1362,6 +1421,8 @@ table_num <- table_num + 1
 
 ```
 
+<br>
+
 #### Established collaborations with national/regional research institutions / international agencies to be activated in case of arboviral outbreak
 
 ```{r}
@@ -1381,6 +1442,8 @@ cbind(Country=data$SI01, responses) %>%
 table_num <- table_num + 1 
 
 ```
+
+<br>
 
 #### Arboviral disease surveillance staff perception of factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics (ref Q54)
 
