@@ -9,7 +9,7 @@ output:
     toc: no
     toc_depth: '2'
 params:
-  region: WPRO
+  region: EURO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -56,7 +56,7 @@ n_countries <- length( data$SI01)
 n_unique_countries <- length( unique( data$SI01 ))
 
 if(file.exists("data/Regions_Countries.csv")) {
-  region_countries <- read_csv("data/Regions_Countries.csv")
+  region_countries <- read_csv("data/Regions_Countries.csv", show_col_types = FALSE)
 } else{
   message("You need the regions/countries data!")
 }
@@ -84,7 +84,7 @@ if( length(idx) > 0 ){
 }
 
 if( file.exists("data/Data_dictionary_Survey375147.csv")){
-  dict <- read_csv("data/Data_dictionary_Survey375147.csv")
+  dict <- read_csv("data/Data_dictionary_Survey375147.csv", show_col_types = FALSE)
 } else{
   message("You need the data dictionary!")
 }
@@ -96,6 +96,12 @@ for( i in 1:nrow(data)){
   if( all( is.na( data[i, q5_start:nrow( dict )]))){
     incomplete_surveys <- c( incomplete_surveys, i)
   }
+}
+
+if( file.exists("data/Country_level_summarized responses_23_April_2023.csv") ){
+  all_successes_barriers <- read_csv("data/Country_level_summarized responses_23_April_2023.csv")
+} else{
+  message("You need the country-level summarized responses!")
 }
 
 # utility function 
@@ -238,8 +244,11 @@ q6b <- cbind(Country = data$SI01, q6b) %>%
                                     "Chikungunya"="CHIKV",
                                     "Dengue"="DENV",
                                     "Yellow fever"="YFV",
-                                    "Zika"="ZIKV")) %>% 
-  mutate( Response = na_if( Response, "Not selected")) %>% 
+                                    "Zika"="ZIKV"))
+if( "Not selected" %in% levels( q6b$Response )){
+  q6b <- q6b %>% mutate( Response = na_if( Response, "Not selected")) 
+}
+q6b <- q6b %>%
   mutate( Response = recode_factor(.x = Response, 
                                    "Yes"="X")) %>% 
   pivot_wider( names_from=Arbovirus, values_from=Response) 
@@ -440,8 +449,16 @@ table_num <- table_num + 1
 
 ```{r}
 caption <- paste0("Table ", table_num, ". Surveillance staff perceptions of factors contributing to success or barriers/challenges in human arboviral disease surveillance (ref Q14)")
+
+successes_barriers <- all_successes_barriers %>%
+  filter(Region == params$region ) %>%
+  droplevels() %>%
+  select( Country, Successes = Q14_successes, Barriers = Q14_barriers) 
+
 responses <- get_responses("14") 
 cbind(Country = data$SI01, responses) %>% 
+  select( -Response ) %>% 
+  left_join( successes_barriers, by="Country") %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
@@ -565,7 +582,7 @@ for(country in levels(responses$Country)) {
                panel.grid.minor = element_blank(),
                legend.position = "none" )
       
-      ggsave(fn, plot = g)
+      ggsave(fn, plot = g, width = 899, height = 300, units = "px")
     }
   }
 }
@@ -702,9 +719,17 @@ table_num <- table_num + 1
 
 ```{r}
 caption <- paste0("Table ", table_num, ". Laboratory staff perception of factors contributing to the a) success and b) barriers/challenges with respect to laboratory testing for arboviral infections (ref Q20)")
+
+successes_barriers <- all_successes_barriers %>%
+  filter(Region == params$region ) %>%
+  droplevels() %>%
+  select( Country, Successes = Q20_successes, Barriers = Q20_barriers) 
+
 responses <- get_responses("20")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
+cbind(Country = data$SI01, responses) %>% 
+  select( -Response ) %>% 
+  left_join( successes_barriers, by="Country") %>%
+  regulartable() %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -753,10 +778,17 @@ table_num <- table_num + 1
 
 ```{r}
 caption <- paste0("Table ", table_num, ". Arboviral disease surveillance/clinical staff perception of factors contributing to the a) success and b) barriers/challenges with respect to case management (ref Q25)")
+
+successes_barriers <- all_successes_barriers %>%
+  filter(Region == params$region ) %>%
+  droplevels() %>%
+  select( Country, Successes = Q25_successes, Barriers = Q25_barriers) 
+
 responses <- get_responses("25")
-cbind(Country=data$SI01, responses) %>%
-  drop_na(Response) %>%
-  regulartable() %>%
+cbind(Country = data$SI01, responses) %>% 
+  select( -Response ) %>% 
+  left_join( successes_barriers, by="Country") %>%
+  regulartable() %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1103,8 +1135,16 @@ table_num <- table_num + 1
 
 ```{r}
 caption <- paste0("Table ", table_num, ". Vector surveillance staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to vector surveillance and control (ref Q40)")
+
+successes_barriers <- all_successes_barriers %>%
+  filter(Region == params$region ) %>%
+  droplevels() %>%
+  select( Country, Successes = Q40_successes, Barriers = Q40_barriers) 
+
 responses <- get_responses("40")
-cbind(Country=data$SI01, responses) %>%
+cbind(Country = data$SI01, responses) %>% 
+  select( -Response ) %>% 
+  left_join( successes_barriers, by="Country") %>%
   regulartable() %>% 
   set_caption(caption) %>% autofit()
 
@@ -1346,11 +1386,18 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 caption <- paste0("Table ", table_num, ". Community outreach staff perceptions of factors contributing to the a) success and b) barriers/challenges with respect to community participation (ref Q46)")
+
+successes_barriers <- all_successes_barriers %>%
+  filter(Region == params$region ) %>%
+  droplevels() %>%
+  select( Country, Successes = Q46_successes, Barriers = Q46_barriers) 
+
 responses <- get_responses("46")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  hline( part="all") %>% 
-  set_caption( caption ) %>% autofit()
+cbind(Country = data$SI01, responses) %>% 
+  select( -Response ) %>% 
+  left_join( successes_barriers, by="Country") %>%
+  regulartable() %>% 
+  set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
 
@@ -1449,10 +1496,17 @@ table_num <- table_num + 1
 
 ```{r}
 caption <- paste0("Table ", table_num, ". Arboviral disease surveillance staff perception of factors contributing to the a) success and b) barriers/challenges with respect to preparedness of arboviral diseases epidemics (ref Q54)")
+
+successes_barriers <- all_successes_barriers %>%
+  filter(Region == params$region ) %>%
+  droplevels() %>%
+  select( Country, Successes = Q54_successes, Barriers = Q54_barriers) 
+
 responses <- get_responses("54")
-cbind(Country=data$SI01, responses) %>%
-  regulartable() %>%
-  # hline( part="all") # %>% autofit()
+cbind(Country = data$SI01, responses) %>% 
+  select( -Response ) %>% 
+  left_join( successes_barriers, by="Country") %>%
+  regulartable() %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1 
