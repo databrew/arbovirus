@@ -9,7 +9,7 @@ output:
     toc: no
     toc_depth: '2'
 params:
-  region: EURO
+  region: WPRO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -38,6 +38,7 @@ library(flextable)
 library(ggpubr)
 library(lubridate)
 library(english)
+library(htmltools)
 
 if( file.exists("data/data.RData")){
   load("data/data.RData")
@@ -147,10 +148,14 @@ h4 {
 
 ## Section I: Respondent details
 
+<center>
+
 ```{r}
 map_path <- paste0("img/", params$region, ".png")
 knitr::include_graphics( map_path )
 ```
+
+</center>
 
 `r str_to_title(as.english(n_unique_countries))` (`r round(100*( n_unique_countries / n_region_countries))`%) of `r n_region_countries` countries responded, 
 namely `r pander( as.character(data$SI01) )`. 
@@ -203,7 +208,8 @@ responses <- cbind(Country = data$SI01, responses) %>%
 
 responses %>%
   regulartable() %>% 
-  # hline( i = 1:length(data$SI01)) %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   align( j = 2:5, align="center") %>% autofit() %>%
   set_caption( caption )
 
@@ -256,6 +262,8 @@ q6b <- q6b %>%
 left_join( q6, q6b, by="Country") %>%
   left_join( other) %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   add_header( CHIKV = "Aedes-borne viruses covered in plans",
               DENV = "Aedes-borne viruses covered in plans",
               YFV = "Aedes-borne viruses covered in plans",
@@ -313,6 +321,8 @@ df <- cbind(Country = data$SI01, responses) %>%
 # colnames(df) <- c("Country", training)
 
 regulartable(df) %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   align(j = 2:6, align = "center") %>% 
   footnote( i = 1, j = 2:3, value = as_paragraph("Data capture and analysis (MS Excel, MS Access, EpiInfo) and/or geographic information systems (GIS)"), ref_symbols = "a", part = "header" ) %>%
   footnote( i = 1, j = 4:5, value = as_paragraph("Statistical software for data analysis (e.g.  STATA, R, SAS, Tableau, etc)) and GIS"), ref_symbols = "b", part = "header" ) %>%
@@ -329,10 +339,15 @@ table_num = table_num + 1
 #### Mandatory reporting status of arboviral diseases
 
 ```{r}
+
 responses <- get_responses("11") 
 cbind(Country = data$SI01, responses) %>% 
   drop_na(Response) %>%
-  regulartable() %>% autofit()
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
+
 ```
 
 <br>
@@ -383,7 +398,9 @@ q11c <- q11c %>%
 
 left_join( q11b, q11c) %>%
   regulartable() %>%
-  merge_v(j = ~Country ) %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  # merge_v(j = ~Country ) %>% 
   footnote( i=1, j=2:7, value = as_paragraph("S = All suspect cases, C = Confirmed cases only, N = Not reportable"), ref_symbols = "a", part="header" ) %>%
   set_caption(caption) %>% autofit()
 
@@ -414,6 +431,8 @@ colnames(responses_12c) <- "Type"
 cbind(Country = data$SI01, responses_12, responses_12b, responses_12c) %>% 
   rename( "Surveillance conducted" = Response ) %>% 
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -438,6 +457,8 @@ cbind(Country = data$SI01, responses) %>%
   replace_na( list(Description = "Conducted (no further description provided)")) %>% 
   rename( "Description of training" = Description) %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -460,6 +481,8 @@ cbind(Country = data$SI01, responses) %>%
   select( -Response ) %>% 
   left_join( successes_barriers, by="Country") %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -487,6 +510,8 @@ responses <- cbind(Country = data$SI01, responses) %>%
 colnames(responses) <- c("Country",periods)
 responses %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   footnote( i=1, j=2:3, value = as_paragraph("A = all suspect cases, S = subset of suspect cases, N = none"), ref_symbols = "a", part="header" ) %>%
   set_caption(caption) %>% autofit()
 
@@ -514,6 +539,8 @@ cbind(Country = data$SI01, responses) %>%
   select(-Response) %>%
   replace_na( list("Arbovirus(es)"="Not specified")) %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -669,6 +696,8 @@ cbind(Country = data$SI01, responses) %>%
     "Other capacity needs"
   ) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -708,6 +737,8 @@ for(i in 1:ncol(responses)){
 cbind(Country=data$SI01, responses) %>%
   select( -empty_cols ) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -730,6 +761,8 @@ cbind(Country = data$SI01, responses) %>%
   select( -Response ) %>% 
   left_join( successes_barriers, by="Country") %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -767,6 +800,8 @@ cbind(Country=data$SI01, responses) %>%
   select(-Response) %>%
   replace_na( list(Training="Not specified")) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -789,6 +824,8 @@ cbind(Country = data$SI01, responses) %>%
   select( -Response ) %>% 
   left_join( successes_barriers, by="Country") %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -807,6 +844,8 @@ cbind(Country=data$SI01, responses) %>%
   mutate( Programme = factor( replace_na( as.character(Programme), "None"))) %>%
   rename( "Programme/Agency" = Programme) %>% 
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -830,6 +869,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -841,7 +882,10 @@ Other reporting of entomologic surveillance data:
 
 ```{r}
 cbind(Country=data$SI01, other) %>%
-  regulartable() %>% autofit()
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
 ```
 
 #### Entomologic surveillance conducted for arboviral infections in mosquito vectors in the past two years (ref Q28)
@@ -888,6 +932,8 @@ left_join( responses, q28d, by="Country") %>%
   replace_na( list( Scope = "", Sites = "")) %>%
   unite( "Geographic scope", c("Scope", "Sites"), sep = "\n") %>%
   regulartable( ) %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 ```
@@ -916,6 +962,8 @@ q31 <- q31 %>%
   rename("Trapped mosquitoes identified to species"="Response")
 cbind(Country=data$SI01, q29, q30, q31) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -929,7 +977,10 @@ Minimum infection rate (MIR) calculations for any _Aedes_-borne arboviruses:
 responses <- get_responses("32")
 colnames( responses ) <- c("Response", "Comments")
 cbind(Country=data$SI01, responses) %>%
-  regulartable() %>% autofit()
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
 ```
 
 #### Laboratories testing for arboviruses on mosquito pools in the last two years
@@ -958,6 +1009,8 @@ for(i in 1:ncol(responses)){
 cbind(Country=data$SI01, responses) %>%
   select(-empty_cols) %>% 
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   # rotate( j=2:7, rotation = "btlr", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
@@ -999,6 +1052,8 @@ q34c <- q34c %>%
 
 cbind( Country = data$SI01, q34b, q34c) %>% 
   regulartable( ) %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1037,6 +1092,8 @@ if( any(!is.na(other$Other))){
 cbind(Country=data$SI01, responses) %>%
   select(-empty_cols) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 empty_cols <- empty_cols[ which(empty_cols != "None")]
@@ -1055,7 +1112,8 @@ cbind(Country=data$SI01, responses) %>%
   drop_na( Response ) %>%
   rename("Product used"=Response) %>%
   regulartable() %>%
-  # hline( part="body") %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1078,7 +1136,10 @@ monitoring <- responses$Country[ which(responses$Response == "Yes")]
 ```{r}
 responses <- get_responses("36")
 cbind(Country=data$SI01, responses) %>%
-  regulartable() %>% autofit()
+  regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  autofit()
 ```
 
 #### Plan for mosquito-borne disease control including threshold that would result in a recommendation for mosquito adulticiding/other mosquito reduction measures
@@ -1088,6 +1149,8 @@ caption <- paste0("Table ", table_num, ". Mosquito control plan and threshold (r
 responses <- get_responses("37")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1124,6 +1187,8 @@ cbind(Country=data$SI01, responses) %>%
   select( c("Country", keep_cols )) %>%
   filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1146,6 +1211,8 @@ cbind(Country = data$SI01, responses) %>%
   select( -Response ) %>% 
   left_join( successes_barriers, by="Country") %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1172,7 +1239,8 @@ q41c <- get_responses("41c") %>%
 
 cbind(Country=data$SI01, q41, q41b, q41c) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -1201,8 +1269,9 @@ cbind( Country = data$SI01, q42, arboviruses, species ) %>%
   filter( Response == "Yes" ) %>% 
   select( Country, Virus, Species ) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   merge_v(j = ~Country ) %>% 
-  # hline( part="all") %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -1231,7 +1300,8 @@ q43c <- q43c %>%
 
 cbind(Country=data$SI01, q43, q43b, q43c) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1245,7 +1315,8 @@ table_num <- table_num + 1
 responses <- get_responses("43d")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  hline( part="all") # %>% autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### Resources that would help ensure adequate capacity of the community outreach programme
@@ -1277,7 +1348,8 @@ cbind(Country=data$SI01, responses) %>%
   select( c("Country", keep_cols )) %>%
   filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1332,7 +1404,8 @@ responses %>%
   select( c("Country",keep_cols) ) %>%
   # filter( if_any(keep_cols, ~ !is.na(.) ) ) %>%  ## uncomment to remove empty rows!
   regulartable() %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1357,7 +1430,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption( caption ) %>% autofit()
 
 table_num <- table_num + 1
@@ -1378,7 +1452,8 @@ cbind(Country=data$SI01, responses) %>%
                                    "No"="No",
                                    "I don’t know"="I don’t know")) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   autofit()
 ```
 
@@ -1397,6 +1472,8 @@ cbind(Country = data$SI01, responses) %>%
   select( -Response ) %>% 
   left_join( successes_barriers, by="Country") %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1431,7 +1508,8 @@ q53 <- get_responses("53") %>%
 
 cbind(Country=data$SI01, q47, q48, q53, "Emergency fund" = emergency_fund) %>%
   regulartable() %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1
@@ -1461,7 +1539,8 @@ q51 <- get_responses("51") %>%
 
 cbind( q49, q51 ) %>%
   regulartable( ) %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1 
@@ -1483,7 +1562,8 @@ cbind(Country=data$SI01, responses) %>%
   filter( Response == "X" ) %>%
   select(-Response) %>% 
   regulartable() %>%
-  # hline( part="all") %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1 
@@ -1507,6 +1587,8 @@ cbind(Country = data$SI01, responses) %>%
   select( -Response ) %>% 
   left_join( successes_barriers, by="Country") %>%
   regulartable() %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption(caption) %>% autofit()
 
 table_num <- table_num + 1 
@@ -1534,15 +1616,22 @@ for( i in 1:ncountries ){
                           Number=as.numeric( t( responses[i,] ))))
 }
 
-df %>% 
+df <- df %>% 
   drop_na(Number) %>%
   unite("Category", Year:Type, sep=" ") %>% 
   group_by(Country, Virus, Category) %>%
   summarize( Number = sum(Number)) %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
+  ungroup() %>%
+  as_grouped_data( groups = c("Country") )
+# hline_loc <- which( is.na( df$Category ) ) - 1
+# hline_loc <- hline_loc[ which(hline_loc > 0) ]
+df %>%
   regulartable() %>%
-  merge_v(j = ~Country) %>%
-  # hline( part="all") %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  bold( j=1, bold=TRUE, part="body") %>% 
+  # hline( i = hline_loc, part = "body" ) %>% 
   fix_border_issues() %>% autofit()
 
 ```
@@ -1553,7 +1642,8 @@ df %>%
 responses <- get_responses("55b")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   autofit()
 ```
 
@@ -1563,15 +1653,29 @@ cbind(Country=data$SI01, responses) %>%
 ```{r}
 responses <- get_responses("55c")
 
-cbind( Country=data$SI01, responses) %>%
+df <- cbind( Country=data$SI01, responses) %>%
   pivot_longer(!Country) %>% 
   filter(value=="Yes") %>% 
   select(-value) %>%
-  rename("Arbovirus(es)" = name) %>%
-  regulartable() %>% 
-  merge_v( j = ~Country) %>%
-  # hline( part="all") # %>% 
-  autofit()
+  rename("Arbovirus(es)" = name)
+if( any( duplicated( df$Country ) ) ){
+  df %>%
+    as_grouped_data( groups = c("Country") ) %>%
+    regulartable() %>% 
+    theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+    color( color="#FFFFFF", part="header" ) %>% 
+    bold( j=1, bold=TRUE, part="body") %>% 
+    # merge_v( j = ~Country) %>%
+    autofit()
+} else{
+  df %>%
+    regulartable() %>% 
+    theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+    color( color="#FFFFFF", part="header" ) %>% 
+    # merge_v( j = ~Country) %>%
+    autofit()
+}
+  
 ```
 
 #### 55d. Please provide total number of cases and deaths due to each of the following other arboviruses that you selected from 2015-2020
@@ -1595,14 +1699,22 @@ for( i in 1:ncountries ){
                           Number=as.numeric( t( responses[i,] ))))
 }
 
-df %>% 
+df <- df %>% 
   drop_na(Number) %>%
   unite("Category", Year:Type, sep=" ") %>% 
   group_by(Country, Virus, Category) %>%
+  summarize( Number = sum(Number)) %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
+  ungroup() %>%
+  as_grouped_data( groups = c("Country") )
+# hline_loc <- which( is.na( df$Category ) ) - 1
+# hline_loc <- hline_loc[ which(hline_loc > 0) ]
+df %>%
   regulartable() %>%
-  merge_v(j = ~Country) %>%
-  # hline( part="all") %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  bold( j=1, bold=TRUE, part="body") %>% 
+  # hline( i = hline_loc, part = "body" ) %>% 
   fix_border_issues() %>% autofit()
 
 ```
@@ -1627,14 +1739,22 @@ for( i in 1:ncountries ){
                           Number=as.numeric( t( responses[i,] ))))
 }
 
-df %>% 
+df <- df %>% 
   drop_na(Number) %>%
   group_by(Country, Virus, Type) %>%
   pivot_wider(names_from=Virus, values_from=Number) %>%
+  ungroup() %>%
+  as_grouped_data( groups = c("Country") )
+# hline_loc <- which( is.na( df$Type ) ) - 1
+# hline_loc <- hline_loc[ which(hline_loc > 0) ]
+df %>%
   regulartable() %>%
-  merge_v(j = ~Country) %>%
-  # hline( part="all") %>%
-  fix_border_issues() %>% autofit
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
+  bold( j=1, bold=TRUE, part="body") %>% 
+  # hline( i = hline_loc, part = "body" ) %>% 
+  fix_border_issues() %>% autofit()
+
 ```
 
 #### 57. Do arbovirus surveillance staff have any perceived reasons for increasing trends in arboviral disease incidence? Check all answers that apply.
@@ -1652,8 +1772,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 # Section X: Surveillance staffing
@@ -1669,8 +1789,8 @@ colnames(responses) <- c("Clinicians",
                          "Support staff")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 59. Indicate below how many total staff persons are needed at the national level in your country to achieve full epidemiology and laboratory capacity* to conduct arbovirus surveillance
@@ -1684,6 +1804,8 @@ colnames(responses) <- c("Clinicians",
                          "Support staff")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   # hline( part="all") # %>% 
   autofit()
 ```
@@ -1694,8 +1816,8 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("60")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 61. The national health authority/ministry of health has access to expertise in clinical management of arboviruses (Check all that apply) 
@@ -1713,8 +1835,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 62. The national health authority/ministry of health has access to expertise in arbovirus epidemiology (Check all that apply
@@ -1732,8 +1854,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 63. The national health authority/ministry of health has access to expertise in arbovirus laboratory diagnosis (Check all that apply)
@@ -1751,8 +1873,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 64. The national health authority/ministry of health has access to expertise in entomology (Check all that apply)
@@ -1770,8 +1892,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses, other) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 65. Optional comments to explain responses to any of Questions 61-64
@@ -1780,8 +1902,8 @@ cbind(Country=data$SI01, responses, other) %>%
 responses <- get_responses("65")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 # Section XI: Survey conclusion
@@ -1793,8 +1915,8 @@ responses <- get_responses("66")
 colnames(responses) <- "Response"
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 # Appendix
@@ -1803,8 +1925,8 @@ cbind(Country=data$SI01, responses) %>%
 
 ```{r}
 regulartable( data.frame( Country=data$SI01, Contact=data$SI02, Title=data$SI03) ) %>%
-  # hline( i = 1:length(data$SI01)) # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 7b. Please specify the programme into which arboviral diseases is integrated:
@@ -1816,8 +1938,8 @@ colnames( responses) <- "Response"
 cbind(Country = data$SI01, responses) %>% 
   drop_na(Response) %>%
   regulartable() %>% 
-  # hline( part="all" ) # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 8. For which level of the health structure are individual and aggregated data available ? (Select all relevant levels)
@@ -1836,8 +1958,9 @@ responses %>%
   filter(Response == "Individual level") %>%
   select(Country, Level, Response=value) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption("Individual data") %>%
-  # hline( i =4*(1:n_countries)) %>%
   merge_v(j = ~Country) %>% 
   fix_border_issues() # %>% autofit()
 
@@ -1845,8 +1968,9 @@ responses %>%
   filter(Response == "Aggregated ") %>% 
   select(Country, Level, Response=value) %>%
   regulartable() %>%
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   set_caption("Aggregated data") %>%
-  # hline( i =4*(1:n_countries)) %>%
   merge_v(j = ~Country) %>%
   fix_border_issues() # %>% autofit()
 
@@ -1864,7 +1988,8 @@ cbind( Country = data$SI01, responses ) %>%
   # rename("State/provincial" = State) %>% 
   # mutate( District = factor( replace_na( as.character(District), "Unanswered"))) %>%
   regulartable() %>% 
-  # hline( i = 1:length(data$SI01)) # %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   autofit()
 
 ```
@@ -1881,7 +2006,8 @@ responses <- responses %>%
 cbind(Country = data$SI01, responses) %>% 
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>% 
-  # hline( part="all" ) # %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% 
   autofit()
 ```
 
@@ -1906,8 +2032,8 @@ responses <- responses %>%
 
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 19b. Which samples do you use for virological surveillance? 
@@ -1916,8 +2042,8 @@ cbind(Country=data$SI01, responses) %>%
 responses <- get_responses("19b")
 cbind(Country=data$SI01, responses) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 19c. For which viruses do you perform virological surveillance? (check all that apply)  
@@ -1934,7 +2060,8 @@ cbind(Country = data$SI01, responses) %>%
                                    # "Unanswered"="Unanswered")) %>%
   pivot_wider( names_from=Arbovirus, values_from=Response) %>%
   regulartable() %>% 
-  hline( i = 1:length(data$SI01)) # %>% autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 22. Are severe cases of arboviral diseases managed in a special area (part of the hospital, isolation beds)?
@@ -1945,8 +2072,8 @@ colnames(responses) <- c("Response","Where")
 cbind(Country=data$SI01, responses) %>%
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
 
 #### 23. How many hospital beds are available per 100,000 population?
@@ -1956,6 +2083,9 @@ responses <- get_responses("23")
 cbind(Country=data$SI01, responses) %>%
   # mutate( Response = factor( replace_na( as.character(Response), "Unanswered"))) %>%
   regulartable() %>%
-  # hline( part="all") # %>% 
-  autofit()
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>% autofit()
 ```
+
+<br>
+<br>
