@@ -40,11 +40,18 @@ library(lubridate)
 library(english)
 library(htmltools)
 
-if( file.exists("data/data.RData")){
-  load("data/data.RData")
-  # load("data/combined_data.RData")
-} else{
-  message("You need the data!")
+if( params$region == "AMRO" ){
+  if( file.exists("data/combined_data.RData") ){
+    load("data/combined_data.RData")
+  } else{
+    message("You need the data!")
+  }
+} else{ 
+  if( file.exists("data/data.RData")){
+    load("data/data.RData")
+  } else{
+    message("You need the data!")
+  }
 }
 
 data <- data %>% 
@@ -63,6 +70,7 @@ if(file.exists("data/Regions_Countries.csv")) {
 }
 
 region_expansion <- list(
+  AMRO = "Region of the Americas",
   WPRO = "Western Pacific Region",
   EURO = "European Region",
   SEARO = "South-East Asia Region",

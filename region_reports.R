@@ -1,12 +1,13 @@
 library(readr)
 
 if( file.exists("data/data.RData")){
-  load("data/data.RData")
+  # load("data/data.RData")
+  load("data/combined_data.RData")
 } else{
   message("You need the data!")
 }
 
-regions <- levels( data$Region )
+regions <- unique( data$Region )
 
 if(!dir.exists('region_reports')){
   dir.create('region_reports')
