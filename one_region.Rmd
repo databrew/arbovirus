@@ -1,15 +1,18 @@
 ---
 title: "Arboviral Surveillance and Response Capacity Survey 2021"
 output:
+  pdf_document:
+    toc: no
+    toc_depth: '2'
+  word_document:
+    toc: no
+    toc_depth: '2'
   html_document:
     toc: no
     toc_float: no
     toc_depth: 2
-  word_document:
-    toc: no
-    toc_depth: '2'
 params:
-  region: WPRO
+  region: EMRO
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -670,7 +673,7 @@ flextable( df ) %>%
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
   color( color="#FFFFFF", part="header" ) %>% 
   align( align = "center", part = "header" ) %>%
-  set_caption(caption) %>% autofit()
+  set_caption(caption) %>% autofit() 
 
 table_num <- table_num + 1
 
