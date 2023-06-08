@@ -534,15 +534,32 @@ ft35 <- responses %>%
   padding( padding.bottom = 10, part="all") %>% 
   autofit() 
 
-responses <- get_responses("37b")
-responses <- cbind( Region = data$Region, responses) %>% 
+responses <- cbind( Region = data$Region, get_responses("32")) %>% 
+  select( Region, Response ) %>% 
+  drop_na() %>%
+  mutate( Response = ifelse( grepl("Yes", Response), "Yes", Response ) ) %>% 
+  rename( "Minimum infection rate calculations" = Response ) 
+nums <- responses %>% 
+  group_by( Region ) %>%
+  tally(name = "n_countries")
+ft32 <- responses %>% 
+  mutate( across(!Region, ~ ifelse(.x == "Yes", 1, 0))) %>%
+  group_by(Region) %>%
+  summarize( across(everything(), ~ sum(.x, na.rm=TRUE))) %>%
+  ungroup() %>%
+  left_join( nums, by="Region") %>%
+  group_by(Region) %>%
+  mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
+  select(-n_countries) 
+
+responses <- cbind( Region = data$Region, get_responses("38")) %>% 
   drop_na(Region) %>%
   filter( if_any(!Region, ~ !is.na(.x)) )
 nums <- responses %>% 
   group_by( Region ) %>%
   tally(name = "n_countries")
 other <- responses %>% select(Other)
-ft37b <- responses %>% 
+ft38 <- responses %>% 
   select(-Other) %>% 
   mutate( across(!Region, ~ ifelse(.x == "Yes", 1, 0))) %>%
   group_by(Region) %>%
@@ -552,13 +569,18 @@ ft37b <- responses %>%
   group_by(Region) %>%
   mutate( across( everything(), ~ paste0( .x, " (", round(100*(.x)/n_countries), "%)") ) ) %>%
   select(-n_countries) %>%
+  left_join( ft32, by="Region" ) %>%
   rename("Regional office" = Region ) %>%
   regulartable %>% 
   theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
-  footnote( j=2:7, 
+  footnote( j=2:8, 
             part = "header", 
-            value = as_paragraph("Only countries that responded to Q37b are included in the denominator when calculating these percentages."),
+            value = as_paragraph("Only countries that responded to Q38 are included in the denominator when calculating these percentages."),
             ref_symbols = "a") %>%
+  footnote( j=9, 
+            part = "header", 
+            value = as_paragraph("Only countries that responded to Q32 are included in the denominator when calculating these percentages."),
+            ref_symbols = "b") %>%
   color( color="#FFFFFF", part="header" ) %>% 
   align( j=2:7, align="center", part="all" ) %>%
   valign( valign = "top", part="header" ) %>%
@@ -566,11 +588,11 @@ ft37b <- responses %>%
   padding( padding.bottom = 10, part="all") %>% 
   autofit() 
 
-ft_width <- max( c( flextable_dim(ft29_30_31)$widths, flextable_dim(ft35)$widths, flextable_dim(ft37b)$widths ))
+ft_width <- max( c( flextable_dim(ft29_30_31)$widths, flextable_dim(ft35)$widths, flextable_dim(ft38)$widths ))
 
 ft29_30_31 <- ft29_30_31 %>% width( width=ft_width)
 ft35 <- ft35 %>% width( width=ft_width)
-ft37b <- ft37b %>% width( width=ft_width)
+ft38 <- ft38 %>% width( width=ft_width)
 ```
 
 ### Vector surveillance and control
@@ -591,10 +613,10 @@ ft35
 
 <br>
 
-#### Vector indices measured and calculation of infection rates (ref Q37b)
+#### Vector indices measured and calculation of infection rates (ref Q38, Q32)
 
 ```{r}
-ft37b
+ft38
 ```
 
 
