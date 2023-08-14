@@ -3,6 +3,7 @@ docs/
 tables/
 *.html
 *.pdf
+*.csv
 *.docx
 *.pptx
 *.tex
