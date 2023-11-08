@@ -1,0 +1,197 @@
+---
+title: 'Arboviral Surveillance and Response Capacity Survey 2021'
+output: html_document
+---
+
+```{r, include=FALSE, echo = FALSE}
+# Basic knitr options
+library(knitr)
+opts_chunk$set(comment = NA, 
+               echo = FALSE,
+               warning = FALSE, 
+               message = FALSE, 
+               error = TRUE, 
+               cache = FALSE)
+```
+
+```{r, echo = FALSE}
+source('functions.R')
+dict <- load_dict()
+data <- load_data()
+region_countries <- load_regions_countries()
+```
+
+```{r}
+data <- data %>% mutate(SI01 = as.character(SI01)) %>% arrange( SI01 )
+```
+
+### Table 15
+
+```{r}
+
+# Question 61 ---- 
+
+q61 <- get_responses("61") %>% 
+  select(-Other) 
+colnames(q61) <- c("health","agency","academic","hospitals","none")
+q61 <- cbind( Region = data$Region, q61 ) %>%
+  mutate( answered = if_any( health:none, ~ !is.na(.) )) %>%
+  filter( answered ) %>%
+  mutate(
+    health = (health == "Yes"),
+    agency = (agency == "Yes"),
+    academic = (academic == "Yes"),
+    hospitals = (hospitals == "Yes"),
+    none = (none == "Yes")
+  ) 
+q61_answered <- q61 %>%
+  group_by( Region ) %>% 
+  summarize( n_answered = n() )
+q61 <- q61 %>%
+  select( -answered ) %>%
+  pivot_longer( !Region ) %>%
+  group_by( Region, name ) %>% 
+  summarize( Yes = sum( value, na.rm=TRUE ) ) %>%
+  left_join( q61_answered ) %>%
+  mutate( Percentage = paste0( "(", round(100*Yes / n_answered ) , "%)" ) ) %>%
+  select( -n_answered ) %>% 
+  unite( results, Yes:Percentage, sep = " " ) %>%
+  mutate( name = factor( name, levels = c("health", "agency", "academic", "hospitals", "none") )) %>%
+  arrange( Region, name ) %>%
+  mutate( name = fct_recode( name, 
+                             "In the ministry of health" = "health", 
+                             "Other national agency" = "agency", 
+                             "Academic institution(s)" = "academic", 
+                             "Private hospitals" = "hospitals", 
+                             "No access" = "none" )) %>%
+  unite( "Clinical management", c("results", "name"), sep = "  " )
+
+# Question 62 ---- 
+
+q62 <- get_responses("62") %>% 
+  select(-Other) 
+colnames(q62) <- c("health","agency","academic","none")
+q62 <- cbind( Region = data$Region, q62 ) %>%
+  mutate( answered = if_any( health:none, ~ !is.na(.) )) %>%
+  filter( answered ) %>%
+  mutate(
+    health = (health == "Yes"),
+    agency = (agency == "Yes"),
+    academic = (academic == "Yes"),
+    none = (none == "Yes")
+  ) 
+q62_answered <- q62 %>%
+  group_by( Region ) %>% 
+  summarize( n_answered = n() )
+q62 <- q62 %>%
+  select( -answered ) %>%
+  pivot_longer( !Region ) %>%
+  group_by( Region, name ) %>% 
+  summarize( Yes = sum( value, na.rm=TRUE ) ) %>%
+  left_join( q61_answered ) %>%
+  mutate( Percentage = paste0( "(", round(100*Yes / n_answered ) , "%)" ) ) %>%
+  select( -n_answered ) %>% 
+  unite( results, Yes:Percentage, sep = " " ) %>%
+  mutate( name = factor( name, levels = c("health", "agency", "academic", "hospitals", "none") )) %>%
+  arrange( Region, name ) %>%
+  mutate( name = fct_recode( name, 
+                             "In the ministry of health" = "health", 
+                             "Other national agency" = "agency", 
+                             "Academic institution(s)" = "academic", 
+                             "Private hospitals" = "hospitals", 
+                             "No access" = "none" )) %>%
+  unite( "Epidemiology", c("results", "name"), sep = "  " )
+
+# Question 63 ---- 
+
+q63 <- get_responses("63") %>% 
+  select(-Other) 
+colnames(q63) <- c("health","agency","academic","none")
+q63 <- cbind( Region = data$Region, q63 ) %>%
+  mutate( answered = if_any( health:none, ~ !is.na(.) )) %>%
+  filter( answered ) %>%
+  mutate(
+    health = (health == "Yes"),
+    agency = (agency == "Yes"),
+    academic = (academic == "Yes"),
+    none = (none == "Yes")
+  ) 
+q63_answered <- q63 %>%
+  group_by( Region ) %>% 
+  summarize( n_answered = n() )
+q63 <- q63 %>%
+  select( -answered ) %>%
+  pivot_longer( !Region ) %>%
+  group_by( Region, name ) %>% 
+  summarize( Yes = sum( value, na.rm=TRUE ) ) %>%
+  left_join( q61_answered ) %>%
+  mutate( Percentage = paste0( "(", round(100*Yes / n_answered ) , "%)" ) ) %>%
+  select( -n_answered ) %>% 
+  unite( results, Yes:Percentage, sep = " " ) %>%
+  mutate( name = factor( name, levels = c("health", "agency", "academic", "hospitals", "none") )) %>%
+  arrange( Region, name ) %>%
+  mutate( name = fct_recode( name, 
+                             "In the ministry of health" = "health", 
+                             "Other national agency" = "agency", 
+                             "Academic institution(s)" = "academic", 
+                             "Private hospitals" = "hospitals", 
+                             "No access" = "none" )) %>%
+  unite( "Laboratory diagnosis", c("results", "name"), sep = "  " )
+
+# Question 64 ---- 
+
+q64 <- get_responses("64") %>% 
+  select(-Other) 
+colnames(q64) <- c("health","agency","academic","none")
+q64 <- cbind( Region = data$Region, q64 ) %>%
+  mutate( answered = if_any( health:none, ~ !is.na(.) )) %>%
+  filter( answered ) %>%
+  mutate(
+    health = (health == "Yes"),
+    agency = (agency == "Yes"),
+    academic = (academic == "Yes"),
+    none = (none == "Yes")
+  ) 
+q64_answered <- q64 %>%
+  group_by( Region ) %>% 
+  summarize( n_answered = n() )
+q64 <- q64 %>%
+  select( -answered ) %>%
+  pivot_longer( !Region ) %>%
+  group_by( Region, name ) %>% 
+  summarize( Yes = sum( value, na.rm=TRUE ) ) %>%
+  left_join( q61_answered ) %>%
+  mutate( Percentage = paste0( "(", round(100*Yes / n_answered ) , "%)" ) ) %>%
+  select( -n_answered ) %>% 
+  unite( results, Yes:Percentage, sep = " " ) %>%
+  mutate( name = factor( name, levels = c("health", "agency", "academic", "hospitals", "none") )) %>%
+  arrange( Region, name ) %>%
+  mutate( name = fct_recode( name, 
+                             "In the ministry of health" = "health", 
+                             "Other national agency" = "agency", 
+                             "Academic institution(s)" = "academic", 
+                             "Private hospitals" = "hospitals", 
+                             "No access" = "none" )) %>%
+  unite( "Entomology", c("results", "name"), sep = "  " )
+
+table15 <- left_join( q61 %>% group_by( Region ) %>% summarize( "Clinical management" = paste0( `Clinical management`, collapse = "\n\n" ) ), 
+                      q62 %>% group_by( Region ) %>% summarize( "Epidemiology" = paste0( `Epidemiology`, collapse = "\n\n" ) ), 
+                      by = "Region") %>%
+  left_join( q63 %>% group_by( Region ) %>% summarize( "Laboratory diagnosis" = paste0( `Laboratory diagnosis`, collapse = "\n\n" ) ), by = "Region" ) %>% 
+  left_join( q64 %>% group_by( Region ) %>% summarize( "Entomology" = paste0( `Entomology`, collapse = "\n\n" ) ), by = "Region" ) 
+
+regulartable( table15 ) %>% 
+  theme_zebra(odd_header="#048ECA", odd_body = "#D6EAF8") %>% 
+  color( color="#FFFFFF", part="header" ) %>%
+  footnote( j=2:5, 
+            part = "header", 
+            value = as_paragraph( c("Only countries that responded to Q61, Q62, Q63, and Q64, respectively, are included in the denominator when calculating these percentages. These questions were not included in the dataset shared with AMRO for completion; please see the Arbovirus Survey Overview for more information.") ),
+            ref_symbols = c("a") ) %>%
+  align( j=2:5, align="center", part="all") %>%
+  valign( valign = "top", part="header" ) %>%
+  padding( padding.top = 10, part="all") %>%
+  padding( padding.bottom = 10, part="all") %>%
+  autofit()
+
+```
+
