@@ -786,3 +786,42 @@ list( q47, q48, q53, q52, q50 ) %>%
 
 ```
 
+<!-- ### Cases and deaths by virus -->
+
+<!-- ```{r} -->
+
+<!-- q55 <- get_responses("55") -->
+
+<!-- q55_deaths <- q55 %>% select( contains("Deaths") ) -->
+<!-- q55_cases <- q55 %>% select( contains("Cases") ) -->
+<!-- viruses <- unique( unlist(strsplit( names(q55_cases), "]"))[ !grepl( "Cases", unlist(strsplit(names(q55_cases), "]"))) ] ) -->
+<!-- q55_cases <-  cbind( Region = data$Region, q55_cases ) -->
+<!-- q55_deaths <-  cbind( Region = data$Region, q55_deaths ) -->
+<!-- q55_cases_summary <- data.frame( Region = sort( unique(data$Region) ) ) -->
+<!-- q55_deaths_summary <- data.frame( Region = sort( unique(data$Region) ) ) -->
+<!-- for( i in 1:length(viruses) ){ -->
+<!--   these_cases <- q55_cases %>% select( Region, contains(viruses[i]) ) -->
+<!--   colnames(these_cases) <- c("Region", as.character(2015:2020)) -->
+<!--   these_cases <- these_cases %>% -->
+<!--     rowwise() %>%  -->
+<!--     mutate( total = sum( across(!Region), na.rm = TRUE ) ) %>%  -->
+<!--     group_by( Region ) %>% -->
+<!--     summarise( Cases = sum(total) ) -->
+<!--   colnames( these_cases )[2] <- viruses[i] -->
+<!--   q55_cases_summary <- cbind( q55_cases_summary, these_cases[,2] ) -->
+
+<!--   these_deaths <- q55_deaths %>% select( Region, contains(viruses[i]) ) -->
+<!--   colnames(these_deaths) <- c("Region", as.character(2015:2020)) -->
+<!--   these_deaths <- these_deaths %>% -->
+<!--     rowwise() %>%  -->
+<!--     mutate( total = sum( across(!Region), na.rm = TRUE ) ) %>%  -->
+<!--     group_by( Region ) %>% -->
+<!--     summarise( Deaths = sum(total) ) -->
+<!--   colnames( these_deaths )[2] <- viruses[i] -->
+<!--   q55_deaths_summary <- cbind( q55_deaths_summary, these_deaths[,2] ) -->
+<!-- } -->
+
+<!-- write_csv( q55_cases_summary, "../q55_cases_summary.csv" ) -->
+<!-- write_csv( q55_deaths_summary, "../q55_deaths_summary.csv" ) -->
+
+<!-- ``` -->
