@@ -12,6 +12,7 @@ tables/
 *.png
 *.log
 images/
+dashboard/temp_files/
 missingness/*.csv
 missingness/*.html
 missingness/.Rhistory

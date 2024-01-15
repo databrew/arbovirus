@@ -207,7 +207,6 @@ if('combined_data.RData' %in% dir("data")){
   
   original_paho_names <- names(paho)
   
-  
   #############################################
   # Go variable by variable and update the paho data
   #############################################
@@ -256,7 +255,6 @@ if('combined_data.RData' %in% dir("data")){
   
   # Are data on migration of non-immune populations routinely collected and analysed? [Y/N]
   paho$SV38_SQ006 <- ifelse(paho$`Are data on migration of non-immune populations routinely collected and analysed? [Y/N]` == 'Y', 'Yes', 'Not selected')
-  
   
   # Are data on rainfall routinely collected and analysed? [Y/N]
   paho$SV38_SQ005 <- ifelse(paho$`Are data on rainfall routinely collected and analysed? [Y/N]` == 'Y', 'Yes', 'Not selected')
@@ -333,7 +331,11 @@ if('combined_data.RData' %in% dir("data")){
   # DENV 2020 Confirmed cases
   paho$SIX56_SQ004_SQ003 <- as.numeric(paho$`DENV 2020 Confirmed cases`)
   # DENV 2020 Deaths
-  paho$SIX56_SQ004_SQ004 <- as.numeric(paho$`DENV 2020 Deaths`)
+  paho$SIX55_SQ001_SQ012 <- as.numeric(paho$`DENV 2020 Deaths`)
+  # DENV 2020 Probable cases
+  paho$SIX56_SQ004_SQ002 <- as.numeric(paho$`DENV 2020 Probable cases`)
+  # DENV 2020 Suspect cases
+  paho$SIX56_SQ004_SQ001 <- as.numeric(paho$`DENV 2020 Suspect cases`)
   
   # # DENV 2020 Probable cases
   # as.numeric(paho$`DENV 2020 Probable cases`) # skipping all NA
@@ -379,6 +381,57 @@ if('combined_data.RData' %in% dir("data")){
   
   # YFV 2020 Deaths
   paho$SIX55_SQ003_SQ012 <- as.numeric(paho$`YFV 2020 Deaths`)
+  
+  # YFV 2020 Probable cases
+  paho$SIX56_SQ003_SQ002 <- as.numeric(paho$`YFV 2020 Probable cases`)
+  
+  # YFV 2020 Suspect cases
+  paho$SIX56_SQ003_SQ001 <- as.numeric(paho$`YFV 2020 Suspect cases`)
+  
+  # ZIKA 2015 Cases
+  paho$SIX55_SQ004_SQ001 <- as.numeric(paho$`ZIKV 2015 Cases`)
+  
+  # ZIKA 2015 Deaths
+  paho$SIX55_SQ004_SQ002 <- as.numeric(paho$`ZIKV 2015 Deaths`)
+  
+  # ZIKA 2016 Cases
+  paho$SIX55_SQ004_SQ003 <- as.numeric(paho$`ZIKV 2016 Cases`)
+  
+  # ZIKA 2016 Deaths
+  paho$SIX55_SQ004_SQ004 <- as.numeric(paho$`ZIKV 2016 Deaths`)
+  
+  # ZIKA 2017 Cases
+  paho$SIX55_SQ004_SQ005 <- as.numeric(paho$`ZIKV 2017 Cases`)
+  
+  # ZIKA 2017 Deaths
+  paho$SIX55_SQ004_SQ006 <- as.numeric(paho$`ZIKV 2017 Deaths`)
+  
+  # ZIKA 2018 Cases
+  paho$SIX55_SQ004_SQ007 <- as.numeric(paho$`ZIKV 2018 Cases`)
+  
+  # ZIKA 2018 Deaths
+  paho$SIX55_SQ004_SQ008 <- as.numeric(paho$`ZIKV 2018 Deaths`)
+  
+  # ZIKA 2019 Cases
+  paho$SIX55_SQ004_SQ010 <- as.numeric(paho$`ZIKV 2019 Cases`)
+  
+  # ZIKA 2019 Deaths
+  paho$SIX55_SQ004_SQ009 <- as.numeric(paho$`ZIKV 2019 Deaths`)
+  
+  # ZIKA 2020 Cases
+  paho$SIX55_SQ004_SQ011 <- as.numeric(paho$`ZIKV 2020 Cases`)
+  
+  # ZIKA 2020 Confirmed cases
+  paho$SIX56_SQ006_SQ003 <- as.numeric(paho$`ZIKV 2020 Confirmed cases`)
+  
+  # ZIKA 2020 Deaths
+  paho$SIX55_SQ004_SQ012 <- as.numeric(paho$`ZIKV 2020 Deaths`)
+  
+  # ZIKA 2020 Probable cases
+  paho$SIX56_SQ006_SQ002 <- as.numeric(paho$`ZIKV 2020 Probable cases`)
+  
+  # ZIKA 2020 Suspect cases
+  paho$SIX56_SQ006_SQ001 <- as.numeric(paho$`ZIKV 2020 Suspect cases`)
   
   # Conducted national epidemiological surveillance for human cases of arboviral disease in last 2 years? [Y/N]
   paho$SII12 <- ifelse(paho$`Conducted national epidemiological surveillance for human cases of arboviral disease in last 2 years? [Y/N]` == 'Y', 'Yes', 'No')
