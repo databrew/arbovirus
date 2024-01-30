@@ -202,8 +202,14 @@ region_countries <- load_regions_countries()
 Available reports (PDF) : 
 
 <ul>
+<li><a href="country_reports/Australia.pdf" style="color:#048eca;">Australia</a></li>
+<li><a href="country_reports/Brunei Darussalam.pdf" style="color:#048eca;">Brunei Darussalam</a></li>
 <li><a href="country_reports/Cambodia.pdf" style="color:#048eca;">Cambodia</a></li>
 <li><a href="country_reports/China.pdf" style="color:#048eca;">China</a></li>
+<li><a href="country_reports/Cook Islands.pdf" style="color:#048eca;">Cook Islands</a></li>
+<li><a href="country_reports/Fiji.pdf" style="color:#048eca;">Fiji</a></li>
+<li><a href="country_reports/French Polynesia.pdf" style="color:#048eca;">French Polynesia</a></li>
+<li><a href="country_reports/Japan.pdf" style="color:#048eca;">Japan</a></li>
 <li><a href="country_reports/Kiribati.pdf" style="color:#048eca;">Kiribati</a></li>
 <li><a href="country_reports/Lao People's Democratic Republic.pdf" style="color:#048eca;">Lao People's Democratic Republic</a></li>
 <li><a href="country_reports/Malaysia.pdf" style="color:#048eca;">Malaysia</a></li>

@@ -4,8 +4,8 @@ library(dplyr)
 # use all regions for a dashboard with a global tab,
 # use just one region for a region-only dashboard
 
-# regions <- "EMRO"
-regions <- c("AMRO","EMRO","EURO","SEARO","WPRO")
+regions <- "WPRO"
+# regions <- c("AMRO","EMRO","EURO","SEARO","WPRO")
 
 # remove any existing dashboard files before creating new dashboard :
 
